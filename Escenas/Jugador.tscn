@@ -150,7 +150,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_83bx5"]
-size = Vector2(25, 56)
+size = Vector2(25, 66)
 
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=1415837552]
 position = Vector2(3, -65)
@@ -165,5 +165,5 @@ frame_progress = 1.0
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1535769858]
-position = Vector2(-2.5, 36)
+position = Vector2(10.5, 31)
 shape = SubResource("RectangleShape2D_83bx5")
