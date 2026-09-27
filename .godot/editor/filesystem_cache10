@@ -1,10 +1,10 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1790375741
+::res://::1790481779
 icon.svg::CompressedTexture2D::6858288114591545919::1790309843::1790375545::1::::<><><>0<>0<>a307f71fe24019804a483ef5fb4c4154<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 ::res://Codigo/::1790374310
-jugador.gd::GDScript::5024414617709012609::1790364522::0::1::::<>CharacterBody2D<><>0<>0<><>::
-::res://Escenas/::1790374310
-escena_01.tscn::PackedScene::5988572586232270392::1790355336::0::1::::<><><>0<>0<><>::uid://chtdvltudr8ps::::res://Escenas/Jugador.tscn<>uid://cfhoxf6dh7hy0::::res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/Tileset.png
+jugador.gd::GDScript::5024414617709012609::1790481406::0::1::::<>CharacterBody2D<><>0<>0<><>::
+::res://Escenas/::1790481644
+escena_01.tscn::PackedScene::5988572586232270392::1790481344::0::1::::<><><>0<>0<><>::uid://chtdvltudr8ps::::res://Escenas/Jugador.tscn<>uid://cfhoxf6dh7hy0::::res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/Tileset.png
 Jugador.tscn::PackedScene::5303606710851426572::1790363699::0::1::::<><><>0<>0<><>::uid://fh7jtles836l::::res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Idle.png<>uid://cdt4m0elbka7b::::res://Codigo/jugador.gd<>uid://by1ytbmewrs5b::::res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Run.png<>uid://4xb26mui6301::::res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Attack.png
 ::res://Personajes/::1790374310
 ::res://Personajes/Soldado/::1790374310

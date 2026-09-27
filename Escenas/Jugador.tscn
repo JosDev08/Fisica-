@@ -144,9 +144,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_3le5i")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"Saltar",
-"speed": 5.0
+"speed": 3.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_83bx5"]
@@ -158,8 +158,10 @@ script = ExtResource("1_pqx3y")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1292732093]
 sprite_frames = SubResource("SpriteFrames_wa3y6")
-animation = &"Reposo"
+animation = &"Saltar"
 autoplay = "Reposo"
+frame = 2
+frame_progress = 1.0
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1535769858]
