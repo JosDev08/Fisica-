@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Codigo/puerta_ohm.gd" id="1_puerta"]
+
+[node name="PuertaOhm" type="StaticBody2D"]
+script = ExtResource("1_puerta")
