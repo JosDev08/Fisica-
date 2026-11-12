@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cdt4m0elbka7b" path="res://Codigo/jugador.gd" id="1_pqx3y"]
 [ext_resource type="Texture2D" uid="uid://by1ytbmewrs5b" path="res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Run.png" id="2_8g85c"]
 [ext_resource type="Texture2D" uid="uid://4xb26mui6301" path="res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Attack.png" id="4_muoba"]
+[ext_resource type="Texture2D" uid="uid://xjtdfwkj6x8r" path="res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Dead.png" id="5_muoba"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_srl76"]
 atlas = ExtResource("2_8g85c")
@@ -77,6 +78,22 @@ region = Rect2(256, 0, 128, 128)
 atlas = ExtResource("4_muoba")
 region = Rect2(0, 0, 128, 128)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_ldqfe"]
+atlas = ExtResource("5_muoba")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5d76g"]
+atlas = ExtResource("5_muoba")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sb2or"]
+atlas = ExtResource("5_muoba")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v8mjx"]
+atlas = ExtResource("5_muoba")
+region = Rect2(384, 0, 128, 128)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_wa3y6"]
 animations = [{
 "frames": [{
@@ -147,6 +164,23 @@ animations = [{
 "loop": 0,
 "name": &"Saltar",
 "speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ldqfe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5d76g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sb2or")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v8mjx")
+}],
+"loop": 0,
+"name": &"muerte",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_83bx5"]
@@ -160,10 +194,8 @@ script = ExtResource("1_pqx3y")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1292732093]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_wa3y6")
-animation = &"Saltar"
+animation = &"muerte"
 autoplay = "Reposo"
-frame = 2
-frame_progress = 1.0
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1535769858]

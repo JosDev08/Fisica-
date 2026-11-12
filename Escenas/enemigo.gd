@@ -38,9 +38,18 @@ func _physics_process(delta):
 
 		State.CHASE:
 			if is_instance_valid(player):
-				if attack_area.overlaps_body(player) and attack_cooldown.is_stopped():
-					current_state = State.ATTACK
-					attack_player()
+				if player.esta_muerto:
+					player = null
+					current_state = State.IDLE
+					velocity.x = 0
+					animated_sprite.play("idle")
+
+				elif attack_area.overlaps_body(player):
+					velocity.x = 0
+
+					if attack_cooldown.is_stopped():
+						current_state = State.ATTACK
+						attack_player()
 				else:
 					chase_player()
 			else:
@@ -93,29 +102,38 @@ func play_transform():
 func chase_player():
 	var difference_x = player.global_position.x - global_position.x
 
-	# Detenerse cuando está muy cerca del jugador
 	if abs(difference_x) < 10:
 		velocity.x = 0
+		animated_sprite.play("idle")
 		return
 
 	var direction_x = sign(difference_x)
 
 	velocity.x = direction_x * speed
-
-	# Girar el sprite según la dirección
 	animated_sprite.flip_h = direction_x < 0
+
+	if animated_sprite.animation != "walk":
+		animated_sprite.play("walk")
 	# Ejecutar ataque del enemigo
 func attack_player():
 	velocity.x = 0
 	animated_sprite.play("attack")
 
-	attack_cooldown.start()
-
 	await animated_sprite.animation_finished
 
 	if is_instance_valid(player):
+		if not player.esta_muerto and attack_area.overlaps_body(player):
+			player.recibir_danio(20)
+
+	attack_cooldown.start()
+
+	if is_instance_valid(player) and not player.esta_muerto:
 		current_state = State.CHASE
-		animated_sprite.play("walk")
+
+		if attack_area.overlaps_body(player):
+			animated_sprite.play("idle")
+		else:
+			animated_sprite.play("walk")
 	else:
 		current_state = State.IDLE
 		animated_sprite.play("idle")

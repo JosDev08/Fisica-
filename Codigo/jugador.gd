@@ -3,11 +3,35 @@ extends CharacterBody2D
 
 const SPEED = 220.0
 const JUMP_VELOCITY = -450.0
+const VIDA_MAXIMA = 100
+var vida_actual = VIDA_MAXIMA
+var esta_muerto = false
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D 
 
+func recibir_danio(cantidad: int):
+	if esta_muerto:
+		return
+
+	vida_actual -= cantidad
+	vida_actual = max(vida_actual, 0)
+
+	print("Vida del jugador: ", vida_actual)
+
+	if vida_actual <= 0:
+		esta_muerto = true
+		velocity = Vector2.ZERO
+		animated_sprite_2d.play("muerte")
+		print("El jugador ha muerto")
+
+	if vida_actual <= 0:
+		esta_muerto = true
+		print("El jugador ha muerto")
 
 func _physics_process(delta: float) -> void:
+	if esta_muerto:
+		move_and_slide()
+		return
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bexmpajbn7j65"]
 
-[ext_resource type="Script" path="res://Codigo/puerta_ohm.gd" id="1_puerta"]
+[ext_resource type="Script" uid="uid://cplvwdbwl02pr" path="res://Codigo/puerta_ohm.gd" id="1_puerta"]
 
-[node name="PuertaOhm" type="StaticBody2D"]
+[node name="PuertaOhm" type="StaticBody2D" unique_id=1854059615]
 script = ExtResource("1_puerta")

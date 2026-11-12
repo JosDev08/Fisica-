@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cfhoxf6dh7hy0" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/Tileset.png" id="4_bwg43"]
 [ext_resource type="Texture2D" uid="uid://c0vqjnbriq5bd" path="res://Recursos/a2/3. NEW CLOUDS/1.png" id="10_bqa2f"]
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="27_sikce"]
-[ext_resource type="PackedScene" path="res://Escenas/puerta_ohm.tscn" id="28_hvm3r"]
+[ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="28_hvm3r"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_nvj0p")
