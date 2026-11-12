@@ -29,6 +29,7 @@
 [ext_resource type="Texture2D" uid="uid://djk10ncqiomka" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/4.png" id="26_e84pn"]
 [ext_resource type="PackedScene" path="res://Escenas/puerta_ohm.tscn" id="28_kb7tp"]
 [ext_resource type="Texture2D" uid="uid://b6bdf7gcmw5jf" path="res://Recursos/a2/2. NEW CLOUDS/1.png" id="29_65iae"]
+[ext_resource type="PackedScene" uid="uid://cfmxjedk2s834" path="res://Escenas/enemigo.tscn" id="30_hwlub"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -818,7 +819,7 @@ texture = ExtResource("26_e84pn")
 1:1/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_wa3y6"]
-physics_layer_0/collision_layer = 1
+physics_layer_0/collision_layer = 16
 sources/111 = SubResource("TileSetAtlasSource_0eu8i")
 sources/1 = SubResource("TileSetAtlasSource_lmrt2")
 sources/2 = SubResource("TileSetAtlasSource_6ekcc")
@@ -876,3 +877,6 @@ grow_vertical = 2
 texture = ExtResource("29_65iae")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="Enemigo" parent="." unique_id=1720677761 instance=ExtResource("30_hwlub")]
+position = Vector2(406, -37)

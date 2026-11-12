@@ -44,6 +44,14 @@ Saltar={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Jugador"
+2d_physics/layer_2="Enemigo"
+2d_physics/layer_3="Detectionarea"
+2d_physics/layer_4="Attackenemy"
+2d_physics/layer_5="Suelo"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

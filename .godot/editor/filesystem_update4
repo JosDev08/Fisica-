@@ -1,4 +1,4 @@
-res://Escenas/escena_01.tscn
-res://Escenas/escena_02.tscn
+res://Escenas/enemigo.tscn
+res://Escenas/enemigo.gd
 res://Escenas/Jugador.tscn
-res://Recursos/Escenario4/aaa.png
+res://Escenas/escena_01.tscn
