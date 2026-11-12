@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://b3cby1ynnl176"]
+
+[node name="Pantalladerrota" type="Control" unique_id=1414238721]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Fondo" type="ColorRect" parent="." unique_id=1874035761]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.18359044, 0.18359047, 0.18359038, 1)
+
+[node name="Centro" type="CenterContainer" parent="Fondo" unique_id=220162688]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Contenedor" type="VBoxContainer" parent="Fondo/Centro" unique_id=1863046592]
+layout_mode = 2
+
+[node name="Titulo" type="Label" parent="Fondo/Centro/Contenedor" unique_id=1658360351]
+layout_mode = 2
+text = "!HAS PERDIDO¡
+"
+
+[node name="Reintentar" type="Button" parent="Fondo/Centro/Contenedor" unique_id=754046894]
+layout_mode = 2
+text = "Volver a intentar
+"
+
+[node name="MenúPrincipal" type="Button" parent="Fondo/Centro/Contenedor" unique_id=1465103504]
+layout_mode = 2
+text = "Menú Principal
+"
