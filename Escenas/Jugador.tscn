@@ -157,6 +157,7 @@ position = Vector2(3, -65)
 script = ExtResource("1_pqx3y")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1292732093]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_wa3y6")
 animation = &"Saltar"
 autoplay = "Reposo"
