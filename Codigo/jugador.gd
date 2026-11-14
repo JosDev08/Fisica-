@@ -1,13 +1,14 @@
 extends CharacterBody2D
 
-
 const SPEED = 220.0
 const JUMP_VELOCITY = -450.0
 const VIDA_MAXIMA = 100
+
 var vida_actual = VIDA_MAXIMA
 var esta_muerto = false
 
-@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D 
+@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+
 
 func recibir_danio(cantidad: int):
 	if esta_muerto:
@@ -20,39 +21,41 @@ func recibir_danio(cantidad: int):
 
 	if vida_actual <= 0:
 		esta_muerto = true
-		velocity = Vector2.ZERO
+		velocity.x = 0
 		animated_sprite_2d.play("muerte")
 		print("El jugador ha muerto")
 
-	if vida_actual <= 0:
-		esta_muerto = true
-		print("El jugador ha muerto")
 
 func _physics_process(delta: float) -> void:
+
 	if esta_muerto:
+		if not is_on_floor():
+			velocity.y += get_gravity().y * delta
+
+		velocity.x = 0
 		move_and_slide()
 		return
-	# Add the gravity.
+
+	# Gravedad
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	# Handle jump.
+	# Salto
 	if Input.is_action_just_pressed("Saltar") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
+	# Movimiento
 	var direction := Input.get_axis("mov. izquierda", "mov. derecha")
 
-	if direction > 0 :
+	if direction > 0:
 		animated_sprite_2d.flip_h = false
-	elif direction < 0 :
+	elif direction < 0:
 		animated_sprite_2d.flip_h = true
 
-	if is_on_floor() :
-		if direction == 0 : 
+	if is_on_floor():
+		if direction == 0:
 			animated_sprite_2d.play("Reposo")
-		else: 
+		else:
 			animated_sprite_2d.play("Correr")
 	else:
 		animated_sprite_2d.play("Saltar")

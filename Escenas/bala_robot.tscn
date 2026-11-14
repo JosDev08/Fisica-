@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://1luqhr8lotx8"]
+
+[ext_resource type="Script" uid="uid://bof6yt2n4rkuy" path="res://Escenas/bala_robot.gd" id="1_gu8vj"]
+[ext_resource type="Texture2D" uid="uid://2x5ps4t6tghi" path="res://Personajes/Enemigos 1/6/Ball1.png" id="1_xk3rj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w8ony"]
+radius = 8.0
+
+[node name="bala_robot" type="Area2D" unique_id=766912540]
+collision_layer = 32
+script = ExtResource("1_gu8vj")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1720911539]
+texture = ExtResource("1_xk3rj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=78596133]
+shape = SubResource("CircleShape2D_w8ony")
