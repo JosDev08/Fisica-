@@ -27,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://itg0gqigx8r0" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/2.png" id="24_rpopd"]
 [ext_resource type="Texture2D" uid="uid://dmawa60crqvhn" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/3.png" id="25_3bn0j"]
 [ext_resource type="Texture2D" uid="uid://djk10ncqiomka" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/4.png" id="26_e84pn"]
-[ext_resource type="PackedScene" path="res://Escenas/puerta_ohm.tscn" id="28_kb7tp"]
+[ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="28_kb7tp"]
 [ext_resource type="Texture2D" uid="uid://b6bdf7gcmw5jf" path="res://Recursos/a2/2. NEW CLOUDS/1.png" id="29_65iae"]
 [ext_resource type="PackedScene" uid="uid://cfmxjedk2s834" path="res://Escenas/enemigo.tscn" id="30_hwlub"]
 
@@ -879,4 +879,16 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Enemigo" parent="." unique_id=1720677761 instance=ExtResource("30_hwlub")]
-position = Vector2(406, -37)
+position = Vector2(395, -45)
+
+[node name="Enemigo2" parent="." unique_id=2067488558 instance=ExtResource("30_hwlub")]
+position = Vector2(887, 91)
+
+[node name="Enemigo3" parent="." unique_id=684913637 instance=ExtResource("30_hwlub")]
+position = Vector2(1543, 92)
+
+[node name="Enemigo4" parent="." unique_id=1795654949 instance=ExtResource("30_hwlub")]
+position = Vector2(2130, 73)
+
+[node name="Enemigo5" parent="." unique_id=1577215261 instance=ExtResource("30_hwlub")]
+position = Vector2(-285, -37)
