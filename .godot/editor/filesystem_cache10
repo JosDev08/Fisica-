@@ -1,5 +1,5 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1794532916
+::res://::1794550604
 icon.svg::CompressedTexture2D::6858288114591545919::1794372056::1794372554::1::::<><><>0<>0<>a307f71fe24019804a483ef5fb4c4154<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 ::res://Codigo/::1794509340
 jugador.gd::GDScript::5024414617709012609::1794509340::0::1::::<>CharacterBody2D<><>0<>0<><>::
@@ -141,7 +141,7 @@ Shot_1.png::CompressedTexture2D::4373029358697125792::1794372056::1794372554::1:
 Shot_2.png::CompressedTexture2D::3938345253628873257::1794372056::1794372554::1::::<><><>0<>0<>7e50c213ad213a76dd9be63ce6aec8e9<>res://.godot/imported/Shot_2.png-569087ab5031cfd738784ebf6263b904.ctex::
 Smoke.png::CompressedTexture2D::7150028081819962353::1794372056::1794372554::1::::<><><>0<>0<>5c71abd6a86e8fbf68a74d17143d3a8c<>res://.godot/imported/Smoke.png-1120d55f3f75edd8e2a3352260f43cac.ctex::
 Walk.png::CompressedTexture2D::1250385785025546452::1794372056::1794372554::1::::<><><>0<>0<>e8b7a5fa35474810a7cae61af8e6934f<>res://.godot/imported/Walk.png-c3aeea3365b95db88b74996a75923bcd.ctex::
-::res://Recursos/::1794487776
+::res://Recursos/::1794533485
 ::res://Recursos/A1/::1794482808
 Coupon by craftpix.png::CompressedTexture2D::8282466501035726957::1794482746::1794482808::1::::<><><>0<>0<>11705560f985f835b504fdcb5d1480d0<>res://.godot/imported/Coupon by craftpix.png-f085d1a6f21362fb87a20d0bedbf0dea.ctex::
 Font.txt::TextFile::-1::1794482746::0::1::::<><><>0<>0<><>::
