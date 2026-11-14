@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="EC3"
-run/main_scene="uid://crk56em6s7jl5"
+run/main_scene="uid://dl0bx3hxdfoh6"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
