@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dpbvgknaj72ia" path="res://Recursos/Escenario4/1 Tiles/Tileset.png" id="1_nvj0p"]
 [ext_resource type="Texture2D" uid="uid://cfhoxf6dh7hy0" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/Tileset.png" id="4_bwg43"]
 [ext_resource type="PackedScene" uid="uid://cfmxjedk2s834" path="res://Escenas/enemigo.tscn" id="6_njjb1"]
+[ext_resource type="PackedScene" uid="uid://df0bkbtcqahvc" path="res://Escenas/enemigo_02.tscn" id="7_gdrao"]
 [ext_resource type="Texture2D" uid="uid://c0vqjnbriq5bd" path="res://Recursos/a2/3. NEW CLOUDS/1.png" id="10_bqa2f"]
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="27_sikce"]
 [ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="28_hvm3r"]
@@ -978,17 +979,20 @@ expand_mode = 1
 stretch_mode = 6
 metadata/_edit_use_anchors_ = true
 
-[node name="Enemigo" parent="." unique_id=1720677761 instance=ExtResource("6_njjb1")]
-position = Vector2(-163, -38)
-
 [node name="Enemigo2" parent="." unique_id=286772130 instance=ExtResource("6_njjb1")]
-position = Vector2(705, -37)
+position = Vector2(2658, 94)
 
-[node name="Enemigo3" parent="." unique_id=2040367254 instance=ExtResource("6_njjb1")]
-position = Vector2(3117, 90)
+[node name="enemigo_2" parent="." unique_id=987428596 instance=ExtResource("7_gdrao")]
+position = Vector2(-130, -24)
 
-[node name="Enemigo4" parent="." unique_id=352898990 instance=ExtResource("6_njjb1")]
-position = Vector2(1645, -87)
+[node name="enemigo_3" parent="." unique_id=247543696 instance=ExtResource("7_gdrao")]
+position = Vector2(485, -25)
 
-[node name="Enemigo5" parent="." unique_id=1039498510 instance=ExtResource("6_njjb1")]
-position = Vector2(2022, 87)
+[node name="enemigo_4" parent="." unique_id=1991893267 instance=ExtResource("7_gdrao")]
+position = Vector2(861, -24)
+
+[node name="enemigo_5" parent="." unique_id=829473528 instance=ExtResource("7_gdrao")]
+position = Vector2(1435, 103)
+
+[node name="enemigo_6" parent="." unique_id=1788783403 instance=ExtResource("7_gdrao")]
+position = Vector2(2070, 101)
