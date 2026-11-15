@@ -12,11 +12,20 @@ extends Node2D
 #   Enter/Space confirman/activan el puente, E/Esc cierran el panel.
 # ==============================================================================
 
-const C1_VAL: float = 6.0
-const C2_VAL: float = 12.0
-const META_CEQ: float = 18.0
+const PARES_CAPACITORES: Array = [
+	[6.0, 12.0],
+	[4.0, 12.0],
+	[10.0, 10.0],
+	[6.0, 3.0],
+	[12.0, 24.0]
+]
 
-var en_paralelo: bool = false # Inicia en Serie: (6×12)/(6+12) = 4.0 µF
+var c1_val: float = 6.0
+var c2_val: float = 12.0
+var meta_ceq: float = 18.0
+var requiere_paralelo: bool = true
+
+var en_paralelo: bool = false
 var puente_activo: bool = false
 var jugador_cerca: bool = false
 var panel_abierto: bool = false
@@ -47,6 +56,9 @@ var nodo_fuente: ColorRect
 var nodo_puente: ColorRect
 var bloque_c1: Control
 var bloque_c2: Control
+var lbl_c1_diag: Label
+var lbl_c2_diag: Label
+var lbl_carga_diag: Label
 var pulsos_energia: Array[ColorRect] = []
 var fase_energia: float = 0.0
 var btn_serie: Button
@@ -56,10 +68,40 @@ var btn_cerrar: Button
 var lbl_formula: Label
 
 func _ready() -> void:
+	randomize()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_asegurar_input_interactuar()
 	_construir_escena_mundo()
 	_construir_interfaz_ui()
+	generar_nuevo_puzzle()
+
+func generar_nuevo_puzzle() -> void:
+	# Elegir al azar un par [C1, C2] con resultados limpios en ambos modos
+	var par: Array = PARES_CAPACITORES[randi() % PARES_CAPACITORES.size()]
+	c1_val = float(par[0])
+	c2_val = float(par[1])
+
+	# Sortear al azar si en esta partida el puente requiere conectarse en SERIE o en PARALELO
+	requiere_paralelo = (randi() % 2 == 1)
+	if requiere_paralelo:
+		meta_ceq = c1_val + c2_val
+	else:
+		meta_ceq = (c1_val * c2_val) / (c1_val + c2_val)
+
+	# Verificar con un bucle while que el control inicial nunca empiece ya resuelto ni coincida con el OBJETIVO
+	en_paralelo = (randi() % 2 == 1)
+	while is_equal_approx(_calcular_ceq(), meta_ceq) or en_paralelo == requiere_paralelo:
+		en_paralelo = not en_paralelo
+
+	if barra_carga:
+		barra_carga.max_value = max(c1_val + c2_val, meta_ceq * 1.5)
+	if lbl_c1_diag:
+		lbl_c1_diag.text = "C1 = %.0f µF" % c1_val
+	if lbl_c2_diag:
+		lbl_c2_diag.text = "C2 = %.0f µF" % c2_val
+	if lbl_carga_diag:
+		lbl_carga_diag.text = "PUENTE\n%.1f µF" % meta_ceq
+
 	_actualizar_calculo_y_estado(true)
 
 func _asegurar_input_interactuar() -> void:
@@ -237,6 +279,7 @@ func _crear_bloque_capacitor(etiqueta: String, valor_txt: String, color_acento: 
 	raiz.add_child(placa_der)
 
 	var lbl := Label.new()
+	lbl.name = "LblValorCap"
 	lbl.position = Vector2(32, 6)
 	lbl.size = Vector2(68, 44)
 	lbl.text = "%s = %s" % [etiqueta, valor_txt]
@@ -298,7 +341,7 @@ func _construir_interfaz_ui() -> void:
 	# ProgressBar dinámica (ámbar/rojo si insuficiente, verde neón al alcanzar objetivo)
 	barra_carga = ProgressBar.new()
 	barra_carga.min_value = 0.0
-	barra_carga.max_value = META_CEQ
+	barra_carga.max_value = max(c1_val + c2_val, meta_ceq * 1.5)
 	barra_carga.custom_minimum_size = Vector2(520, 18)
 	barra_carga.show_percentage = false
 	barra_carga.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -360,16 +403,16 @@ func _construir_interfaz_ui() -> void:
 	nodo_puente.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lienzo_circuito.add_child(nodo_puente)
 
-	var lbl_carga := Label.new()
-	lbl_carga.position = Vector2(468, 68)
-	lbl_carga.size = Vector2(58, 48)
-	lbl_carga.text = "PUENTE\n18.0 µF"
-	lbl_carga.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_carga.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lbl_carga.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	lbl_carga.add_theme_font_size_override("font_size", 10)
-	lbl_carga.add_theme_color_override("font_color", Color(0.95, 0.9, 0.45))
-	lienzo_circuito.add_child(lbl_carga)
+	lbl_carga_diag = Label.new()
+	lbl_carga_diag.position = Vector2(468, 68)
+	lbl_carga_diag.size = Vector2(58, 48)
+	lbl_carga_diag.text = "PUENTE\n%.1f µF" % meta_ceq
+	lbl_carga_diag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_carga_diag.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl_carga_diag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lbl_carga_diag.add_theme_font_size_override("font_size", 10)
+	lbl_carga_diag.add_theme_color_override("font_color", Color(0.95, 0.9, 0.45))
+	lienzo_circuito.add_child(lbl_carga_diag)
 
 	linea_principal_izq = Line2D.new()
 	linea_principal_izq.width = 4.0
@@ -399,10 +442,12 @@ func _construir_interfaz_ui() -> void:
 	nodo_union_der.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lienzo_circuito.add_child(nodo_union_der)
 
-	bloque_c1 = _crear_bloque_capacitor("C1", "6 µF", Color(0.3, 0.85, 1.0))
+	bloque_c1 = _crear_bloque_capacitor("C1", "%.0f µF" % c1_val, Color(0.3, 0.85, 1.0))
+	lbl_c1_diag = bloque_c1.get_node("LblValorCap") as Label
 	lienzo_circuito.add_child(bloque_c1)
 
-	bloque_c2 = _crear_bloque_capacitor("C2", "12 µF", Color(0.45, 0.95, 0.65))
+	bloque_c2 = _crear_bloque_capacitor("C2", "%.0f µF" % c2_val, Color(0.45, 0.95, 0.65))
+	lbl_c2_diag = bloque_c2.get_node("LblValorCap") as Label
 	lienzo_circuito.add_child(bloque_c2)
 
 	for i in range(6):
@@ -466,9 +511,9 @@ func _construir_interfaz_ui() -> void:
 
 func _calcular_ceq() -> float:
 	if en_paralelo:
-		return C1_VAL + C2_VAL
+		return c1_val + c2_val
 	else:
-		return (C1_VAL * C2_VAL) / (C1_VAL + C2_VAL)
+		return (c1_val * c2_val) / (c1_val + c2_val)
 
 func _ocultar_textos_mundo(ocultar: bool) -> void:
 	if get_tree():
@@ -498,13 +543,21 @@ func _congelar_jugador(congelar: bool) -> void:
 
 func _actualizar_calculo_y_estado(instantaneo: bool) -> void:
 	var ceq: float = _calcular_ceq()
-	puente_activo = is_equal_approx(ceq, META_CEQ)
+	puente_activo = is_equal_approx(ceq, meta_ceq)
+
+	if lbl_c1_diag:
+		lbl_c1_diag.text = "C1 = %.0f µF" % c1_val
+	if lbl_c2_diag:
+		lbl_c2_diag.text = "C2 = %.0f µF" % c2_val
+	if lbl_carga_diag:
+		lbl_carga_diag.text = "PUENTE\n%.1f µF" % meta_ceq
 
 	if lbl_hud_estado:
 		var col_estado := Color(0.2, 1.0, 0.55) if puente_activo else Color(1.0, 0.68, 0.25)
-		lbl_hud_estado.text = "OBJETIVO: 18.0 µF   vs   ACTUAL: %.1f µF" % ceq
+		lbl_hud_estado.text = "OBJETIVO: %.1f µF   vs   ACTUAL: %.1f µF" % [meta_ceq, ceq]
 		lbl_hud_estado.add_theme_color_override("font_color", col_estado)
 
+		barra_carga.max_value = max(c1_val + c2_val, meta_ceq * 1.5)
 		barra_carga.value = ceq
 		var sb_fill := StyleBoxFlat.new()
 		sb_fill.bg_color = Color(0.18, 0.98, 0.52) if puente_activo else Color(0.95, 0.55, 0.2)
@@ -524,7 +577,7 @@ func _actualizar_calculo_y_estado(instantaneo: bool) -> void:
 		btn_confirmar.add_theme_stylebox_override("normal", _crear_estilo_boton_switch(puente_activo, Color(0.25, 0.95, 0.6)))
 		btn_confirmar.add_theme_stylebox_override("hover", _crear_estilo_boton_switch(true, Color(0.35, 1.0, 0.7)))
 
-		var col_cable := Color(0.2, 0.98, 0.55, 1.0) if en_paralelo else Color(0.98, 0.65, 0.22, 0.92)
+		var col_cable := Color(0.2, 0.98, 0.55, 1.0) if puente_activo else Color(0.98, 0.65, 0.22, 0.92)
 		linea_principal_izq.default_color = col_cable
 		linea_principal_der.default_color = col_cable
 		linea_rama_sup.default_color = col_cable
@@ -551,8 +604,8 @@ func _actualizar_calculo_y_estado(instantaneo: bool) -> void:
 				Vector2(320, 140), Vector2(416, 140), Vector2(416, 92)
 			])
 
-			lbl_formula.text = "6 + 12 = 18.0 µF"
-			lbl_formula.add_theme_color_override("font_color", Color(0.25, 1.0, 0.58))
+			lbl_formula.text = "%.0f + %.0f = %.1f µF" % [c1_val, c2_val, ceq]
+			lbl_formula.add_theme_color_override("font_color", Color(0.25, 1.0, 0.58) if puente_activo else Color(1.0, 0.75, 0.35))
 		else:
 			bloque_c1.position = Vector2(136, 64)
 			bloque_c2.position = Vector2(292, 64)
@@ -564,14 +617,14 @@ func _actualizar_calculo_y_estado(instantaneo: bool) -> void:
 			linea_rama_sup.points = PackedVector2Array([Vector2(240, 92), Vector2(292, 92)])
 			linea_principal_der.points = PackedVector2Array([Vector2(396, 92), Vector2(468, 92)])
 
-			lbl_formula.text = "(6×12)/(6+12) = 4.0 µF"
-			lbl_formula.add_theme_color_override("font_color", Color(1.0, 0.75, 0.35))
+			lbl_formula.text = "(%.0f×%.0f)/(%.0f+%.0f) = %.1f µF" % [c1_val, c2_val, c1_val, c2_val, ceq]
+			lbl_formula.add_theme_color_override("font_color", Color(0.25, 1.0, 0.58) if puente_activo else Color(1.0, 0.75, 0.35))
 
 	# Actualizar puente físico en Capa 5 Suelo y cables en el mundo
 	colision_puente.set_deferred("disabled", not puente_activo)
 	if puente_activo:
 		cable_linea.default_color = Color(0.2, 0.95, 0.55, 1.0)
-		label_estado_mundo.text = "⚡ PUENTE ENERGIZADO (18.0 µF)"
+		label_estado_mundo.text = "⚡ PUENTE ENERGIZADO (%.1f µF)" % meta_ceq
 		label_estado_mundo.add_theme_color_override("font_color", Color(0.25, 1.0, 0.55))
 		if instantaneo:
 			sprite_puente.scale = Vector2(1.0, 1.0)
@@ -583,7 +636,7 @@ func _actualizar_calculo_y_estado(instantaneo: bool) -> void:
 			tw.parallel().tween_property(sprite_puente, "modulate", Color(1, 1, 1, 1), 0.25)
 	else:
 		cable_linea.default_color = Color(0.85, 0.2, 0.25, 0.85)
-		label_estado_mundo.text = "Puente Retraído (%.1f µF / 18.0 µF)" % ceq
+		label_estado_mundo.text = "Puente Retraído (%.1f µF / %.1f µF)" % [ceq, meta_ceq]
 		label_estado_mundo.add_theme_color_override("font_color", Color(1.0, 0.45, 0.45))
 		if instantaneo:
 			sprite_puente.scale = Vector2(0.05, 1.0)

@@ -13,13 +13,14 @@ extends Node2D
 #   [A/D] o Izquierda/Derecha ajustan V, Enter/Space confirman/activan, E/Esc cierran.
 # ==============================================================================
 
-const CARGA_META: float = 120.0
 const OPCIONES_C: Array[float] = [5.0, 10.0, 12.0, 15.0, 20.0]
 const OPCIONES_V: Array[float] = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0]
 const ESCENA_SIGUIENTE: String = "res://Escenas/escena_03.tscn"
 
-var indice_c: int = 1 # 10 µF por defecto
-var indice_v: int = 2 # 6 V por defecto -> Q = 60.0 µC
+var carga_meta: float = 120.0
+var carga_max_barra: float = 180.0
+var indice_c: int = 1
+var indice_v: int = 2
 var puerta_abierta: bool = false
 var jugador_cerca: bool = false
 var panel_abierto: bool = false
@@ -57,10 +58,29 @@ var btn_confirmar: Button
 var btn_avanzar_escena3: Button
 
 func _ready() -> void:
+	randomize()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_asegurar_input_interactuar()
 	_construir_escena_mundo()
 	_construir_interfaz_ui()
+	generar_nuevo_puzzle()
+
+func generar_nuevo_puzzle() -> void:
+	# Generación inversa: sortear primero C y V ganadores dentro de los límites de los controles
+	var idx_c_ganador: int = randi_range(0, OPCIONES_C.size() - 1)
+	var idx_v_ganador: int = randi_range(1, OPCIONES_V.size() - 1)
+	carga_meta = OPCIONES_C[idx_c_ganador] * OPCIONES_V[idx_v_ganador]
+	carga_max_barra = carga_meta * 1.5
+
+	# Verificar con un bucle while que los controles nunca empiecen ya resueltos
+	indice_c = randi_range(0, OPCIONES_C.size() - 1)
+	indice_v = randi_range(0, OPCIONES_V.size() - 1)
+	while is_equal_approx(_calcular_q(), carga_meta):
+		indice_c = randi_range(0, OPCIONES_C.size() - 1)
+		indice_v = randi_range(0, OPCIONES_V.size() - 1)
+
+	if barra_q:
+		barra_q.max_value = carga_max_barra
 	_actualizar_circuito_carga()
 
 func _asegurar_input_interactuar() -> void:
@@ -498,21 +518,22 @@ func _actualizar_circuito_carga() -> void:
 	var c: float = OPCIONES_C[indice_c]
 	var v: float = OPCIONES_V[indice_v]
 	var q: float = _calcular_q()
-	puerta_abierta = is_equal_approx(q, CARGA_META)
+	puerta_abierta = is_equal_approx(q, carga_meta)
 
 	if lbl_hud_estado:
 		var col_hud: Color
 		if puerta_abierta:
 			col_hud = Color(0.2, 1.0, 0.55)
-		elif q < CARGA_META:
+		elif q < carga_meta:
 			col_hud = Color(1.0, 0.68, 0.25)
 		else:
 			col_hud = Color(1.0, 0.38, 0.38)
 
-		lbl_hud_estado.text = "OBJETIVO: 120.0 µC   vs   ACTUAL: %.1f µC" % q
+		lbl_hud_estado.text = "OBJETIVO: %.1f µC   vs   ACTUAL: %.1f µC" % [carga_meta, q]
 		lbl_hud_estado.add_theme_color_override("font_color", col_hud)
 
-		barra_q.value = min(q, 240.0)
+		barra_q.max_value = carga_max_barra
+		barra_q.value = clampf(q, 0.0, carga_max_barra)
 		var sb_fill := StyleBoxFlat.new()
 		sb_fill.bg_color = col_hud
 		sb_fill.set_corner_radius_all(5)
@@ -523,10 +544,10 @@ func _actualizar_circuito_carga() -> void:
 		lbl_bloque_fuente.text = "FUENTE\n%.0f V" % v
 		lbl_bloque_cap.text = "CAPACITOR\nC = %.0f µF" % c
 
-		var num_signos: int = clampi(int(round(q / 30.0)), 1, 6)
+		var num_signos: int = clampi(int(round(q / max(carga_meta / 4.0, 10.0))), 1, 6)
 		lbl_placas_signos.text = "[+%s | -%s]" % ["+".repeat(num_signos), "-".repeat(num_signos)]
 
-		lbl_bloque_cerrojo.text = "PUERTA\n%s" % ("ABIERTA" if puerta_abierta else "120.0 µC")
+		lbl_bloque_cerrojo.text = "PUERTA\n%s" % ("ABIERTA" if puerta_abierta else "%.1f µC" % carga_meta)
 		lbl_bloque_cerrojo.add_theme_color_override("font_color", col_hud)
 		nodo_cerrojo.color = Color(0.1, 0.32, 0.22, 1.0) if puerta_abierta else Color(0.24, 0.14, 0.14, 1.0)
 
@@ -543,7 +564,7 @@ func _actualizar_circuito_carga() -> void:
 	colision_puerta.set_deferred("disabled", puerta_abierta)
 	if puerta_abierta:
 		cable_puerta.default_color = Color(0.2, 0.95, 0.55, 1.0)
-		label_estado_puerta.text = "🔓 PUERTA ABIERTA (120.0 µC)"
+		label_estado_puerta.text = "🔓 PUERTA ABIERTA (%.1f µC)" % carga_meta
 		label_estado_puerta.add_theme_color_override("font_color", Color(0.25, 1.0, 0.55))
 		var tw := create_tween()
 		tw.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
@@ -551,7 +572,7 @@ func _actualizar_circuito_carga() -> void:
 		tw.parallel().tween_property(sprite_puerta, "modulate", Color(0.4, 1.0, 0.7, 0.45), 0.4)
 	else:
 		cable_puerta.default_color = Color(0.9, 0.25, 0.3, 0.9)
-		label_estado_puerta.text = "🔒 Puerta Bloqueada (%.1f µC / 120.0 µC)" % q
+		label_estado_puerta.text = "🔒 Puerta Bloqueada (%.1f µC / %.1f µC)" % [q, carga_meta]
 		label_estado_puerta.add_theme_color_override("font_color", Color(1.0, 0.45, 0.45))
 		sprite_puerta.position = Vector2.ZERO
 		sprite_puerta.modulate = Color(1, 1, 1, 1)

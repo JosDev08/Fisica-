@@ -13,18 +13,22 @@ const POS_EMISOR := Vector2(240, -195)
 const POS_ESFERA_SUELO := Vector2(240, -44)
 const POS_ESFERA_ELEVADA := Vector2(240, -142)
 
-# Constantes físicas didácticas (intactas)
+# Constantes físicas didácticas y parámetros procedurales
 const K_COULOMB := 9.0 # N * m^2 / uC^2 (escala didáctica 9x10^9)
-const Q_ESFERA := 6.0 # +6 uC (carga positiva fija en el obstáculo)
-const DISTANCIA_R := 1.5 # m
-const FUERZA_PESO_UMBRAL := 100.0 # N requeridos hacia arriba para levantar la esfera
-const FUERZA_MAXIMA := 144.0 # N con |q1| = 6 uC
+const DISTANCIA_R := 1.5 # m -> k / r^2 = 9.0 / 2.25 = 4.0
+const OPCIONES_Q_ESFERA: Array[float] = [3.0, 4.0, 5.0, 6.0, 8.0] # uC
+
+# Variables generadas proceduralmente en cada partida
+var q_esfera: float = 6.0
+var polaridad_ganadora: int = -1 # -1 = Polo (-) para atraer q2 (+) hacia arriba
+var fuerza_objetivo: float = 96.0
+var fuerza_maxima: float = 144.0
 
 # Estado del emisor controlado por el jugador:
 # polaridad_emisor: +1 (Positiva -> Repulsión), -1 (Negativa -> Atracción), 0 (Apagado)
 var polaridad_emisor: int = 1
-var opciones_carga: Array[float] = [2.0, 4.0, 6.0] # uC
-var indice_carga: int = 2 # Inicia en 6.0 uC con polaridad (+) mostrando repulsión
+var opciones_carga: Array[float] = [2.0, 3.0, 4.0, 5.0, 6.0, 8.0] # uC (step = 1 en índice)
+var indice_carga: int = 0
 var despejado: bool = false
 var jugador_cerca: bool = false
 var jugador_ref: Node2D = null
@@ -70,9 +74,31 @@ var barra_vector_vis: ColorRect
 var lbl_vector_vis: Label
 
 func _ready() -> void:
+	randomize()
 	_crear_emisor_y_terminal()
 	_crear_esfera_obstaculo()
 	_crear_ui()
+	generar_nuevo_puzzle()
+
+func generar_nuevo_puzzle() -> void:
+	# Generación inversa: sortear primero valores ganadores exactos dentro de los controles
+	q_esfera = OPCIONES_Q_ESFERA[randi_range(0, OPCIONES_Q_ESFERA.size() - 1)]
+	var idx_ganador: int = randi_range(1, opciones_carga.size() - 1)
+	var q1_ganador: float = opciones_carga[idx_ganador]
+	polaridad_ganadora = -1
+	fuerza_objetivo = K_COULOMB * (q1_ganador * q_esfera) / (DISTANCIA_R * DISTANCIA_R)
+	fuerza_maxima = max(fuerza_objetivo * 1.5, K_COULOMB * (opciones_carga.back() * q_esfera) / (DISTANCIA_R * DISTANCIA_R))
+
+	# Verificar con bucle while que los controles nunca inicien ya resueltos ni coincidan con el OBJETIVO
+	var pols_iniciales: Array[int] = [1, -1]
+	indice_carga = randi_range(0, opciones_carga.size() - 1)
+	polaridad_emisor = pols_iniciales[randi_range(0, pols_iniciales.size() - 1)]
+	while is_equal_approx(_calcular_fuerza(), fuerza_objetivo) or (polaridad_emisor == polaridad_ganadora and is_equal_approx(_calcular_fuerza(), fuerza_objetivo)):
+		indice_carga = randi_range(0, opciones_carga.size() - 1)
+		polaridad_emisor = pols_iniciales[randi_range(0, pols_iniciales.size() - 1)]
+
+	if barra_progreso:
+		barra_progreso.max_value = fuerza_objetivo * 1.5
 	_actualizar_estado()
 
 func _crear_emisor_y_terminal() -> void:
@@ -342,14 +368,14 @@ func _crear_ui() -> void:
 	vbox_hud.add_child(hbox_hud)
 
 	lbl_hud_objetivo = Label.new()
-	lbl_hud_objetivo.text = "OBJETIVO: ≥ 100 N (↑ Atracción)"
+	lbl_hud_objetivo.text = "OBJETIVO: %.0f N (↑ Atracción)" % fuerza_objetivo
 	lbl_hud_objetivo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lbl_hud_objetivo.add_theme_font_size_override("font_size", 14)
 	lbl_hud_objetivo.add_theme_color_override("font_color", Color(0.82, 0.92, 1.0))
 	hbox_hud.add_child(lbl_hud_objetivo)
 
 	lbl_hud_actual = Label.new()
-	lbl_hud_actual.text = "ACTUAL: 144 N (↓)"
+	lbl_hud_actual.text = "ACTUAL: 0 N"
 	lbl_hud_actual.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	lbl_hud_actual.add_theme_font_size_override("font_size", 15)
 	hbox_hud.add_child(lbl_hud_actual)
@@ -357,7 +383,7 @@ func _crear_ui() -> void:
 	barra_progreso = ProgressBar.new()
 	barra_progreso.custom_minimum_size = Vector2(0, 16)
 	barra_progreso.min_value = 0.0
-	barra_progreso.max_value = FUERZA_MAXIMA
+	barra_progreso.max_value = fuerza_objetivo * 1.5
 	barra_progreso.show_percentage = false
 	barra_progreso.focus_mode = Control.FOCUS_NONE
 	vbox_hud.add_child(barra_progreso)
@@ -569,7 +595,7 @@ func _calcular_fuerza() -> float:
 	if polaridad_emisor == 0:
 		return 0.0
 	var q1_mag: float = opciones_carga[indice_carga]
-	return K_COULOMB * (q1_mag * Q_ESFERA) / (DISTANCIA_R * DISTANCIA_R)
+	return K_COULOMB * (q1_mag * q_esfera) / (DISTANCIA_R * DISTANCIA_R)
 
 func _actualizar_estilos_botones_polaridad() -> void:
 	if not btn_pol_pos:
@@ -597,13 +623,22 @@ func _actualizar_estado() -> void:
 	var fuerza: float = _calcular_fuerza()
 
 	if slider_q:
+		slider_q.max_value = opciones_carga.size() - 1
 		slider_q.value = indice_carga
 	if lbl_valor_q:
 		lbl_valor_q.text = "%.0f µC" % q1_mag
+	if lbl_esfera_mundo:
+		lbl_esfera_mundo.text = "q₂ = +%.0f µC" % q_esfera
+	if lbl_esfera_vis:
+		lbl_esfera_vis.text = "OBSTÁCULO q₂ (+%.0f µC)" % q_esfera
+	if lbl_hud_objetivo:
+		lbl_hud_objetivo.text = "OBJETIVO: %.0f N (↑ Atracción, r=%.1fm)" % [fuerza_objetivo, DISTANCIA_R]
+	if barra_progreso:
+		barra_progreso.max_value = fuerza_objetivo * 1.5
 	_actualizar_estilos_botones_polaridad()
 
 	var era_despejado := despejado
-	despejado = (polaridad_emisor == -1) and (fuerza >= FUERZA_PESO_UMBRAL)
+	despejado = (polaridad_emisor == polaridad_ganadora) and is_equal_approx(fuerza, fuerza_objetivo)
 
 	# Actualizar mundo exterior
 	if polaridad_emisor > 0:
@@ -633,7 +668,7 @@ func _actualizar_estado() -> void:
 		lbl_estado_mundo.text = "REPULSIÓN (%.0f N ↓)" % fuerza
 		lbl_estado_mundo.add_theme_color_override("font_color", Color(1.0, 0.45, 0.4))
 	elif polaridad_emisor == -1:
-		lbl_estado_mundo.text = "ATRACCIÓN: %.0f / 100 N ↑" % fuerza
+		lbl_estado_mundo.text = "ATRACCIÓN: %.0f / %.0f N ↑" % [fuerza, fuerza_objetivo]
 		lbl_estado_mundo.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
 	else:
 		lbl_estado_mundo.text = "EMISOR APAGADO"
@@ -646,13 +681,13 @@ func _actualizar_estado() -> void:
 		if despejado:
 			lbl_hud_actual.text = "ACTUAL: %.0f N (↑ ¡ELEVADA!)" % fuerza
 			lbl_hud_actual.add_theme_color_override("font_color", Color(0.3, 1.0, 0.55))
-			barra_progreso.value = fuerza
+			barra_progreso.value = clampf(fuerza, 0.0, barra_progreso.max_value)
 			fill_sb.bg_color = Color(0.25, 0.95, 0.5)
 		elif polaridad_emisor == -1:
 			lbl_hud_actual.text = "ACTUAL: %.0f N (↑ Atracción)" % fuerza
-			lbl_hud_actual.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
-			barra_progreso.value = fuerza
-			fill_sb.bg_color = Color(0.95, 0.75, 0.2)
+			lbl_hud_actual.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4) if fuerza > fuerza_objetivo else Color(1.0, 0.85, 0.35))
+			barra_progreso.value = clampf(fuerza, 0.0, barra_progreso.max_value)
+			fill_sb.bg_color = Color(0.95, 0.3, 0.3) if fuerza > fuerza_objetivo else Color(0.95, 0.75, 0.2)
 		elif polaridad_emisor == 1:
 			lbl_hud_actual.text = "ACTUAL: %.0f N (↓ Repulsión)" % fuerza
 			lbl_hud_actual.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
@@ -679,7 +714,7 @@ func _actualizar_estado() -> void:
 		# Posición vertical de la esfera en el esquema según la fuerza
 		var y_esf_vis := 112.0
 		if polaridad_emisor == -1:
-			var avance := clampf(fuerza / FUERZA_MAXIMA, 0.0, 1.0)
+			var avance := clampf(fuerza / fuerza_maxima, 0.0, 1.0)
 			y_esf_vis = lerpf(112.0, 52.0, avance)
 		elif polaridad_emisor == 1:
 			y_esf_vis = 114.0
@@ -687,7 +722,7 @@ func _actualizar_estado() -> void:
 		rect_esfera_vis.color = Color(0.22, 0.85, 0.48) if despejado else Color(0.88, 0.3, 0.36)
 
 		# Barra de vector de fuerza lateral
-		var h_vec := clampf((fuerza / FUERZA_MAXIMA) * 95.0, 4.0, 95.0) if polaridad_emisor != 0 else 4.0
+		var h_vec := clampf((fuerza / fuerza_maxima) * 95.0, 4.0, 95.0) if polaridad_emisor != 0 else 4.0
 		if polaridad_emisor == -1:
 			barra_vector_vis.size = Vector2(36, h_vec)
 			barra_vector_vis.position = Vector2(492, 120.0 - h_vec)
@@ -845,7 +880,7 @@ func _animar_esquema_interno(fuerza: float) -> void:
 	elif polaridad_emisor == -1:
 		col_linea = Color(0.3, 1.0, 0.55, 0.9) if despejado else Color(0.3, 0.88, 1.0, 0.85)
 
-	var grosor := 1.5 + (fuerza / FUERZA_MAXIMA) * 3.0 if polaridad_emisor != 0 else 1.5
+	var grosor := 1.5 + (fuerza / fuerza_maxima) * 3.0 if polaridad_emisor != 0 else 1.5
 	var y_ini := 42.0
 	var y_fin := rect_esfera_vis.position.y
 

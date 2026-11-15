@@ -13,7 +13,7 @@ extends Node2D
 # ==============================================================================
 
 const C0_BASE: float = 2.0
-const ENERGIA_META: float = 144.0
+const OPCIONES_VOLTAJE: Array[float] = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0]
 const NOMBRES_DIELECTRICO: Array[String] = [
 	"AIRE (κ=1)",
 	"VIDRIO (κ=2)",
@@ -26,8 +26,10 @@ const COLORES_DIELECTRICO: Array[Color] = [
 	Color(1.0, 0.78, 0.3)
 ]
 
-var indice_dielectrico: int = 0 # Inicia en Aire (κ = 1 -> C = 2.0 F)
-var voltaje: float = 4.0        # Inicia en 4 V -> U = 0.5 * 2 * 16 = 16.0 J
+var energia_meta: float = 144.0
+var energia_max_barra: float = 216.0
+var indice_dielectrico: int = 0
+var voltaje: float = 4.0
 var elevador_activo: bool = false
 var jugador_cerca: bool = false
 var panel_abierto: bool = false
@@ -71,10 +73,30 @@ var lbl_v_actual: Label
 var btn_confirmar: Button
 
 func _ready() -> void:
+	randomize()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_asegurar_input_interactuar()
 	_construir_escena_mundo()
 	_construir_interfaz_ui()
+	generar_nuevo_puzzle()
+
+func generar_nuevo_puzzle() -> void:
+	# Generación inversa: sortear primero dieléctrico y voltaje ganadores dentro de los pasos válidos
+	var idx_diel_ganador: int = randi_range(0, CONSTANTES_K.size() - 1)
+	var v_ganador: float = OPCIONES_VOLTAJE[randi_range(1, OPCIONES_VOLTAJE.size() - 1)]
+	var c_ganadora: float = CONSTANTES_K[idx_diel_ganador] * C0_BASE
+	energia_meta = 0.5 * c_ganadora * v_ganador * v_ganador
+	energia_max_barra = energia_meta * 1.5
+
+	# Verificar con un bucle while que los valores iniciales nunca empiecen ya resueltos
+	indice_dielectrico = randi_range(0, CONSTANTES_K.size() - 1)
+	voltaje = OPCIONES_VOLTAJE[randi_range(0, OPCIONES_VOLTAJE.size() - 1)]
+	while is_equal_approx(_calcular_u(), energia_meta):
+		indice_dielectrico = randi_range(0, CONSTANTES_K.size() - 1)
+		voltaje = OPCIONES_VOLTAJE[randi_range(0, OPCIONES_VOLTAJE.size() - 1)]
+
+	if barra_energia:
+		barra_energia.max_value = energia_max_barra
 	_actualizar_estado_energia()
 
 func _asegurar_input_interactuar() -> void:
@@ -444,7 +466,7 @@ func _construir_interfaz_ui() -> void:
 	btn_v_mas.custom_minimum_size = Vector2(124, 36)
 	btn_v_mas.focus_mode = Control.FOCUS_NONE
 	btn_v_mas.pressed.connect(func():
-		voltaje = min(10.0, voltaje + 2.0)
+		voltaje = min(12.0, voltaje + 2.0)
 		_actualizar_estado_energia()
 	)
 	hb_ctrl.add_child(btn_v_mas)
@@ -500,23 +522,24 @@ func _actualizar_estado_energia() -> void:
 	var k := CONSTANTES_K[indice_dielectrico]
 	var c := _calcular_c()
 	var u := _calcular_u()
-	elevador_activo = (u >= ENERGIA_META and u <= 200.0)
+	elevador_activo = is_equal_approx(u, energia_meta)
 
 	if lbl_hud_estado:
-		var col_hud := Color(0.2, 1.0, 0.55) if elevador_activo else Color(1.0, 0.68, 0.25)
-		lbl_hud_estado.text = "OBJETIVO: 144.0 J   vs   ACTUAL: %.1f J" % u
+		var col_hud := Color(0.2, 1.0, 0.55) if elevador_activo else (Color(1.0, 0.38, 0.38) if u > energia_meta else Color(1.0, 0.68, 0.25))
+		lbl_hud_estado.text = "OBJETIVO: %.1f J   vs   ACTUAL: %.1f J" % [energia_meta, u]
 		lbl_hud_estado.add_theme_color_override("font_color", col_hud)
 
-		barra_energia.value = min(u, 200.0)
+		barra_energia.max_value = energia_max_barra
+		barra_energia.value = clampf(u, 0.0, energia_max_barra)
 		var sb_fill := StyleBoxFlat.new()
-		sb_fill.bg_color = Color(0.18, 0.98, 0.52) if elevador_activo else Color(0.95, 0.55, 0.2)
+		sb_fill.bg_color = Color(0.18, 0.98, 0.52) if elevador_activo else (Color(0.95, 0.3, 0.3) if u > energia_meta else Color(0.95, 0.55, 0.2))
 		sb_fill.set_corner_radius_all(5)
 		barra_energia.add_theme_stylebox_override("fill", sb_fill)
 
 		lbl_v_actual.text = "V = %.0f V" % voltaje
 		lbl_bloque_fuente.text = "FUENTE\n%.0f V" % voltaje
 		lbl_bloque_cap.text = "C = %.0f F\n(κ = %.0f)" % [c, k]
-		lbl_bloque_motor.text = "ELEVADOR\n%s" % ("ACTIVO" if elevador_activo else "144.0 J")
+		lbl_bloque_motor.text = "ELEVADOR\n%s" % ("ACTIVO" if elevador_activo else "%.1f J" % energia_meta)
 		lbl_bloque_motor.add_theme_color_override("font_color", Color(0.25, 1.0, 0.58) if elevador_activo else Color(1.0, 0.72, 0.35))
 		nodo_motor.color = Color(0.1, 0.32, 0.22, 1.0) if elevador_activo else Color(0.24, 0.14, 0.14, 1.0)
 
@@ -550,7 +573,7 @@ func _actualizar_estado_energia() -> void:
 	else:
 		cable_energia.default_color = Color(0.85, 0.25, 0.25, 0.85)
 		sprite_elevador.modulate = Color(0.65, 0.65, 0.75, 1.0)
-		label_estado_mundo.text = "Elevador Detenido (%.1f J / 144.0 J)" % u
+		label_estado_mundo.text = "Elevador Detenido (%.1f J / %.1f J)" % [u, energia_meta]
 		label_estado_mundo.add_theme_color_override("font_color", Color(1.0, 0.45, 0.45))
 
 func _animar_flujo_circuito(delta: float) -> void:
@@ -654,7 +677,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				_actualizar_estado_energia()
 				get_viewport().set_input_as_handled()
 			KEY_D, KEY_RIGHT:
-				voltaje = min(10.0, voltaje + 2.0)
+				voltaje = min(12.0, voltaje + 2.0)
 				_actualizar_estado_energia()
 				get_viewport().set_input_as_handled()
 			KEY_ENTER, KEY_KP_ENTER, KEY_SPACE:

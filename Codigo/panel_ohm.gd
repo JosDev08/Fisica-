@@ -49,12 +49,33 @@ var _ruta_pulsos: Array[Vector2] = [
 ]
 
 func _ready() -> void:
+	randomize()
 	layer = 10
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if objetivo_aleatorio:
-		_generar_objetivo()
 	_construir_interfaz()
+	generar_nuevo_puzzle()
 	hide()
+
+func generar_nuevo_puzzle() -> void:
+	# Generación inversa: sortear primero valores válidos dentro del rango y paso (1) de los sliders
+	var i_ganador: int = randi_range(maxi(2, corriente_min), corriente_max)
+	var r_ganador: int = randi_range(maxi(2, resistencia_min), resistencia_max)
+	voltaje_objetivo = i_ganador * r_ganador
+
+	# Verificar con un bucle while que los valores iniciales nunca empiecen ya resueltos
+	var i_ini: int = randi_range(corriente_min, corriente_max)
+	var r_ini: int = randi_range(resistencia_min, resistencia_max)
+	while (i_ini * r_ini) == voltaje_objetivo:
+		i_ini = randi_range(corriente_min, corriente_max)
+		r_ini = randi_range(resistencia_min, resistencia_max)
+
+	if _slider_i:
+		_slider_i.value = i_ini
+	if _slider_r:
+		_slider_r.value = r_ini
+	if _barra_progreso:
+		_barra_progreso.max_value = float(voltaje_objetivo) * 1.5
+	_actualizar()
 
 func _ocultar_textos_mundo(ocultar: bool) -> void:
 	for n in get_tree().get_nodes_in_group("texto_mundo_flotante"):
@@ -62,13 +83,11 @@ func _ocultar_textos_mundo(ocultar: bool) -> void:
 			n.modulate.a = 0.0 if ocultar else 1.0
 
 func abrir() -> void:
-	var i: int = corriente_min
-	var r: int = resistencia_min
-	for intento in 30:
+	var i: int = int(_slider_i.value) if _slider_i else corriente_min
+	var r: int = int(_slider_r.value) if _slider_r else resistencia_min
+	while (i * r) == voltaje_objetivo:
 		i = randi_range(corriente_min, corriente_max)
 		r = randi_range(resistencia_min, resistencia_max)
-		if i * r != voltaje_objetivo:
-			break
 	_slider_i.value = i
 	_slider_r.value = r
 	_lbl_estado.text = ""
@@ -188,7 +207,7 @@ func _actualizar() -> void:
 	var col_estado: Color = COLOR_VERDE if exacto else (COLOR_ROJO if voltaje > voltaje_objetivo else COLOR_AMARILLO)
 	_lbl_hud_actual.add_theme_color_override("font_color", col_estado)
 
-	_barra_progreso.max_value = max(float(voltaje_objetivo) * 1.5, 36.0)
+	_barra_progreso.max_value = float(voltaje_objetivo) * 1.5
 	_barra_progreso.value = clampf(float(voltaje), 0.0, _barra_progreso.max_value)
 	var fill_sb := StyleBoxFlat.new()
 	fill_sb.set_corner_radius_all(4)

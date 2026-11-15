@@ -13,10 +13,10 @@ const POS_PUENTE_ACTIVO := Vector2(664, 8)
 const POS_PUENTE_APAGADO := Vector2(664, 92)
 const POS_BARRERA := Vector2(588, -56)
 
-const CORRIENTE_META := 4.0 # Amperios exactos requeridos
-const CORRIENTE_MAX_FUSIBLE := 5.0 # Amperios máximos antes de quemar el fusible
+var corriente_meta: float = 4.0 # Amperios exactos requeridos (generado proceduralmente)
+var corriente_max_fusible: float = 6.0 # Amperios máximos antes de quemar el fusible (objetivo * 1.5)
 
-var voltajes_disponibles: Array[float] = [12.0, 24.0, 36.0, 48.0]
+var voltajes_disponibles: Array[float] = [12.0, 18.0, 24.0, 36.0, 48.0, 60.0]
 var resistencias_disponibles: Array[float] = [2.0, 3.0, 4.0, 6.0, 8.0, 12.0]
 
 var idx_v: int = 1 # 24 V por defecto
@@ -48,6 +48,7 @@ var panel_nota: PanelContainer
 var panel_puzzle: PanelContainer
 
 # Controles HUD y simulación dentro de panel_puzzle
+var lbl_vars_nota: Label
 var lbl_hud_objetivo: Label
 var lbl_hud_actual: Label
 var barra_progreso: ProgressBar
@@ -80,9 +81,46 @@ var ruta_pulsos: Array[Vector2] = [
 ]
 
 func _ready() -> void:
+	randomize()
 	_crear_puente_y_barrera()
 	_crear_tablero()
 	_crear_ui()
+	generar_nuevo_puzzle()
+
+func generar_nuevo_puzzle() -> void:
+	# Generación inversa: sortear primero una combinación ganadora (V, R) con resultado limpio
+	var idx_v_ganador: int = 0
+	var idx_r_ganador: int = 0
+	var i_ganadora: float = 0.0
+	while true:
+		idx_v_ganador = randi_range(0, voltajes_disponibles.size() - 1)
+		idx_r_ganador = randi_range(0, resistencias_disponibles.size() - 1)
+		var v_cand: float = voltajes_disponibles[idx_v_ganador]
+		var r_cand: float = resistencias_disponibles[idx_r_ganador]
+		i_ganadora = v_cand / r_cand
+		# Garantizar resultado exacto (entero o .5) sin decimales periódicos
+		if is_zero_approx(fmod(v_cand * 2.0, r_cand)) and i_ganadora >= 2.0 and i_ganadora <= 15.0:
+			break
+
+	corriente_meta = i_ganadora
+	corriente_max_fusible = corriente_meta * 1.5
+	fusible_quemado = false
+	puente_activo = false
+
+	# Verificar con while que los controles nunca empiecen ya resueltos ni quemando el fusible
+	idx_v = randi_range(0, voltajes_disponibles.size() - 1)
+	idx_r = randi_range(0, resistencias_disponibles.size() - 1)
+	while is_equal_approx(voltajes_disponibles[idx_v] / resistencias_disponibles[idx_r], corriente_meta) or (voltajes_disponibles[idx_v] / resistencias_disponibles[idx_r]) > corriente_max_fusible:
+		idx_v = randi_range(0, voltajes_disponibles.size() - 1)
+		idx_r = randi_range(0, resistencias_disponibles.size() - 1)
+
+	if barra_progreso:
+		barra_progreso.max_value = corriente_max_fusible
+	if lbl_hud_objetivo:
+		lbl_hud_objetivo.text = "OBJETIVO: %.1f A  (Máx Fusible: %.1f A)" % [corriente_meta, corriente_max_fusible]
+	if lbl_vars_nota:
+		lbl_vars_nota.text = "• V (Voltaje, V) impulsa la corriente I (A); R (Resistencia, Ω) se opone a su paso.\n• Si I supera el límite del fusible (%.1f A), el filamento se funde y abre el circuito." % corriente_max_fusible
+
 	_actualizar_circuito()
 
 func _crear_puente_y_barrera() -> void:
@@ -260,13 +298,13 @@ func _crear_ui() -> void:
 	lbl_formula.add_theme_color_override("font_color", Color(0.4, 1.0, 0.65))
 	caja_formula.add_child(lbl_formula)
 
-	var lbl_vars := Label.new()
-	lbl_vars.text = "• V (Voltaje, V) impulsa la corriente I (A); R (Resistencia, Ω) se opone a su paso.\n• Si I supera el límite del fusible (5.0 A), el filamento se funde y abre el circuito."
-	lbl_vars.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_vars.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lbl_vars.add_theme_font_size_override("font_size", 13)
-	lbl_vars.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0))
-	vbox_nota.add_child(lbl_vars)
+	lbl_vars_nota = Label.new()
+	lbl_vars_nota.text = "• V (Voltaje, V) impulsa la corriente I (A); R (Resistencia, Ω) se opone a su paso.\n• Si I supera el límite del fusible (%.1f A), el filamento se funde y abre el circuito." % corriente_max_fusible
+	lbl_vars_nota.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_vars_nota.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl_vars_nota.add_theme_font_size_override("font_size", 13)
+	lbl_vars_nota.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0))
+	vbox_nota.add_child(lbl_vars_nota)
 
 	var btn_entendido := Button.new()
 	btn_entendido.text = "[ ENTENDIDO / CONTINUAR ]  (Enter / Espacio / E)"
@@ -337,7 +375,7 @@ func _crear_ui() -> void:
 	vbox_hud.add_child(hbox_hud)
 
 	lbl_hud_objetivo = Label.new()
-	lbl_hud_objetivo.text = "OBJETIVO: 4.00 A  (Máx Fusible: 5.0 A)"
+	lbl_hud_objetivo.text = "OBJETIVO: %.1f A  (Máx Fusible: %.1f A)" % [corriente_meta, corriente_max_fusible]
 	lbl_hud_objetivo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lbl_hud_objetivo.add_theme_font_size_override("font_size", 14)
 	lbl_hud_objetivo.add_theme_color_override("font_color", Color(0.82, 0.92, 1.0))
@@ -352,7 +390,7 @@ func _crear_ui() -> void:
 	barra_progreso = ProgressBar.new()
 	barra_progreso.custom_minimum_size = Vector2(0, 16)
 	barra_progreso.min_value = 0.0
-	barra_progreso.max_value = CORRIENTE_MAX_FUSIBLE
+	barra_progreso.max_value = corriente_max_fusible
 	barra_progreso.show_percentage = false
 	barra_progreso.focus_mode = Control.FOCUS_NONE
 	vbox_hud.add_child(barra_progreso)
@@ -641,10 +679,15 @@ func _actualizar_circuito() -> void:
 	var r_actual: float = resistencias_disponibles[idx_r]
 	var i_teorica: float = v_actual / r_actual
 
-	if not fusible_quemado and i_teorica > CORRIENTE_MAX_FUSIBLE + 0.01:
+	if not fusible_quemado and i_teorica > corriente_max_fusible + 0.01:
 		fusible_quemado = true
 
 	var estaba_activo := puente_activo
+
+	if lbl_hud_objetivo:
+		lbl_hud_objetivo.text = "OBJETIVO: %.1f A  (Máx Fusible: %.1f A)" % [corriente_meta, corriente_max_fusible]
+	if barra_progreso:
+		barra_progreso.max_value = corriente_max_fusible
 
 	if slider_v:
 		slider_v.value = idx_v
@@ -665,37 +708,37 @@ func _actualizar_circuito() -> void:
 		if btn_reemplazar_fusible:
 			btn_reemplazar_fusible.visible = true
 		if lbl_hud_actual:
-			lbl_hud_actual.text = "ACTUAL: ¡%.1f A > 5.0 A! (FUSIBLE QUEMADO)" % i_teorica
+			lbl_hud_actual.text = "ACTUAL: ¡%.1f A > %.1f A! (FUSIBLE QUEMADO)" % [i_teorica, corriente_max_fusible]
 			lbl_hud_actual.add_theme_color_override("font_color", Color(1.0, 0.35, 0.35))
-			barra_progreso.value = CORRIENTE_MAX_FUSIBLE
+			barra_progreso.value = corriente_max_fusible
 			fill_sb.bg_color = Color(0.95, 0.22, 0.22)
 			barra_progreso.add_theme_stylebox_override("fill", fill_sb)
-		lbl_estado_puente.text = "💥 FUSIBLE QUEMADO (%.1f A > 5 A)" % i_teorica
+		lbl_estado_puente.text = "💥 FUSIBLE QUEMADO (%.1f A > %.1f A)" % [i_teorica, corriente_max_fusible]
 		lbl_estado_puente.add_theme_color_override("font_color", Color(1.0, 0.35, 0.35))
 		puente_sprite.modulate = Color(0.45, 0.2, 0.2, 0.6)
 	else:
 		if btn_reemplazar_fusible:
 			btn_reemplazar_fusible.visible = false
-		puente_activo = is_equal_approx(i_teorica, CORRIENTE_META)
+		puente_activo = is_equal_approx(i_teorica, corriente_meta)
 
 		if lbl_hud_actual:
-			barra_progreso.value = clampf(i_teorica, 0.0, CORRIENTE_MAX_FUSIBLE)
+			barra_progreso.value = clampf(i_teorica, 0.0, corriente_max_fusible)
 			if puente_activo:
-				lbl_hud_actual.text = "ACTUAL: %.2f A (¡PUENTE ACTIVO!)" % i_teorica
+				lbl_hud_actual.text = "ACTUAL: %.1f A (¡PUENTE ACTIVO!)" % i_teorica
 				lbl_hud_actual.add_theme_color_override("font_color", Color(0.3, 1.0, 0.55))
 				fill_sb.bg_color = Color(0.25, 0.95, 0.5)
 			else:
-				lbl_hud_actual.text = "ACTUAL: %.2f A" % i_teorica
+				lbl_hud_actual.text = "ACTUAL: %.1f A" % i_teorica
 				lbl_hud_actual.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
 				fill_sb.bg_color = Color(0.95, 0.72, 0.2)
 			barra_progreso.add_theme_stylebox_override("fill", fill_sb)
 
 		if puente_activo:
-			lbl_estado_puente.text = "⚡ PUENTE ENERGIZADO (I = 4.0 A)"
+			lbl_estado_puente.text = "⚡ PUENTE ENERGIZADO (I = %.1f A)" % corriente_meta
 			lbl_estado_puente.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 			puente_sprite.modulate = Color(0.4, 1.0, 0.7, 1.0)
 		else:
-			lbl_estado_puente.text = "Puente Apagado: I = %.1f / 4.0 A" % i_teorica
+			lbl_estado_puente.text = "Puente Apagado: I = %.1f / %.1f A" % [i_teorica, corriente_meta]
 			lbl_estado_puente.add_theme_color_override("font_color", Color(1.0, 0.8, 0.35))
 			puente_sprite.modulate = Color(0.6, 0.65, 0.75, 0.55)
 
@@ -717,18 +760,18 @@ func _actualizar_circuito() -> void:
 			bloque_motor_vis.color = Color(0.18, 0.1, 0.12)
 			lbl_motor_vis.text = "PUENTE SIN CORRIENTE (0 A)"
 		else:
-			lbl_fusible_vis.text = "FUSIBLE 5.0 A [OK]"
+			lbl_fusible_vis.text = "FUSIBLE %.1f A [OK]" % corriente_max_fusible
 			lbl_fusible_vis.add_theme_color_override("font_color", Color(0.45, 1.0, 0.65))
 			bloque_fusible_vis.color = Color(0.08, 0.18, 0.22)
-			cable_loop_vis.width = 2.0 + clampf(i_teorica / 5.0, 0.0, 1.0) * 3.0
+			cable_loop_vis.width = 2.0 + clampf(i_teorica / corriente_max_fusible, 0.0, 1.0) * 3.0
 			if puente_activo:
 				cable_loop_vis.default_color = Color(0.25, 1.0, 0.55, 0.95)
 				bloque_motor_vis.color = Color(0.1, 0.42, 0.24)
-				lbl_motor_vis.text = "⚡ PUENTE ACTIVO (4.0 A)"
+				lbl_motor_vis.text = "⚡ PUENTE ACTIVO (%.1f A)" % corriente_meta
 			else:
 				cable_loop_vis.default_color = Color(0.95, 0.78, 0.25, 0.85)
 				bloque_motor_vis.color = Color(0.14, 0.18, 0.26)
-				lbl_motor_vis.text = "MOTOR PUENTE (%.1f / 4.0 A)" % i_teorica
+				lbl_motor_vis.text = "MOTOR PUENTE (%.1f / %.1f A)" % [i_teorica, corriente_meta]
 
 	puente_col.set_deferred("disabled", not puente_activo)
 	barrera_col.set_deferred("disabled", puente_activo)
