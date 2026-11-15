@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="24" viewBox="0 0 160 24">
+  <!-- Viga principal de acero ferromagnetico -->
+  <rect x="2" y="2" width="156" height="20" rx="3" fill="#334155" stroke="#cbd5e1" stroke-width="2.5"/>
+  <!-- Placa polar Norte (N) central -->
+  <rect x="52" y="3" width="56" height="9" rx="2" fill="#ef4444" stroke="#fecaca" stroke-width="1.5"/>
+  <!-- Remaches industriales -->
+  <circle cx="14" cy="12" r="3" fill="#94a3b8"/>
+  <circle cx="34" cy="12" r="3" fill="#94a3b8"/>
+  <circle cx="126" cy="12" r="3" fill="#94a3b8"/>
+  <circle cx="146" cy="12" r="3" fill="#94a3b8"/>
+  <!-- Celosia metalica inferior -->
+  <polyline points="10,20 26,8 42,20 58,8 74,20 90,8 106,20 122,8 138,20 150,10" fill="none" stroke="#64748b" stroke-width="2"/>
+</svg>

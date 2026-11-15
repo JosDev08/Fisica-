@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400">
+  <!-- Cordillera lejana -->
+  <polygon points="0,400 0,240 140,130 280,220 430,95 600,230 760,115 920,210 1080,105 1210,195 1280,150 1280,400" fill="#3b2d54"/>
+  <polygon points="140,130 205,175 180,190 140,155" fill="#6e4a6e" opacity="0.6"/>
+  <polygon points="430,95 510,160 470,185 430,125" fill="#6e4a6e" opacity="0.6"/>
+  <polygon points="760,115 835,170 795,190 760,140" fill="#6e4a6e" opacity="0.6"/>
+  <polygon points="1080,105 1150,160 1110,180 1080,130" fill="#6e4a6e" opacity="0.6"/>
+  <!-- Cordillera media -->
+  <polygon points="0,400 0,280 110,205 250,275 380,175 540,265 690,185 850,270 1010,170 1160,260 1280,200 1280,400" fill="#282342"/>
+</svg>

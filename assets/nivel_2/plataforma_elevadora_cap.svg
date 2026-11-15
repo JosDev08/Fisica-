@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="28" viewBox="0 0 160 28" shape-rendering="crispEdges">
+  <!-- Chasis de la plataforma elevadora -->
+  <rect x="0" y="4" width="160" height="20" fill="#1e293b"/>
+  <rect x="0" y="0" width="160" height="6" fill="#facc15"/>
+  <!-- Celdas de energia capacitiva -->
+  <rect x="12" y="10" width="28" height="10" fill="#38bdf8"/>
+  <rect x="50" y="10" width="60" height="10" fill="#4ade80"/>
+  <rect x="120" y="10" width="28" height="10" fill="#38bdf8"/>
+  <!-- Base propulsora -->
+  <rect x="20" y="24" width="120" height="4" fill="#0284c7"/>
+</svg>

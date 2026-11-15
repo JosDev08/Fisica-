@@ -6,7 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://df0bkbtcqahvc" path="res://Escenas/enemigo_02.tscn" id="7_gdrao"]
 [ext_resource type="Texture2D" uid="uid://c0vqjnbriq5bd" path="res://Recursos/a2/3. NEW CLOUDS/1.png" id="10_bqa2f"]
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="27_sikce"]
-[ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="28_hvm3r"]
+[ext_resource type="Script" path="res://Codigo/puzzle_puente_capacitores.gd" id="29_p1cap"]
+[ext_resource type="Script" path="res://Codigo/puzzle_elevador_energia.gd" id="30_p2cap"]
+[ext_resource type="Script" path="res://Codigo/puerta_capacitor_final.gd" id="31_p3cap"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_nvj0p")
@@ -962,8 +964,15 @@ position = Vector2(-2, 6)
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 
-[node name="PuertaOhm" parent="." unique_id=1935477980 instance=ExtResource("28_hvm3r")]
-position = Vector2(3263, 115)
+[node name="PuzzlePuenteCapacitores" type="Node2D" parent="." unique_id=1935477981]
+script = ExtResource("29_p1cap")
+
+[node name="PuzzleElevadorEnergia" type="Node2D" parent="." unique_id=1935477982]
+script = ExtResource("30_p2cap")
+
+[node name="PuertaCapacitorFinal" type="Node2D" parent="." unique_id=1935477980]
+position = Vector2(3263, 128)
+script = ExtResource("31_p3cap")
 
 [node name="CanvasLayer2" type="CanvasLayer" parent="." unique_id=1043227491]
 layer = -1
@@ -974,6 +983,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("10_bqa2f")
 expand_mode = 1
 stretch_mode = 6

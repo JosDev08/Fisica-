@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="120" viewBox="0 0 88 120" shape-rendering="crispEdges">
+  <!-- Marco exterior de la puerta de carga Q = C * V -->
+  <rect x="6" y="4" width="76" height="116" fill="#0f172a"/>
+  <rect x="10" y="8" width="68" height="108" fill="#1e293b"/>
+  <!-- Placa positiva (+) izquierda y negativa (-) derecha -->
+  <rect x="14" y="16" width="10" height="96" fill="#ef4444"/>
+  <rect x="64" y="16" width="10" height="96" fill="#38bdf8"/>
+  <!-- Compuerta central dielectrica -->
+  <rect x="26" y="16" width="36" height="96" fill="#334155"/>
+  <!-- Medidor vertical de carga Q -->
+  <rect x="38" y="28" width="12" height="72" fill="#090d16"/>
+  <rect x="40" y="40" width="8" height="58" fill="#4ade80"/>
+  <!-- Indicador superior -->
+  <rect x="28" y="6" width="32" height="8" fill="#facc15"/>
+</svg>

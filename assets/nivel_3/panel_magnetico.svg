@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="64" viewBox="0 0 48 64">
+  <!-- Pedestal industrial -->
+  <rect x="8" y="54" width="32" height="8" rx="2" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="19" y="34" width="10" height="20" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Consola magnetica -->
+  <rect x="4" y="6" width="40" height="30" rx="4" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5"/>
+  <!-- Iman bicolor N/S en pantalla -->
+  <rect x="10" y="14" width="14" height="10" rx="2" fill="#ef4444"/>
+  <rect x="24" y="14" width="14" height="10" rx="2" fill="#3b82f6"/>
+  <!-- Indicadores -->
+  <circle cx="15" cy="30" r="2.5" fill="#38bdf8"/>
+  <circle cx="24" cy="30" r="2.5" fill="#fde047"/>
+  <circle cx="33" cy="30" r="2.5" fill="#4ade80"/>
+</svg>

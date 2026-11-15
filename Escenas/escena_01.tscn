@@ -30,6 +30,9 @@
 [ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="28_kb7tp"]
 [ext_resource type="Texture2D" uid="uid://b6bdf7gcmw5jf" path="res://Recursos/a2/2. NEW CLOUDS/1.png" id="29_65iae"]
 [ext_resource type="PackedScene" uid="uid://cfmxjedk2s834" path="res://Escenas/enemigo.tscn" id="30_hwlub"]
+[ext_resource type="Script" uid="uid://bk0l01vnj7rtc" path="res://Codigo/puzzle_electrostatica_coulomb.gd" id="31_coulomb"]
+[ext_resource type="Script" uid="uid://bjrm6e43n0jcu" path="res://Codigo/puzzle_electrodinamica_ohm.gd" id="32_ohm"]
+[ext_resource type="Script" uid="uid://dvhp0u5dkex2s" path="res://Codigo/salida_nivel_1.gd" id="33_salida"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -874,6 +877,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("29_65iae")
 expand_mode = 1
 stretch_mode = 6
@@ -892,3 +896,12 @@ position = Vector2(2130, 73)
 
 [node name="Enemigo5" parent="." unique_id=1577215261 instance=ExtResource("30_hwlub")]
 position = Vector2(-285, -37)
+
+[node name="PuzzleElectrostatica" type="Node2D" parent="." unique_id=1840010101]
+script = ExtResource("31_coulomb")
+
+[node name="PuzzleElectrodinamica" type="Node2D" parent="." unique_id=1840010102]
+script = ExtResource("32_ohm")
+
+[node name="SalidaNivel1" type="Node2D" parent="." unique_id=1840010103]
+script = ExtResource("33_salida")

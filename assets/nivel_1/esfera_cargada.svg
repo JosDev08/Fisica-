@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88">
+  <defs>
+    <radialGradient id="sphereGrad" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ff8a80"/>
+      <stop offset="50%" stop-color="#e53935"/>
+      <stop offset="100%" stop-color="#7f0000"/>
+    </radialGradient>
+  </defs>
+  <!-- Halo exterior de campo electrico -->
+  <circle cx="44" cy="44" r="41" fill="none" stroke="#ff5252" stroke-width="2.5" stroke-dasharray="6,4" opacity="0.8"/>
+  <!-- Cuerpo metalico cargado -->
+  <circle cx="44" cy="44" r="35" fill="url(#sphereGrad)" stroke="#ffebee" stroke-width="3"/>
+  <!-- Anillo conductor ecuatorial -->
+  <ellipse cx="44" cy="44" rx="33" ry="12" fill="none" stroke="#ffcdd2" stroke-width="2" opacity="0.65"/>
+  <!-- Brillo superior -->
+  <ellipse cx="32" cy="28" rx="10" ry="6" fill="#ffffff" opacity="0.45" transform="rotate(-25 32 28)"/>
+  <!-- Simbolo + central (Carga Positiva) -->
+  <rect x="40" y="28" width="8" height="32" rx="3" fill="#ffffff"/>
+  <rect x="28" y="40" width="32" height="8" rx="3" fill="#ffffff"/>
+</svg>

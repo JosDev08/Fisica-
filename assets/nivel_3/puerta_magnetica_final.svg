@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="112" viewBox="0 0 80 112">
+  <!-- Marco electromagnetico de la puerta final -->
+  <rect x="4" y="4" width="72" height="104" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="4"/>
+  <!-- Polos laterales N (rojo) y S (azul) -->
+  <rect x="8" y="16" width="10" height="80" rx="3" fill="#ef4444"/>
+  <rect x="62" y="16" width="10" height="80" rx="3" fill="#3b82f6"/>
+  <!-- Nucleo de energia electromagnetica -->
+  <rect x="20" y="14" width="40" height="86" rx="4" fill="#1e293b" stroke="#7dd3fc" stroke-width="2"/>
+  <circle cx="40" cy="56" r="14" fill="none" stroke="#fde047" stroke-width="3" stroke-dasharray="6,3"/>
+  <circle cx="40" cy="56" r="6" fill="#38bdf8"/>
+</svg>

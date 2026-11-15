@@ -1,0 +1,307 @@
+[gd_scene format=3 uid="uid://did6d788wo414"]
+
+[ext_resource type="Script" path="res://Codigo/nivel_1_electrostatica.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="2_jugador"]
+[ext_resource type="Texture2D" uid="uid://dv3e8dmlfxx4w" path="res://assets/nivel_1/fondo_electrostatica.svg" id="3_fondo"]
+[ext_resource type="Texture2D" uid="uid://dpqcg45cvp0df" path="res://assets/nivel_1/suelo_laboratorio.svg" id="4_suelo"]
+[ext_resource type="Texture2D" uid="uid://dbdbskd7pus5m" path="res://assets/nivel_1/plataforma_escalon.svg" id="5_escalon"]
+[ext_resource type="Texture2D" uid="uid://ck47pp78fwxih" path="res://assets/nivel_1/bloque_cargado.svg" id="6_bloque"]
+[ext_resource type="Texture2D" uid="uid://dcknktot403jv" path="res://assets/nivel_1/emisor_polaridad.svg" id="7_emisor"]
+[ext_resource type="Texture2D" uid="uid://4l7iin6o0qpy" path="res://assets/nivel_1/tablero_electrico.svg" id="8_tablero"]
+[ext_resource type="Texture2D" uid="uid://c7dq2nxarqexl" path="res://assets/nivel_1/puente_ohm.svg" id="9_puente"]
+[ext_resource type="Texture2D" uid="uid://bx60n0jy1imol" path="res://assets/nivel_1/puerta_meta_iluminada.svg" id="10_meta"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_suelo_inicio"]
+size = Vector2(680, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_escalon"]
+size = Vector2(160, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pre_puente"]
+size = Vector2(280, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_meta_suelo"]
+size = Vector2(520, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pared"]
+size = Vector2(24, 420)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bloque"]
+size = Vector2(72, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terminal"]
+size = Vector2(120, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_puente"]
+size = Vector2(200, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_barrera"]
+size = Vector2(14, 112)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_meta_area"]
+size = Vector2(88, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_caida"]
+size = Vector2(3200, 80)
+
+[node name="Nivel1Electrostatica" type="Node2D" unique_id=1025314994]
+script = ExtResource("1_script")
+
+[node name="FondoCanvas" type="CanvasLayer" parent="." unique_id=1642457845]
+layer = -10
+
+[node name="FondoTexture" type="TextureRect" parent="FondoCanvas" unique_id=1702485639]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_fondo")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Plataformas" type="Node2D" parent="." unique_id=763326299]
+
+[node name="SueloInicio" type="StaticBody2D" parent="Plataformas" unique_id=2012638086]
+position = Vector2(340, 324)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/SueloInicio" unique_id=1236666424]
+shape = SubResource("RectangleShape2D_suelo_inicio")
+
+[node name="Sprite2D" type="Sprite2D" parent="Plataformas/SueloInicio" unique_id=1817925084]
+texture_filter = 1
+scale = Vector2(2.125, 1)
+texture = ExtResource("4_suelo")
+
+[node name="PlataformaEscalon1" type="StaticBody2D" parent="Plataformas" unique_id=1942842356]
+position = Vector2(800, 256)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/PlataformaEscalon1" unique_id=368655563]
+shape = SubResource("RectangleShape2D_escalon")
+
+[node name="Sprite2D" type="Sprite2D" parent="Plataformas/PlataformaEscalon1" unique_id=1111919446]
+texture_filter = 1
+texture = ExtResource("5_escalon")
+
+[node name="PlataformaEscalon2" type="StaticBody2D" parent="Plataformas" unique_id=65376142]
+position = Vector2(1010, 196)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/PlataformaEscalon2" unique_id=786161361]
+shape = SubResource("RectangleShape2D_escalon")
+
+[node name="Sprite2D" type="Sprite2D" parent="Plataformas/PlataformaEscalon2" unique_id=34850127]
+texture_filter = 1
+texture = ExtResource("5_escalon")
+
+[node name="PlataformaPrePuente" type="StaticBody2D" parent="Plataformas" unique_id=1128718415]
+position = Vector2(1260, 140)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/PlataformaPrePuente" unique_id=695989518]
+shape = SubResource("RectangleShape2D_pre_puente")
+
+[node name="Sprite2D" type="Sprite2D" parent="Plataformas/PlataformaPrePuente" unique_id=193234470]
+texture_filter = 1
+scale = Vector2(0.875, 1)
+texture = ExtResource("4_suelo")
+
+[node name="PlataformaMetaFinal" type="StaticBody2D" parent="Plataformas" unique_id=1299154248]
+position = Vector2(1860, 140)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/PlataformaMetaFinal" unique_id=2124570383]
+shape = SubResource("RectangleShape2D_meta_suelo")
+
+[node name="Sprite2D" type="Sprite2D" parent="Plataformas/PlataformaMetaFinal" unique_id=1734707168]
+texture_filter = 1
+scale = Vector2(1.625, 1)
+texture = ExtResource("4_suelo")
+
+[node name="ParedIzquierda" type="StaticBody2D" parent="Plataformas" unique_id=1575631091]
+position = Vector2(-12, 160)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/ParedIzquierda" unique_id=578610124]
+shape = SubResource("RectangleShape2D_pared")
+
+[node name="ParedDerecha" type="StaticBody2D" parent="Plataformas" unique_id=441316024]
+position = Vector2(2132, 0)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataformas/ParedDerecha" unique_id=1602121357]
+shape = SubResource("RectangleShape2D_pared")
+
+[node name="PuzzleCoulomb" type="Node2D" parent="." unique_id=1422871664]
+
+[node name="EmisorSprite" type="Sprite2D" parent="PuzzleCoulomb" unique_id=1203915370]
+texture_filter = 1
+position = Vector2(560, 326)
+rotation = 3.14159
+texture = ExtResource("7_emisor")
+
+[node name="BloqueCargado" type="StaticBody2D" parent="PuzzleCoulomb" unique_id=898526425]
+position = Vector2(560, 264)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PuzzleCoulomb/BloqueCargado" unique_id=2104033127]
+shape = SubResource("RectangleShape2D_bloque")
+
+[node name="Sprite2D" type="Sprite2D" parent="PuzzleCoulomb/BloqueCargado" unique_id=888396224]
+texture_filter = 1
+texture = ExtResource("6_bloque")
+
+[node name="LblCargaBloque" type="Label" parent="PuzzleCoulomb/BloqueCargado" unique_id=209163703]
+offset_left = -60.0
+offset_top = -54.0
+offset_right = 60.0
+offset_bottom = -34.0
+theme_override_colors/font_color = Color(1, 0.75, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 11
+text = "Bloque q = +8 µC"
+horizontal_alignment = 1
+
+[node name="PanelCoulombArea" type="Area2D" parent="PuzzleCoulomb" unique_id=2085991219]
+position = Vector2(430, 268)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PuzzleCoulomb/PanelCoulombArea" unique_id=1012274025]
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="Sprite2D" type="Sprite2D" parent="PuzzleCoulomb/PanelCoulombArea" unique_id=595024907]
+texture_filter = 1
+texture = ExtResource("8_tablero")
+
+[node name="LblPromptCoulomb" type="Label" parent="PuzzleCoulomb/PanelCoulombArea" unique_id=2124866356]
+visible = false
+offset_left = -100.0
+offset_top = -62.0
+offset_right = 100.0
+offset_bottom = -38.0
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Interactuar"
+horizontal_alignment = 1
+
+[node name="LblEstadoCoulomb" type="Label" parent="PuzzleCoulomb" unique_id=1084206069]
+offset_left = 435.0
+offset_top = 62.0
+offset_right = 685.0
+offset_bottom = 102.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "Emisor (-) atrae al Bloque (+)"
+horizontal_alignment = 1
+
+[node name="PuzzleOhm" type="Node2D" parent="." unique_id=1724187202]
+
+[node name="PuenteElectrico" type="StaticBody2D" parent="PuzzleOhm" unique_id=1580468147]
+position = Vector2(1500, 128)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PuzzleOhm/PuenteElectrico" unique_id=2060187354]
+shape = SubResource("RectangleShape2D_puente")
+disabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="PuzzleOhm/PuenteElectrico" unique_id=1017712373]
+texture_filter = 1
+scale = Vector2(1.25, 1)
+texture = ExtResource("9_puente")
+
+[node name="BarreraAbismo" type="StaticBody2D" parent="PuzzleOhm" unique_id=1331677091]
+position = Vector2(1396, 60)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PuzzleOhm/BarreraAbismo" unique_id=1915373804]
+shape = SubResource("RectangleShape2D_barrera")
+
+[node name="HazLaser" type="Polygon2D" parent="PuzzleOhm/BarreraAbismo" unique_id=633896157]
+color = Color(1, 0.35, 0.25, 0.75)
+polygon = PackedVector2Array(-5, -56, 5, -56, 5, 56, -5, 56)
+
+[node name="TableroOhmArea" type="Area2D" parent="PuzzleOhm" unique_id=1353488834]
+position = Vector2(1300, 84)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PuzzleOhm/TableroOhmArea" unique_id=1301086741]
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="Sprite2D" type="Sprite2D" parent="PuzzleOhm/TableroOhmArea" unique_id=274736001]
+texture_filter = 1
+texture = ExtResource("8_tablero")
+
+[node name="LblPromptOhm" type="Label" parent="PuzzleOhm/TableroOhmArea" unique_id=516641616]
+visible = false
+offset_left = -100.0
+offset_top = -62.0
+offset_right = 100.0
+offset_bottom = -38.0
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Interactuar"
+horizontal_alignment = 1
+
+[node name="LblEstadoOhm" type="Label" parent="PuzzleOhm" unique_id=41971089]
+offset_left = 1370.0
+offset_top = 56.0
+offset_right = 1630.0
+offset_bottom = 96.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "Puente Apagado (Requiere I = 6.0 A)"
+horizontal_alignment = 1
+
+[node name="MetaFinal" type="Node2D" parent="." unique_id=805592970]
+position = Vector2(1960, 56)
+
+[node name="HaloLuz" type="Polygon2D" parent="MetaFinal" unique_id=766660482]
+color = Color(0.22, 0.75, 0.98, 0.28)
+polygon = PackedVector2Array(-64, -76, 64, -76, 84, 60, -84, 60)
+
+[node name="PuertaSprite" type="Sprite2D" parent="MetaFinal" unique_id=2086158508]
+texture_filter = 1
+texture = ExtResource("10_meta")
+
+[node name="AreaMeta" type="Area2D" parent="MetaFinal" unique_id=241580832]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MetaFinal/AreaMeta" unique_id=1057353612]
+shape = SubResource("RectangleShape2D_meta_area")
+
+[node name="LblMeta" type="Label" parent="MetaFinal" unique_id=1662695975]
+offset_left = -95.0
+offset_top = -90.0
+offset_right = 95.0
+offset_bottom = -64.0
+theme_override_colors/font_color = Color(0.4, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "✨ META FINAL DEL NIVEL"
+horizontal_alignment = 1
+
+[node name="ZonaRecuperacionCaida" type="Area2D" parent="." unique_id=1059698441]
+position = Vector2(1050, 560)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ZonaRecuperacionCaida" unique_id=794094961]
+shape = SubResource("RectangleShape2D_caida")
+
+[node name="Jugador" parent="." unique_id=171206832 instance=ExtResource("2_jugador")]
+position = Vector2(120, 210)
+
+[node name="Camera2D" type="Camera2D" parent="Jugador" unique_id=1103477846]
+position = Vector2(0, -10)
+zoom = Vector2(1.8, 1.8)
+position_smoothing_enabled = true

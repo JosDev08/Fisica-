@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="32" viewBox="0 0 160 32" shape-rendering="crispEdges">
+  <!-- Cuerpo de plataforma escalonada -->
+  <rect x="0" y="6" width="160" height="26" fill="#334155"/>
+  <rect x="4" y="10" width="152" height="18" fill="#1e293b"/>
+  <!-- Superficie superior -->
+  <rect x="0" y="0" width="160" height="8" fill="#4ade80"/>
+  <rect x="0" y="6" width="160" height="4" fill="#16a34a"/>
+  <!-- Nodos luminosos -->
+  <rect x="16" y="16" width="16" height="6" fill="#38bdf8"/>
+  <rect x="72" y="16" width="16" height="6" fill="#facc15"/>
+  <rect x="128" y="16" width="16" height="6" fill="#38bdf8"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="24" viewBox="0 0 160 24">
+  <!-- Chasis metalico del puente -->
+  <rect x="2" y="2" width="156" height="20" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
+  <!-- Rieles conductores internos -->
+  <line x1="8" y1="8" x2="152" y2="8" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="10,5"/>
+  <line x1="8" y1="16" x2="152" y2="16" stroke="#38bdf8" stroke-width="2"/>
+  <!-- Nodos de bobina a lo largo del puente -->
+  <circle cx="24" cy="12" r="4" fill="#fde047"/>
+  <circle cx="56" cy="12" r="4" fill="#fde047"/>
+  <circle cx="80" cy="12" r="5" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5"/>
+  <circle cx="104" cy="12" r="4" fill="#fde047"/>
+  <circle cx="136" cy="12" r="4" fill="#fde047"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect x="4" y="4" width="56" height="56" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <!-- Wire left -->
+  <line x1="10" y1="32" x2="26" y2="32" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <!-- Left plate (+) -->
+  <line x1="26" y1="14" x2="26" y2="50" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+  <!-- Dielectric glow -->
+  <rect x="28" y="16" width="8" height="32" fill="#f59e0b" fill-opacity="0.35"/>
+  <!-- Right plate (-) -->
+  <line x1="38" y1="14" x2="38" y2="50" stroke="#f43f5e" stroke-width="4" stroke-linecap="round"/>
+  <!-- Wire right -->
+  <line x1="38" y1="32" x2="54" y2="32" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <!-- Plus and minus signs -->
+  <text x="15" y="22" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="bold">+</text>
+  <text x="43" y="22" fill="#f43f5e" font-family="monospace" font-size="12" font-weight="bold">-</text>
+</svg>

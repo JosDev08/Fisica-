@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="64" viewBox="0 0 256 64" shape-rendering="crispEdges">
+  <!-- Base de tierra -->
+  <rect x="0" y="12" width="256" height="52" fill="#5c3a28"/>
+  <rect x="0" y="48" width="256" height="16" fill="#42281b"/>
+  <!-- Piedras y textura interna de tierra -->
+  <g fill="#734b34">
+    <rect x="16" y="24" width="24" height="12"/>
+    <rect x="72" y="30" width="32" height="10"/>
+    <rect x="136" y="22" width="28" height="14"/>
+    <rect x="196" y="28" width="36" height="12"/>
+  </g>
+  <g fill="#3b2317">
+    <rect x="48" y="38" width="16" height="8"/>
+    <rect x="116" y="40" width="20" height="8"/>
+    <rect x="172" y="36" width="16" height="10"/>
+    <rect x="232" y="40" width="16" height="8"/>
+  </g>
+  <!-- Capa de césped superior -->
+  <rect x="0" y="0" width="256" height="14" fill="#3ca34b"/>
+  <rect x="0" y="0" width="256" height="5" fill="#68cf5d"/>
+  <!-- Borde irregular de pasto colgante -->
+  <g fill="#2b7a38">
+    <rect x="0" y="12" width="20" height="6"/>
+    <rect x="28" y="12" width="24" height="8"/>
+    <rect x="60" y="12" width="16" height="5"/>
+    <rect x="84" y="12" width="28" height="7"/>
+    <rect x="120" y="12" width="20" height="6"/>
+    <rect x="148" y="12" width="28" height="8"/>
+    <rect x="184" y="12" width="20" height="5"/>
+    <rect x="212" y="12" width="24" height="8"/>
+    <rect x="242" y="12" width="14" height="6"/>
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="160" viewBox="0 0 128 160" shape-rendering="crispEdges">
+  <!-- Base escalonada del altar -->
+  <rect x="8" y="144" width="112" height="16" fill="#2b3344"/>
+  <rect x="16" y="132" width="96" height="12" fill="#3a4559"/>
+  <!-- Pilares laterales -->
+  <rect x="22" y="36" width="20" height="96" fill="#3a4559"/>
+  <rect x="86" y="36" width="20" height="96" fill="#3a4559"/>
+  <!-- Dintel y arco superior -->
+  <rect x="14" y="20" width="100" height="18" fill="#495770"/>
+  <rect x="28" y="8" width="72" height="14" fill="#3a4559"/>
+  <!-- Runas luminosas en los pilares -->
+  <g fill="#5ce6ff">
+    <rect x="29" y="48" width="6" height="14"/>
+    <rect x="29" y="72" width="6" height="14"/>
+    <rect x="29" y="96" width="6" height="14"/>
+    <rect x="93" y="48" width="6" height="14"/>
+    <rect x="93" y="72" width="6" height="14"/>
+    <rect x="93" y="96" width="6" height="14"/>
+    <rect x="52" y="12" width="24" height="6"/>
+  </g>
+  <!-- Campo de energía interior del portal -->
+  <rect x="42" y="38" width="44" height="94" fill="#1d6885" opacity="0.85"/>
+  <rect x="48" y="44" width="32" height="82" fill="#47d1ff" opacity="0.85"/>
+  <rect x="54" y="54" width="20" height="62" fill="#fff3b0" opacity="0.95"/>
+</svg>

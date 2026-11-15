@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72" shape-rendering="crispEdges">
+  <!-- Marco exterior metalico cargado (+) -->
+  <rect x="2" y="2" width="68" height="68" fill="#7f1d1d"/>
+  <rect x="6" y="6" width="60" height="60" fill="#dc2626"/>
+  <rect x="12" y="12" width="48" height="48" fill="#ef4444"/>
+  <!-- Esquinas aislantes -->
+  <rect x="6" y="6" width="10" height="10" fill="#fca5a5"/>
+  <rect x="56" y="6" width="10" height="10" fill="#fca5a5"/>
+  <rect x="6" y="56" width="10" height="10" fill="#fca5a5"/>
+  <rect x="56" y="56" width="10" height="10" fill="#fca5a5"/>
+  <!-- Simbolo + grande en el centro -->
+  <rect x="32" y="20" width="8" height="32" fill="#ffffff"/>
+  <rect x="20" y="32" width="32" height="8" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="128" viewBox="0 0 64 128">
+  <!-- Outer heavy frame -->
+  <rect x="4" y="2" width="56" height="124" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="3"/>
+  <!-- Inner armor panels -->
+  <rect x="10" y="8" width="44" height="52" rx="2" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+  <rect x="10" y="68" width="44" height="52" rx="2" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+  <!-- Central capacitor lock emblem -->
+  <circle cx="32" cy="64" r="18" fill="#090d16" stroke="#fbbf24" stroke-width="2.5"/>
+  <line x1="20" y1="64" x2="28" y2="64" stroke="#fbbf24" stroke-width="2.5"/>
+  <line x1="28" y1="54" x2="28" y2="74" stroke="#38bdf8" stroke-width="3"/>
+  <line x1="36" y1="54" x2="36" y2="74" stroke="#f43f5e" stroke-width="3"/>
+  <line x1="36" y1="64" x2="44" y2="64" stroke="#fbbf24" stroke-width="2.5"/>
+  <!-- Energy conduits top and bottom -->
+  <line x1="32" y1="12" x2="32" y2="44" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="32" y1="84" x2="32" y2="116" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4"/>
+</svg>

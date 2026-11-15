@@ -28,9 +28,11 @@ var apertura: float = 0.0: set = _set_apertura      # 0 = cerrada, 1 = abierta
 var desbloqueo: float = 0.0: set = _set_desbloqueo  # 0 = candado cerrado, 1 = abierto
 
 var _forma: CollisionShape2D
+var _zona: Area2D
 var _aviso: Label
 var _panel: CanvasLayer
 var _tween: Tween
+var _tecla_e_prev: bool = false
 
 
 func _ready() -> void:
@@ -41,8 +43,34 @@ func _ready() -> void:
 	_crear_panel()
 
 
+func _process(_delta: float) -> void:
+	if esta_abierta:
+		return
+	var detectado := false
+	if _zona and _zona.monitoring:
+		for body in _zona.get_overlapping_bodies():
+			if body is CharacterBody2D or body.name == "Jugador" or body.name == "CharacterBody2D":
+				detectado = true
+				break
+	if detectado != jugador_en_rango:
+		jugador_en_rango = detectado
+	if _aviso:
+		_aviso.visible = jugador_en_rango and (_panel == null or not _panel.visible)
+	var e_actual := Input.is_physical_key_pressed(KEY_E) or Input.is_key_pressed(KEY_E)
+	if e_actual and not _tecla_e_prev and jugador_en_rango and not esta_abierta and _panel and not _panel.visible:
+		_panel.abrir()
+	_tecla_e_prev = e_actual
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if jugador_en_rango and not esta_abierta and _panel and event.is_action_pressed("interactuar"):
+	if not jugador_en_rango or esta_abierta or not _panel or _panel.visible:
+		return
+	var es_tecla_e := false
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_E or event.keycode == KEY_E:
+			es_tecla_e = true
+	if es_tecla_e or event.is_action_pressed("interactuar"):
+		_tecla_e_prev = true
 		get_viewport().set_input_as_handled()
 		_panel.abrir()
 
@@ -68,18 +96,28 @@ func _crear_colision() -> void:
 
 
 func _crear_zona() -> void:
-	var zona := Area2D.new()
-	zona.collision_layer = 0
-	zona.collision_mask = 0xFFFFFFFF
+	_zona = Area2D.new()
+	_zona.monitoring = true
+	_zona.monitorable = true
+	_zona.collision_layer = 0
+	_zona.collision_mask = 1 # Capa 1: Jugador
 	var rect := RectangleShape2D.new()
 	rect.size = Vector2(ancho + alcance * 2.0, alto)
 	var forma := CollisionShape2D.new()
 	forma.shape = rect
 	forma.position = Vector2(0.0, -alto / 2.0)
-	zona.add_child(forma)
-	add_child(zona)
-	zona.body_entered.connect(_on_body_entered)
-	zona.body_exited.connect(_on_body_exited)
+	_zona.add_child(forma)
+	add_child(_zona)
+	_zona.body_entered.connect(_on_body_entered)
+	_zona.body_exited.connect(_on_body_exited)
+	_zona.input_pickable = true
+	_zona.input_event.connect(_on_zona_input_event)
+
+
+func _on_zona_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if not esta_abierta and _panel:
+			_panel.abrir()
 
 
 func _crear_aviso() -> void:
@@ -88,9 +126,11 @@ func _crear_aviso() -> void:
 	_aviso.position = Vector2(-90.0, -alto - 36.0)
 	_aviso.custom_minimum_size = Vector2(180.0, 0.0)
 	_aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_aviso.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_aviso.z_index = 20
 	_aviso.add_theme_color_override("font_outline_color", Color.BLACK)
 	_aviso.add_theme_constant_override("outline_size", 6)
+	_aviso.add_to_group("texto_mundo_flotante")
 	_aviso.hide()
 	add_child(_aviso)
 

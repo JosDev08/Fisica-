@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="48" viewBox="0 0 320 48" shape-rendering="crispEdges">
+  <!-- Base de roca/metal oscuro -->
+  <rect x="0" y="10" width="320" height="38" fill="#1e293b"/>
+  <rect x="0" y="14" width="320" height="6" fill="#334155"/>
+  <!-- Borde superior conductivo / pasto pixel art -->
+  <rect x="0" y="0" width="320" height="10" fill="#22c55e"/>
+  <rect x="0" y="8" width="320" height="4" fill="#15803d"/>
+  <!-- Detalles pixelados en la superficie -->
+  <rect x="16" y="10" width="12" height="4" fill="#16a34a"/>
+  <rect x="64" y="10" width="16" height="4" fill="#16a34a"/>
+  <rect x="128" y="10" width="12" height="4" fill="#16a34a"/>
+  <rect x="192" y="10" width="16" height="4" fill="#16a34a"/>
+  <rect x="256" y="10" width="12" height="4" fill="#16a34a"/>
+  <!-- Linea de circuito de cobre inferior -->
+  <rect x="8" y="30" width="304" height="4" fill="#f59e0b"/>
+  <rect x="32" y="26" width="8" height="12" fill="#38bdf8"/>
+  <rect x="156" y="26" width="8" height="12" fill="#38bdf8"/>
+  <rect x="280" y="26" width="8" height="12" fill="#38bdf8"/>
+  <!-- Borde de marco -->
+  <rect x="0" y="44" width="320" height="4" fill="#0f172a"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="88" viewBox="0 0 120 88">
+  <!-- Soporte superior de acero -->
+  <rect x="16" y="2" width="88" height="14" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+  <circle cx="30" cy="9" r="3" fill="#38bdf8"/>
+  <circle cx="90" cy="9" r="3" fill="#38bdf8"/>
+  <!-- Nucleo de hierro dulce del solenoide -->
+  <rect x="34" y="16" width="52" height="52" rx="4" fill="#475569" stroke="#cbd5e1" stroke-width="2.5"/>
+  <!-- Espiras de cobre enrolladas -->
+  <rect x="28" y="22" width="64" height="8" rx="3" fill="#d97706" stroke="#fef08a" stroke-width="1.5"/>
+  <rect x="28" y="34" width="64" height="8" rx="3" fill="#d97706" stroke="#fef08a" stroke-width="1.5"/>
+  <rect x="28" y="46" width="64" height="8" rx="3" fill="#d97706" stroke="#fef08a" stroke-width="1.5"/>
+  <rect x="28" y="58" width="64" height="8" rx="3" fill="#d97706" stroke="#fef08a" stroke-width="1.5"/>
+  <!-- Zapata polar inferior -->
+  <rect x="24" y="68" width="72" height="16" rx="4" fill="#334155" stroke="#f8fafc" stroke-width="2"/>
+</svg>

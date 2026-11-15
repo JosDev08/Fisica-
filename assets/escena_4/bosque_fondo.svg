@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" shape-rendering="crispEdges">
+  <rect x="0" y="250" width="1280" height="70" fill="#182b29"/>
+  <!-- Siluetas de copas de árboles distantes -->
+  <g fill="#1f3833">
+    <rect x="20" y="170" width="80" height="80"/>
+    <rect x="36" y="146" width="48" height="24"/>
+    <rect x="130" y="186" width="70" height="64"/>
+    <rect x="144" y="164" width="42" height="22"/>
+    <rect x="240" y="158" width="92" height="92"/>
+    <rect x="260" y="132" width="52" height="26"/>
+    <rect x="370" y="182" width="76" height="68"/>
+    <rect x="490" y="164" width="88" height="86"/>
+    <rect x="510" y="138" width="48" height="26"/>
+    <rect x="620" y="180" width="72" height="70"/>
+    <rect x="730" y="152" width="96" height="98"/>
+    <rect x="752" y="126" width="52" height="26"/>
+    <rect x="860" y="178" width="78" height="72"/>
+    <rect x="970" y="162" width="86" height="88"/>
+    <rect x="990" y="136" width="46" height="26"/>
+    <rect x="1090" y="182" width="74" height="68"/>
+    <rect x="1180" y="166" width="84" height="84"/>
+  </g>
+  <g fill="#294a42">
+    <rect x="36" y="146" width="48" height="8"/>
+    <rect x="260" y="132" width="52" height="8"/>
+    <rect x="510" y="138" width="48" height="8"/>
+    <rect x="752" y="126" width="52" height="8"/>
+    <rect x="990" y="136" width="46" height="8"/>
+  </g>
+</svg>

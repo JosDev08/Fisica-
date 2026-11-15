@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="capBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#06121e"/>
+      <stop offset="55%" stop-color="#0b2135"/>
+      <stop offset="100%" stop-color="#11324d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#capBg)"/>
+  <!-- Pistas de circuito impreso en el fondo -->
+  <g stroke="#1e496d" stroke-width="2" fill="none" opacity="0.4">
+    <polyline points="0,160 220,160 260,200 520,200"/>
+    <polyline points="680,120 920,120 960,180 1280,180"/>
+    <polyline points="120,520 420,520 470,460 840,460"/>
+    <polyline points="880,580 1120,580 1160,500 1280,500"/>
+    <!-- Simbolos de capacitores decorativos en el fondo -->
+    <line x1="520" y1="184" x2="520" y2="216"/>
+    <line x1="532" y1="184" x2="532" y2="216"/>
+    <line x1="840" y1="444" x2="840" y2="476"/>
+    <line x1="852" y1="444" x2="852" y2="476"/>
+  </g>
+</svg>

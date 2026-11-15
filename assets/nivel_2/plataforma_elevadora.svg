@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="28" viewBox="0 0 96 28">
+  <!-- Main platform body -->
+  <rect x="2" y="2" width="92" height="18" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <!-- Top yellow/black safety & conductive strip -->
+  <rect x="6" y="3" width="84" height="4" fill="#38bdf8"/>
+  <!-- Internal capacitor bank graphic -->
+  <rect x="26" y="8" width="44" height="9" rx="2" fill="#0f172a" stroke="#64748b" stroke-width="1"/>
+  <line x1="34" y1="12.5" x2="44" y2="12.5" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="44" y1="9.5" x2="44" y2="15.5" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="52" y1="9.5" x2="52" y2="15.5" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="52" y1="12.5" x2="62" y2="12.5" stroke="#fbbf24" stroke-width="1.5"/>
+  <!-- Thruster / magnetic coils underneath -->
+  <path d="M 16 20 L 28 20 L 25 27 L 19 27 Z" fill="#0284c7"/>
+  <path d="M 68 20 L 80 20 L 77 27 L 71 27 Z" fill="#0284c7"/>
+</svg>

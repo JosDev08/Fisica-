@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="48" viewBox="0 0 320 48" shape-rendering="crispEdges">
+  <!-- Bloque base dielectrico oscuro -->
+  <rect x="0" y="10" width="320" height="38" fill="#0f172a"/>
+  <rect x="0" y="14" width="320" height="8" fill="#1e293b"/>
+  <!-- Placa conductora superior estilo pixel art -->
+  <rect x="0" y="0" width="320" height="8" fill="#38bdf8"/>
+  <rect x="0" y="8" width="320" height="4" fill="#0284c7"/>
+  <!-- Placas de condensador grabadas en el lateral -->
+  <rect x="28" y="20" width="4" height="18" fill="#facc15"/>
+  <rect x="38" y="20" width="4" height="18" fill="#facc15"/>
+  <rect x="152" y="20" width="4" height="18" fill="#4ade80"/>
+  <rect x="162" y="20" width="4" height="18" fill="#4ade80"/>
+  <rect x="276" y="20" width="4" height="18" fill="#facc15"/>
+  <rect x="286" y="20" width="4" height="18" fill="#facc15"/>
+  <!-- Pista conductora inferior -->
+  <rect x="8" y="40" width="304" height="4" fill="#0ea5e9"/>
+</svg>
