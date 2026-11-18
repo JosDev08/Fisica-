@@ -1,6 +1,6 @@
 extends CharacterBody2D
 # Velocidad de movimiento del enemigo
-@export var speed: float = 80.0
+@export var speed: float = 100.0
 
 # Referencias a los nodos
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
