@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Codigo/maquina_perks.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/objetos/maquina_perks.svg" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_interaccion"]
+size = Vector2(124, 96)
+
+[node name="MaquinaPerks" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -40)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -40)
+shape = SubResource("RectangleShape2D_interaccion")
+
+[node name="PromptInteractuar" type="Label" parent="."]
+visible = false
+z_index = 25
+offset_left = -104.0
+offset_top = -108.0
+offset_right = 104.0
+offset_bottom = -84.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Máquina de Mejoras"
+horizontal_alignment = 1

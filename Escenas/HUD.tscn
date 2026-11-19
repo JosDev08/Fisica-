@@ -91,7 +91,7 @@ text = "MEJORAS:"
 [node name="SlotJugger" type="PanelContainer" parent="RaizHUD/MargenSuperior/BarraSuperior/PanelIzquierdo/VBoxIzq/FilaMejoras"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Jugger-Nog: Más Vida y Sanación"
+tooltip_text = "Blindaje Vital: Más Vida y Curación"
 mouse_filter = 2
 
 [node name="IcoJugger" type="TextureRect" parent="RaizHUD/MargenSuperior/BarraSuperior/PanelIzquierdo/VBoxIzq/FilaMejoras/SlotJugger"]
@@ -107,7 +107,7 @@ stretch_mode = 5
 [node name="SlotStamin" type="PanelContainer" parent="RaizHUD/MargenSuperior/BarraSuperior/PanelIzquierdo/VBoxIzq/FilaMejoras"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Stamin-Up: Correr Más Rápido"
+tooltip_text = "Propulsores Ligeros: Más Velocidad (+15%/nv)"
 mouse_filter = 2
 
 [node name="IcoStamin" type="TextureRect" parent="RaizHUD/MargenSuperior/BarraSuperior/PanelIzquierdo/VBoxIzq/FilaMejoras/SlotStamin"]
@@ -123,7 +123,7 @@ stretch_mode = 5
 [node name="SlotDouble" type="PanelContainer" parent="RaizHUD/MargenSuperior/BarraSuperior/PanelIzquierdo/VBoxIzq/FilaMejoras"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Double Tap: Más Daño"
+tooltip_text = "Sobrecarga de Munición: Más Daño"
 mouse_filter = 2
 
 [node name="IcoDouble" type="TextureRect" parent="RaizHUD/MargenSuperior/BarraSuperior/PanelIzquierdo/VBoxIzq/FilaMejoras/SlotDouble"]

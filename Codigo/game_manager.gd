@@ -2,9 +2,9 @@ extends Node
 
 # ==============================================================================
 # AUTOLOAD: GameManager
-# Gestiona guardado en disco (user://savegame.save), Monedas de Rayo,
-# Checkpoints automáticos (inicio y meta de nivel), 3 Mejoras de partida,
-# Temporizador competitivo, HUD global y Pantalla de Muerte.
+# Gestiona economía (Monedas de Rayo), mejoras acumulables entre niveles
+# (nivel_vida, multiplicador_velocidad, bonus_danio), guardado en disco
+# (user://savegame.save), checkpoints, temporizador, HUD y PantallaMuerte.
 # ==============================================================================
 
 signal monedas_cambiadas(cantidad: int)
@@ -22,23 +22,30 @@ const ESCENA_MENU_PRINCIPAL: String = "res://Escenas/UI/MenuPrincipal.tscn"
 const ESCENA_HUD: String = "res://Escenas/HUD.tscn"
 const ESCENA_PANTALLA_MUERTE: String = "res://Escenas/PantallaMuerte.tscn"
 
-# Estadísticas base del jugador y balance de mejoras de partida
+# Estadísticas base del jugador y balance por nivel de mejora (máx. 3 niveles)
 const VIDA_BASE: int = 100
 const VELOCIDAD_BASE: float = 220.0
 const DANIO_BASE: int = 25
 
-const BONUS_VIDA_JUGGER_NOG: int = 50       # 100 -> 150 HP + curación total
-const BONUS_VELOCIDAD_STAMIN_UP: float = 65.0 # 220 -> 285 px/s (~+30%)
-const BONUS_DANIO_DOUBLE_TAP: int = 20      # 25 -> 45 daño por disparo
+const NIVEL_MAX_MEJORA: int = 3
+const BONUS_VIDA_POR_NIVEL: int = 25         # +25 HP máx. por nivel (100 -> 125 -> 150 -> 175)
+const BONUS_VELOCIDAD_POR_NIVEL: float = 0.15 # +15% velocidad horizontal por nivel (sin alterar salto)
+const BONUS_DANIO_POR_NIVEL: int = 15        # +15 daño por nivel (25 -> 40 -> 55 -> 70)
 
-const COSTO_JUGGER_NOG: int = 4
-const COSTO_STAMIN_UP: int = 3
-const COSTO_DOUBLE_TAP: int = 5
+const COSTOS_VIDA: Array[int] = [3, 5, 7]
+const COSTOS_VELOCIDAD: Array[int] = [3, 5, 7]
+const COSTOS_DANIO: Array[int] = [4, 6, 8]
 
 const TIEMPO_NIVEL_DEFAULT: float = 120.0
 
-# Estado persistente de la partida activa
+# Estado persistente de la partida activa (conservado entre niveles y checkpoints)
 var monedas_rayo: int = 0
+var nivel_vida: int = 0
+var nivel_velocidad: int = 0
+var multiplicador_velocidad: float = 1.0
+var nivel_danio: int = 0
+var bonus_danio: int = 0
+
 var checkpoint_escena: String = ""
 var checkpoint_posicion: Vector2 = Vector2.ZERO
 var tiene_checkpoint: bool = false
@@ -100,17 +107,19 @@ func existe_partida_guardada() -> bool:
 
 
 func guardar_partida() -> void:
+	_sincronizar_diccionario_mejoras()
 	var datos := {
 		"monedas_rayo": monedas_rayo,
+		"nivel_vida": nivel_vida,
+		"nivel_velocidad": nivel_velocidad,
+		"multiplicador_velocidad": multiplicador_velocidad,
+		"nivel_danio": nivel_danio,
+		"bonus_danio": bonus_danio,
 		"checkpoint_escena": checkpoint_escena,
 		"checkpoint_x": checkpoint_posicion.x,
 		"checkpoint_y": checkpoint_posicion.y,
 		"tiene_checkpoint": tiene_checkpoint,
-		"mejoras": {
-			"jugger_nog": bool(mejoras.get("jugger_nog", false)),
-			"stamin_up": bool(mejoras.get("stamin_up", false)),
-			"double_tap": bool(mejoras.get("double_tap", false)),
-		},
+		"mejoras": mejoras.duplicate(),
 	}
 	var archivo := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if archivo == null:
@@ -133,14 +142,25 @@ func cargar_partida() -> bool:
 	)
 	tiene_checkpoint = bool(datos.get("tiene_checkpoint", false)) and not checkpoint_escena.is_empty()
 
-	var m_raw = datos.get("mejoras", {})
-	if m_raw is Dictionary:
-		mejoras["jugger_nog"] = bool(m_raw.get("jugger_nog", false))
-		mejoras["stamin_up"] = bool(m_raw.get("stamin_up", false))
-		mejoras["double_tap"] = bool(m_raw.get("double_tap", false))
+	if datos.has("nivel_vida"):
+		nivel_vida = clampi(int(datos.get("nivel_vida", 0)), 0, NIVEL_MAX_MEJORA)
 	else:
-		_reiniciar_diccionario_mejoras()
+		var m_raw = datos.get("mejoras", {})
+		nivel_vida = 1 if (m_raw is Dictionary and bool(m_raw.get("jugger_nog", false))) else 0
 
+	if datos.has("nivel_velocidad"):
+		nivel_velocidad = clampi(int(datos.get("nivel_velocidad", 0)), 0, NIVEL_MAX_MEJORA)
+	else:
+		var m_raw2 = datos.get("mejoras", {})
+		nivel_velocidad = 1 if (m_raw2 is Dictionary and bool(m_raw2.get("stamin_up", false))) else 0
+
+	if datos.has("nivel_danio"):
+		nivel_danio = clampi(int(datos.get("nivel_danio", 0)), 0, NIVEL_MAX_MEJORA)
+	else:
+		var m_raw3 = datos.get("mejoras", {})
+		nivel_danio = 1 if (m_raw3 is Dictionary and bool(m_raw3.get("double_tap", false))) else 0
+
+	_recalcular_derivados()
 	vida_actual = obtener_vida_maxima()
 	return true
 
@@ -165,7 +185,11 @@ func _leer_datos_disco() -> Dictionary:
 
 func nueva_partida() -> void:
 	monedas_rayo = 0
-	_reiniciar_diccionario_mejoras()
+	nivel_vida = 0
+	nivel_velocidad = 0
+	nivel_danio = 0
+	_recalcular_derivados()
+
 	checkpoint_escena = ESCENA_NIVEL_1
 	checkpoint_posicion = Vector2.ZERO
 	tiene_checkpoint = true
@@ -281,7 +305,7 @@ func completar_meta_nivel(escena_siguiente: String = "", posicion_meta: Vector2 
 
 
 # ==============================================================================
-# MONEDAS, TEMPORIZADOR Y MEJORAS BALANCEADAS DE PARTIDA
+# ECONOMÍA DE MONEDAS DE RAYO Y MEJORAS ACUMULABLES
 # ==============================================================================
 func sumar_monedas(cantidad: int = 1) -> void:
 	if cantidad == 0:
@@ -306,47 +330,94 @@ func agregar_tiempo(segundos: float = 10.0) -> void:
 
 
 func obtener_vida_maxima() -> int:
-	return VIDA_BASE + (BONUS_VIDA_JUGGER_NOG if bool(mejoras.get("jugger_nog", false)) else 0)
+	return VIDA_BASE + (nivel_vida * BONUS_VIDA_POR_NIVEL)
 
 
 func obtener_velocidad_jugador() -> float:
-	return VELOCIDAD_BASE + (BONUS_VELOCIDAD_STAMIN_UP if bool(mejoras.get("stamin_up", false)) else 0.0)
+	return VELOCIDAD_BASE * multiplicador_velocidad
 
 
 func obtener_danio_disparo() -> int:
-	return DANIO_BASE + (BONUS_DANIO_DOUBLE_TAP if bool(mejoras.get("double_tap", false)) else 0)
+	return DANIO_BASE + bonus_danio
 
 
 func tiene_mejora(id_mejora: String) -> bool:
-	return bool(mejoras.get(id_mejora, false))
+	match id_mejora:
+		"vida", "jugger_nog":
+			return nivel_vida > 0
+		"velocidad", "stamin_up":
+			return nivel_velocidad > 0
+		"danio", "double_tap":
+			return nivel_danio > 0
+		_:
+			return false
+
+
+func obtener_nivel_mejora(id_mejora: String) -> int:
+	match id_mejora:
+		"vida", "jugger_nog":
+			return nivel_vida
+		"velocidad", "stamin_up":
+			return nivel_velocidad
+		"danio", "double_tap":
+			return nivel_danio
+		_:
+			return 0
+
+
+func obtener_costo_siguiente(id_mejora: String) -> int:
+	var nv := obtener_nivel_mejora(id_mejora)
+	if nv >= NIVEL_MAX_MEJORA:
+		return -1
+	match id_mejora:
+		"vida", "jugger_nog":
+			return COSTOS_VIDA[nv]
+		"velocidad", "stamin_up":
+			return COSTOS_VELOCIDAD[nv]
+		"danio", "double_tap":
+			return COSTOS_DANIO[nv]
+		_:
+			return -1
 
 
 func obtener_catalogo_mejoras() -> Array[Dictionary]:
 	return [
 		{
-			"id": "jugger_nog",
-			"nombre": "Jugger-Nog",
-			"subtitulo": "Más Vida / Sanación",
-			"descripcion": "+%d Vida Máxima (%d HP) y sanación completa inmediata." % [BONUS_VIDA_JUGGER_NOG, VIDA_BASE + BONUS_VIDA_JUGGER_NOG],
-			"costo": COSTO_JUGGER_NOG,
-			"color": Color(0.92, 0.25, 0.32),
+			"id": "vida",
+			"nombre": "Blindaje Vital",
+			"subtitulo": "Más Vida y Curación",
+			"descripcion": "+%d Vida Máx. por nivel y curación completa inmediata. (Actual: %d HP)" % [
+				BONUS_VIDA_POR_NIVEL, obtener_vida_maxima()
+			],
+			"nivel": nivel_vida,
+			"nivel_max": NIVEL_MAX_MEJORA,
+			"costo": obtener_costo_siguiente("vida"),
+			"color": Color(0.92, 0.25, 0.34),
 			"icono": "res://assets/objetos/icono_jugger_nog.svg",
 		},
 		{
-			"id": "stamin_up",
-			"nombre": "Stamin-Up",
-			"subtitulo": "Correr Más Rápido",
-			"descripcion": "Aumenta la velocidad de %.0f a %.0f px/s para vencer el reloj." % [VELOCIDAD_BASE, VELOCIDAD_BASE + BONUS_VELOCIDAD_STAMIN_UP],
-			"costo": COSTO_STAMIN_UP,
+			"id": "velocidad",
+			"nombre": "Propulsores Ligeros",
+			"subtitulo": "Más Velocidad (+15%/nv)",
+			"descripcion": "Aumenta la velocidad horizontal +15%% por nivel sin alterar el salto. (Actual: %.0f%%)" % [
+				multiplicador_velocidad * 100.0
+			],
+			"nivel": nivel_velocidad,
+			"nivel_max": NIVEL_MAX_MEJORA,
+			"costo": obtener_costo_siguiente("velocidad"),
 			"color": Color(0.97, 0.78, 0.22),
 			"icono": "res://assets/objetos/icono_stamin_up.svg",
 		},
 		{
-			"id": "double_tap",
-			"nombre": "Double Tap",
-			"subtitulo": "Más Daño",
-			"descripcion": "Eleva el daño de tus disparos energéticos de %d a %d." % [DANIO_BASE, DANIO_BASE + BONUS_DANIO_DOUBLE_TAP],
-			"costo": COSTO_DOUBLE_TAP,
+			"id": "danio",
+			"nombre": "Sobrecarga de Munición",
+			"subtitulo": "Más Daño de Disparo",
+			"descripcion": "+%d daño extra para ProyectilJugador contra enemigos. (Actual: %d DMG)" % [
+				BONUS_DANIO_POR_NIVEL, obtener_danio_disparo()
+			],
+			"nivel": nivel_danio,
+			"nivel_max": NIVEL_MAX_MEJORA,
+			"costo": obtener_costo_siguiente("danio"),
 			"color": Color(1.0, 0.48, 0.16),
 			"icono": "res://assets/objetos/icono_double_tap.svg",
 		},
@@ -354,29 +425,44 @@ func obtener_catalogo_mejoras() -> Array[Dictionary]:
 
 
 func comprar_mejora(id_mejora: String) -> Dictionary:
-	var info := _buscar_info_mejora(id_mejora)
-	if info.is_empty():
+	var id_norm := _normalizar_id_mejora(id_mejora)
+	if id_norm.is_empty():
 		return {"ok": false, "mensaje": "Mejora desconocida."}
 
-	if tiene_mejora(id_mejora):
-		return {"ok": false, "mensaje": "%s ya está equipado en esta partida." % info["nombre"]}
+	var nivel_actual := obtener_nivel_mejora(id_norm)
+	if nivel_actual >= NIVEL_MAX_MEJORA:
+		return {"ok": false, "mensaje": "Esta mejora ya alcanzó su nivel máximo (Nv. %d/%d)." % [NIVEL_MAX_MEJORA, NIVEL_MAX_MEJORA]}
 
-	var costo: int = int(info["costo"])
+	var costo := obtener_costo_siguiente(id_norm)
 	if monedas_rayo < costo:
-		return {"ok": false, "mensaje": "Te faltan %d Monedas de Rayo para %s." % [costo - monedas_rayo, info["nombre"]]}
+		return {"ok": false, "mensaje": "Te faltan %d Monedas de Rayo para esta mejora." % (costo - monedas_rayo)}
 
 	monedas_rayo -= costo
-	mejoras[id_mejora] = true
+	var curar_total := false
+	var nombre_mostrar := ""
 
-	if id_mejora == "jugger_nog":
+	match id_norm:
+		"vida":
+			nivel_vida += 1
+			curar_total = true
+			nombre_mostrar = "Blindaje Vital Nv.%d" % nivel_vida
+		"velocidad":
+			nivel_velocidad += 1
+			nombre_mostrar = "Propulsores Ligeros Nv.%d" % nivel_velocidad
+		"danio":
+			nivel_danio += 1
+			nombre_mostrar = "Sobrecarga de Munición Nv.%d" % nivel_danio
+
+	_recalcular_derivados()
+	if curar_total:
 		vida_actual = obtener_vida_maxima()
 
 	guardar_partida()
 	monedas_cambiadas.emit(monedas_rayo)
 	mejoras_cambiadas.emit(mejoras.duplicate())
-	aplicar_mejoras_a_jugador(id_mejora == "jugger_nog")
+	aplicar_mejoras_a_jugador(curar_total)
 
-	return {"ok": true, "mensaje": "¡%s equipado para toda la partida!" % info["nombre"]}
+	return {"ok": true, "mensaje": "¡%s adquirido y aplicado!" % nombre_mostrar}
 
 
 func aplicar_mejoras_a_jugador(curar_al_maximo: bool = false) -> void:
@@ -482,8 +568,9 @@ func _configurar_escena_juego(escena: Node) -> void:
 	en_pausa = false
 	_modales_abiertos = 0
 	get_tree().paused = false
+	_recalcular_derivados()
 
-	# 1. Posicionar jugador si corresponde a un respawn/continuar en checkpoint
+	# 1. Posicionar jugador en checkpoint y aplicar mejoras activas automáticamente
 	var jugador := obtener_jugador_actual()
 	if jugador != null:
 		if _usar_posicion_pendiente and _posicion_pendiente_respawn != Vector2.ZERO:
@@ -492,7 +579,6 @@ func _configurar_escena_juego(escena: Node) -> void:
 				(jugador as CharacterBody2D).velocity = Vector2.ZERO
 			_usar_posicion_pendiente = false
 		elif not ruta.is_empty():
-			# Guardado automático al iniciar un nivel nuevo o sin posición fija todavía
 			if (not tiene_checkpoint) or checkpoint_escena != ruta or checkpoint_posicion == Vector2.ZERO:
 				registrar_checkpoint(ruta, jugador.global_position, true)
 
@@ -501,7 +587,7 @@ func _configurar_escena_juego(escena: Node) -> void:
 	elif not ruta.is_empty() and ((not tiene_checkpoint) or checkpoint_escena != ruta):
 		registrar_checkpoint(ruta, Vector2.ZERO, false)
 
-	# 2. Reiniciar bandera activada en todas las zonas de muerte y garantizar UI
+	# 2. Reiniciar zonas de muerte y garantizar HUD + PantallaMuerte
 	reiniciar_zonas_muerte()
 	_asegurar_ui_de_nivel(escena)
 
@@ -535,16 +621,27 @@ func _es_escena_menu(ruta: String) -> bool:
 	return archivo == "menuprincipal.tscn" or archivo == "pantalladerrota.tscn"
 
 
-func _reiniciar_diccionario_mejoras() -> void:
+func _recalcular_derivados() -> void:
+	multiplicador_velocidad = 1.0 + (float(nivel_velocidad) * BONUS_VELOCIDAD_POR_NIVEL)
+	bonus_danio = nivel_danio * BONUS_DANIO_POR_NIVEL
+	_sincronizar_diccionario_mejoras()
+
+
+func _sincronizar_diccionario_mejoras() -> void:
 	mejoras = {
-		"jugger_nog": false,
-		"stamin_up": false,
-		"double_tap": false,
+		"jugger_nog": nivel_vida > 0,
+		"stamin_up": nivel_velocidad > 0,
+		"double_tap": nivel_danio > 0,
 	}
 
 
-func _buscar_info_mejora(id_mejora: String) -> Dictionary:
-	for item in obtener_catalogo_mejoras():
-		if item["id"] == id_mejora:
-			return item
-	return {}
+func _normalizar_id_mejora(id_mejora: String) -> String:
+	match id_mejora:
+		"vida", "jugger_nog":
+			return "vida"
+		"velocidad", "stamin_up":
+			return "velocidad"
+		"danio", "double_tap":
+			return "danio"
+		_:
+			return ""

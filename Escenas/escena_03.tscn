@@ -11,6 +11,8 @@
 [ext_resource type="Script" uid="uid://cc0e7civn1crm" path="res://Codigo/puzzle_induccion_faraday.gd" id="9_faraday"]
 [ext_resource type="Script" uid="uid://dkqq21wde0x5b" path="res://Codigo/puerta_electromagnetismo_final.gd" id="10_puerta_em"]
 [ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="11_zona_muerte"]
+[ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="12_maquina_perks"]
+[ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="13_moneda_rayo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_0j3rl")
@@ -1319,3 +1321,32 @@ tamano_zona = Vector2(500, 500)
 [node name="ZonaMuerteSeguridad" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
 position = Vector2(1600, 400)
 tamano_zona = Vector2(20000, 300)
+
+[node name="MaquinaPerks" parent="." instance=ExtResource("12_maquina_perks")]
+position = Vector2(-1248, 0)
+
+[node name="MonedasRayo" type="Node2D" parent="."]
+
+[node name="MonedaRayo1" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(-1040, -80)
+
+[node name="MonedaRayo2" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(-848, -128)
+
+[node name="MonedaRayo3" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(-672, -80)
+
+[node name="MonedaRayo4" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(-380, -28)
+
+[node name="MonedaRayo5" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(180, -28)
+
+[node name="MonedaRayo6" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(700, -28)
+
+[node name="MonedaRayo7" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(1520, -28)
+
+[node name="MonedaRayo8" parent="MonedasRayo" instance=ExtResource("13_moneda_rayo")]
+position = Vector2(2700, -28)

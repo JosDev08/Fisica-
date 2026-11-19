@@ -2,7 +2,8 @@ extends Area2D
 
 # ==============================================================================
 # MONEDA DE RAYO COLECCIONABLE (res://Escenas/MonedaRayo.tscn)
-# Area2D con collision_mask = 1 (Capa 1: Jugador). Suma +1 Moneda de Rayo.
+# Area2D con monitoring = true y collision_mask = 1 (Capa 1: Jugador).
+# Suma +1 moneda en GameManager, reproduce un destello visual y hace queue_free().
 # ==============================================================================
 
 @export var valor: int = 1
@@ -39,7 +40,10 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if _recogida or body == null:
 		return
-	if not (body.is_in_group("jugador") or body.name == "Jugador" or body.name == "CharacterBody2D"):
+	var es_jugador: bool = body.is_in_group("jugador") or body.name == "Jugador" or body.name == "CharacterBody2D"
+	if not es_jugador and body is CollisionObject2D:
+		es_jugador = (((body as CollisionObject2D).collision_layer & 1) != 0)
+	if not es_jugador:
 		return
 
 	_recogida = true
@@ -47,12 +51,51 @@ func _on_body_entered(body: Node2D) -> void:
 	set_deferred("monitoring", false)
 
 	GameManager.sumar_monedas(valor)
+	_crear_efecto_destello()
 	_mostrar_texto_flotante("+%d ⚡" % valor, Color(1.0, 0.88, 0.28))
 
 	var tw := create_tween()
-	tw.tween_property(sprite, "scale", Vector2(1.45, 1.45), 0.14)
+	tw.tween_property(sprite, "scale", Vector2(1.5, 1.5), 0.14)
 	tw.parallel().tween_property(sprite, "modulate:a", 0.0, 0.14)
 	tw.tween_callback(queue_free)
+
+
+func _crear_efecto_destello() -> void:
+	var escena := get_tree().current_scene
+	if escena == null:
+		return
+
+	# Destello central dorado/cian + 4 chispas pixel art en diagonal
+	var flash := ColorRect.new()
+	flash.size = Vector2(16, 16)
+	flash.global_position = global_position - Vector2(8, 8)
+	flash.color = Color(1.0, 0.95, 0.55, 0.95)
+	flash.z_index = 45
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	escena.add_child(flash)
+
+	var tw_f := flash.create_tween()
+	tw_f.tween_property(flash, "scale", Vector2(2.0, 2.0), 0.16)
+	tw_f.parallel().tween_property(flash, "modulate:a", 0.0, 0.16)
+	tw_f.tween_callback(flash.queue_free)
+
+	var dirs: Array[Vector2] = [
+		Vector2(-1, -1), Vector2(1, -1),
+		Vector2(-1, 1), Vector2(1, 1),
+	]
+	for d in dirs:
+		var chispa := ColorRect.new()
+		chispa.size = Vector2(5, 5)
+		chispa.global_position = global_position - Vector2(2.5, 2.5)
+		chispa.color = Color(0.35, 0.92, 1.0, 1.0)
+		chispa.z_index = 46
+		chispa.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		escena.add_child(chispa)
+
+		var tw_c := chispa.create_tween()
+		tw_c.tween_property(chispa, "global_position", chispa.global_position + d * 20.0, 0.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw_c.parallel().tween_property(chispa, "modulate:a", 0.0, 0.24)
+		tw_c.tween_callback(chispa.queue_free)
 
 
 func _mostrar_texto_flotante(texto: String, color: Color) -> void:

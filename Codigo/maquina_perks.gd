@@ -1,10 +1,15 @@
 extends Area2D
 
 # ==============================================================================
-# MÁQUINA EXPENDEDORA DE MEJORAS BALANCEADAS (res://Escenas/MaquinaPerks.tscn)
-# Area2D con collision_mask = 1 (Capa 1: Jugador) y detección directa de KEY_E.
-# Permite comprar únicamente las 3 mejoras de partida (Jugger-Nog, Stamin-Up,
-# Double Tap) con mouse o teclado en un CanvasLayer limpio.
+# MÁQUINA EXPENDEDORA DE MEJORAS (res://Escenas/Objetos/MaquinaPerks.tscn)
+# - Area2D con monitoring = true y collision_mask = 1 (Capa 1: Jugador).
+# - Muestra "[E] Máquina de Mejoras" al acercarse y abre CanvasLayer (layer = 50)
+#   al presionar la tecla física KEY_E.
+# - Soporta mouse y teclado; bloquea los disparos del jugador mientras está abierta.
+# - 3 mejoras acumulables con Monedas de Rayo:
+#     1) Blindaje Vital (Más Vida + Curación total)
+#     2) Propulsores Ligeros (+15% velocidad horizontal por nivel, sin cambiar salto)
+#     3) Sobrecarga de Munición (Más daño en ProyectilJugador contra Capa 2)
 # ==============================================================================
 
 const COLOR_FONDO := Color(0.04, 0.07, 0.13, 0.96)
@@ -21,12 +26,15 @@ var _tecla_e_prev: bool = false
 var _indice_sel: int = 0
 var _catalogo: Array[Dictionary] = []
 
-# Nodos de UI en CanvasLayer
+# Nodos de UI en CanvasLayer (layer = 50)
 var _canvas_ui: CanvasLayer
 var _panel_tienda: PanelContainer
 var _lbl_monedas_ui: Label
 var _lbl_feedback: Label
 var _tarjetas: Array[PanelContainer] = []
+var _lbls_titulo_card: Array[Label] = []
+var _lbls_desc_card: Array[Label] = []
+var _lbls_nivel_card: Array[Label] = []
 var _botones_compra: Array[Button] = []
 
 
@@ -38,7 +46,7 @@ func _ready() -> void:
 	monitorable = true
 
 	if lbl_prompt != null:
-		lbl_prompt.text = "[E] Interactuar"
+		lbl_prompt.text = "[E] Máquina de Mejoras"
 		lbl_prompt.visible = false
 		lbl_prompt.add_to_group("texto_mundo_flotante")
 
@@ -60,7 +68,6 @@ func _process(_delta: float) -> void:
 			_cerrar_tienda()
 		return
 
-	# Comprobación continua de proximidad por seguridad física
 	var detectado: bool = false
 	if monitoring:
 		for b in get_overlapping_bodies():
@@ -72,7 +79,7 @@ func _process(_delta: float) -> void:
 	if lbl_prompt != null:
 		lbl_prompt.visible = _jugador_cerca and not _panel_abierto
 
-	# Detección directa de tecla física KEY_E
+	# Detección directa de la tecla física KEY_E
 	var e_actual: bool = Input.is_physical_key_pressed(KEY_E)
 	if e_actual and not _tecla_e_prev:
 		if _panel_abierto:
@@ -126,7 +133,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func _es_jugador(body: Node) -> bool:
 	if body == null:
 		return false
-	return body.is_in_group("jugador") or body.name == "Jugador" or body.name == "CharacterBody2D"
+	if body.is_in_group("jugador") or body.name == "Jugador" or body.name == "CharacterBody2D":
+		return true
+	if body is CollisionObject2D:
+		return (((body as CollisionObject2D).collision_layer & 1) != 0)
+	return false
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -148,7 +159,7 @@ func _abrir_tienda() -> void:
 	_canvas_ui.visible = true
 	if lbl_prompt != null:
 		lbl_prompt.visible = false
-	_lbl_feedback.text = "Selecciona una mejora con clic o teclado [W/S, 1-3, Enter]."
+	_lbl_feedback.text = "Elige una mejora con clic de mouse o teclado [1/2/3, W/S, Enter]."
 	_lbl_feedback.add_theme_color_override("font_color", Color(0.75, 0.88, 1.0))
 	GameManager.registrar_modal_abierto(true)
 	get_tree().paused = true
@@ -160,10 +171,15 @@ func _cerrar_tienda() -> void:
 		return
 	_panel_abierto = false
 	_canvas_ui.visible = false
-	GameManager.registrar_modal_abierto(false)
 	get_tree().paused = false
+	# Liberar el bloqueo de disparo en diferido para que el clic en "Cerrar" no dispare una bala
+	call_deferred("_liberar_bloqueo_modal")
 	if lbl_prompt != null:
 		lbl_prompt.visible = _jugador_cerca
+
+
+func _liberar_bloqueo_modal() -> void:
+	GameManager.registrar_modal_abierto(false)
 
 
 func _seleccionar_tarjeta(idx: int) -> void:
@@ -189,23 +205,30 @@ func _intentar_comprar(idx: int) -> void:
 func _actualizar_ui() -> void:
 	if _canvas_ui == null:
 		return
+	_catalogo = GameManager.obtener_catalogo_mejoras()
 	_lbl_monedas_ui.text = "⚡ %d MONEDAS" % GameManager.monedas_rayo
 
-	for i in range(_catalogo.size()):
+	for i in range(mini(_catalogo.size(), _tarjetas.size())):
 		var info: Dictionary = _catalogo[i]
-		var id_m: String = str(info["id"])
+		var nivel: int = int(info["nivel"])
+		var nivel_max: int = int(info["nivel_max"])
 		var costo: int = int(info["costo"])
 		var color_m: Color = info["color"]
-		var equipada: bool = GameManager.tiene_mejora(id_m)
-		var alcanzable: bool = GameManager.monedas_rayo >= costo
+		var al_maximo: bool = (nivel >= nivel_max or costo < 0)
+		var alcanzable: bool = (not al_maximo) and (GameManager.monedas_rayo >= costo)
 		var seleccionada: bool = (i == _indice_sel)
+
+		_lbls_titulo_card[i].text = "[%d] %s  —  %s" % [i + 1, str(info["nombre"]), str(info["subtitulo"])]
+		_lbls_desc_card[i].text = str(info["descripcion"])
+		_lbls_nivel_card[i].text = "NIVEL %d / %d" % [nivel, nivel_max]
+		_lbls_nivel_card[i].add_theme_color_override("font_color", COLOR_VERDE if nivel > 0 else Color(0.65, 0.76, 0.88))
 
 		var tarjeta := _tarjetas[i]
 		var sb_card := StyleBoxFlat.new()
 		sb_card.set_corner_radius_all(0)
 		sb_card.set_border_width_all(3 if seleccionada else 2)
 		sb_card.set_content_margin_all(12)
-		if equipada:
+		if al_maximo:
 			sb_card.bg_color = Color(0.06, 0.18, 0.12, 0.96)
 			sb_card.border_color = COLOR_VERDE if seleccionada else COLOR_VERDE.darkened(0.25)
 		elif seleccionada:
@@ -217,16 +240,16 @@ func _actualizar_ui() -> void:
 		tarjeta.add_theme_stylebox_override("panel", sb_card)
 
 		var btn := _botones_compra[i]
-		if equipada:
-			btn.text = "EQUIPADO"
+		if al_maximo:
+			btn.text = "NIVEL MÁX."
 			btn.disabled = true
 			_estilizar_boton(btn, COLOR_VERDE, true)
 		elif alcanzable:
-			btn.text = "COMPRAR [%d ⚡]" % costo
+			btn.text = "MEJORAR [%d ⚡]" % costo
 			btn.disabled = false
 			_estilizar_boton(btn, color_m, false)
 		else:
-			btn.text = "FALTAN [%d ⚡]" % costo
+			btn.text = "COSTO [%d ⚡]" % costo
 			btn.disabled = true
 			_estilizar_boton(btn, Color(0.45, 0.50, 0.58), true)
 
@@ -234,14 +257,14 @@ func _actualizar_ui() -> void:
 func _construir_ui() -> void:
 	_canvas_ui = CanvasLayer.new()
 	_canvas_ui.name = "CanvasMaquinaPerks"
-	_canvas_ui.layer = 15
+	_canvas_ui.layer = 50
 	_canvas_ui.process_mode = Node.PROCESS_MODE_ALWAYS
 	_canvas_ui.visible = false
 	add_child(_canvas_ui)
 
 	var fondo := ColorRect.new()
 	fondo.set_anchors_preset(Control.PRESET_FULL_RECT)
-	fondo.color = Color(0.01, 0.03, 0.07, 0.75)
+	fondo.color = Color(0.01, 0.03, 0.07, 0.78)
 	fondo.mouse_filter = Control.MOUSE_FILTER_STOP
 	_canvas_ui.add_child(fondo)
 
@@ -250,7 +273,8 @@ func _construir_ui() -> void:
 	fondo.add_child(centro)
 
 	_panel_tienda = PanelContainer.new()
-	_panel_tienda.custom_minimum_size = Vector2(640, 0)
+	_panel_tienda.custom_minimum_size = Vector2(680, 0)
+	_panel_tienda.mouse_filter = Control.MOUSE_FILTER_STOP
 	_panel_tienda.add_theme_stylebox_override("panel", _crear_caja(COLOR_FONDO, COLOR_CIAN, 3, 22))
 	centro.add_child(_panel_tienda)
 
@@ -264,7 +288,7 @@ func _construir_ui() -> void:
 	vbox.add_child(hbox_top)
 
 	var lbl_titulo := Label.new()
-	lbl_titulo.text = "EXPENDEDORA DE MEJORAS"
+	lbl_titulo.text = "MÁQUINA DE MEJORAS"
 	lbl_titulo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lbl_titulo.add_theme_font_size_override("font_size", 22)
 	lbl_titulo.add_theme_color_override("font_color", COLOR_CIAN)
@@ -288,18 +312,22 @@ func _construir_ui() -> void:
 	hbox_top.add_child(btn_x)
 
 	var lbl_sub := Label.new()
-	lbl_sub.text = "Las mejoras compradas se conservan durante toda la partida activa."
+	lbl_sub.text = "Todas las mejoras se conservan entre niveles y checkpoints durante tu partida."
 	lbl_sub.add_theme_font_size_override("font_size", 12)
 	lbl_sub.add_theme_color_override("font_color", Color(0.72, 0.84, 0.96))
 	vbox.add_child(lbl_sub)
 
-	# Tarjetas de las 3 mejoras balanceadas
+	# Tarjetas de las 3 mejoras
 	_tarjetas.clear()
+	_lbls_titulo_card.clear()
+	_lbls_desc_card.clear()
+	_lbls_nivel_card.clear()
 	_botones_compra.clear()
+
 	for i in range(_catalogo.size()):
 		var info: Dictionary = _catalogo[i]
 		var card := PanelContainer.new()
-		card.mouse_filter = Control.MOUSE_FILTER_PASS
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
 		var idx_local: int = i
 		card.mouse_entered.connect(func(): _seleccionar_tarjeta(idx_local))
 		vbox.add_child(card)
@@ -324,21 +352,31 @@ func _construir_ui() -> void:
 		textos.add_theme_constant_override("separation", 3)
 		fila.add_child(textos)
 
+		var cabecera_card := HBoxContainer.new()
+		cabecera_card.add_theme_constant_override("separation", 10)
+		textos.add_child(cabecera_card)
+
 		var lbl_nom := Label.new()
-		lbl_nom.text = "[%d] %s  —  %s" % [i + 1, str(info["nombre"]), str(info["subtitulo"])]
-		lbl_nom.add_theme_font_size_override("font_size", 16)
+		lbl_nom.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lbl_nom.add_theme_font_size_override("font_size", 15)
 		lbl_nom.add_theme_color_override("font_color", info["color"].lightened(0.25))
-		textos.add_child(lbl_nom)
+		cabecera_card.add_child(lbl_nom)
+		_lbls_titulo_card.append(lbl_nom)
+
+		var lbl_nv := Label.new()
+		lbl_nv.add_theme_font_size_override("font_size", 12)
+		cabecera_card.add_child(lbl_nv)
+		_lbls_nivel_card.append(lbl_nv)
 
 		var lbl_desc := Label.new()
-		lbl_desc.text = str(info["descripcion"])
 		lbl_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		lbl_desc.add_theme_font_size_override("font_size", 12)
 		lbl_desc.add_theme_color_override("font_color", Color(0.86, 0.92, 0.98))
 		textos.add_child(lbl_desc)
+		_lbls_desc_card.append(lbl_desc)
 
 		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(150, 42)
+		btn.custom_minimum_size = Vector2(150, 44)
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.add_theme_font_size_override("font_size", 13)
 		btn.mouse_entered.connect(func(): _seleccionar_tarjeta(idx_local))
@@ -355,7 +393,7 @@ func _construir_ui() -> void:
 	vbox.add_child(_lbl_feedback)
 
 	var lbl_atajos := Label.new()
-	lbl_atajos.text = "Controles: [W/S / ↑↓] Elegir   •   [1/2/3 / Enter / Clic] Comprar   •   [E / ESC] Salir"
+	lbl_atajos.text = "Controles: [Clic / 1-3 / Enter] Comprar   •   [W/S / ↑↓] Elegir   •   [E / ESC] Cerrar"
 	lbl_atajos.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_atajos.add_theme_font_size_override("font_size", 11)
 	lbl_atajos.add_theme_color_override("font_color", Color(0.60, 0.74, 0.88))

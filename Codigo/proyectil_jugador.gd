@@ -45,17 +45,17 @@ func configurar(nueva_direccion: Vector2, danio_personalizado: int = -1) -> void
 
 
 func _aplicar_estilo_visual() -> void:
-	var tiene_double_tap: bool = GameManager.tiene_mejora("double_tap")
+	var tiene_sobrecarga: bool = GameManager.bonus_danio > 0
 	if sprite != null:
 		sprite.flip_h = direccion.x < 0.0
-		sprite.modulate = Color(1.0, 0.72, 0.30, 1.0) if tiene_double_tap else Color(0.55, 0.96, 1.0, 1.0)
+		sprite.modulate = Color(1.0, 0.72, 0.30, 1.0) if tiene_sobrecarga else Color(0.55, 0.96, 1.0, 1.0)
 	if estela != null:
 		var dir_atras: float = -1.0 if direccion.x >= 0.0 else 1.0
 		estela.points = PackedVector2Array([
 			Vector2.ZERO,
 			Vector2(dir_atras * 18.0, 0.0),
 		])
-		estela.default_color = Color(1.0, 0.52, 0.18, 0.85) if tiene_double_tap else Color(0.22, 0.88, 1.0, 0.82)
+		estela.default_color = Color(1.0, 0.52, 0.18, 0.85) if tiene_sobrecarga else Color(0.22, 0.88, 1.0, 0.82)
 
 
 func _physics_process(delta: float) -> void:
@@ -94,7 +94,7 @@ func _crear_destello_impacto() -> void:
 	if escena == null:
 		return
 	var destello := ColorRect.new()
-	var tiene_dt := GameManager.tiene_mejora("double_tap")
+	var tiene_dt := GameManager.bonus_danio > 0
 	destello.size = Vector2(12, 12)
 	destello.global_position = global_position - Vector2(6, 6)
 	destello.color = Color(1.0, 0.75, 0.25, 0.95) if tiene_dt else Color(0.45, 0.98, 1.0, 0.95)

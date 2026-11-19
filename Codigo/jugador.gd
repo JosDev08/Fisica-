@@ -211,8 +211,9 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, velocidad_actual)
 
-	# Disparo continuo manteniendo teclas físicas J o Z
-	if (Input.is_physical_key_pressed(KEY_J) or Input.is_physical_key_pressed(KEY_Z)) and _cooldown_disparo <= 0.0:
-		intentar_disparar()
+	# Disparo continuo manteniendo teclas físicas J o Z (bloqueado si hay modal abierto)
+	if not get_tree().paused and not GameManager.hay_modal_interactivo_abierto():
+		if (Input.is_physical_key_pressed(KEY_J) or Input.is_physical_key_pressed(KEY_Z)) and _cooldown_disparo <= 0.0:
+			intentar_disparar()
 
 	move_and_slide()

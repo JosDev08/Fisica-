@@ -34,6 +34,8 @@
 [ext_resource type="Script" uid="uid://bjrm6e43n0jcu" path="res://Codigo/puzzle_electrodinamica_ohm.gd" id="32_ohm"]
 [ext_resource type="Script" uid="uid://dvhp0u5dkex2s" path="res://Codigo/salida_nivel_1.gd" id="33_salida"]
 [ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="34_zona_muerte"]
+[ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="35_maquina_perks"]
+[ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="36_moneda_rayo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -924,3 +926,29 @@ tamano_zona = Vector2(500, 600)
 [node name="ZonaMuerteSeguridad" parent="ZonasMuerte" unique_id=1121496723 instance=ExtResource("34_zona_muerte")]
 position = Vector2(800, 656)
 tamano_zona = Vector2(16000, 300)
+
+[node name="MaquinaPerks" parent="." unique_id=64920379 instance=ExtResource("35_maquina_perks")]
+position = Vector2(-90, 0)
+
+[node name="MonedasRayo" type="Node2D" parent="." unique_id=2078268079]
+
+[node name="MonedaRayo2" parent="MonedasRayo" unique_id=666313696 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(65, -28)
+
+[node name="MonedaRayo3" parent="MonedasRayo" unique_id=1741845185 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(185, -28)
+
+[node name="MonedaRayo4" parent="MonedasRayo" unique_id=59541443 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(325, -28)
+
+[node name="MonedaRayo5" parent="MonedasRayo" unique_id=1167611065 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(455, -28)
+
+[node name="MonedaRayo6" parent="MonedasRayo" unique_id=1734819043 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(800, 96)
+
+[node name="MonedaRayo7" parent="MonedasRayo" unique_id=1749505714 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(1300, -16)
+
+[node name="MonedaRayo8" parent="MonedasRayo" unique_id=1637638484 instance=ExtResource("36_moneda_rayo")]
+position = Vector2(1950, 96)
