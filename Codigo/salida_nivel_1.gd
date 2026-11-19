@@ -168,5 +168,6 @@ func _process(delta: float) -> void:
 
 func _cargar_nivel_2() -> void:
 	get_tree().paused = false
+	GameManager.completar_meta_nivel(ESCENA_NIVEL_2, POS_PUERTA_FINAL)
 	if ResourceLoader.exists(ESCENA_NIVEL_2):
 		get_tree().change_scene_to_file(ESCENA_NIVEL_2)

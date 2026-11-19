@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 12 12" shape-rendering="crispEdges">
+  <!-- Marco escudo carmesí (Jugger-Nog) -->
+  <rect x="2" y="0" width="8" height="1" fill="#380810"/>
+  <rect x="1" y="1" width="10" height="1" fill="#380810"/>
+  <rect x="0" y="2" width="12" height="6" fill="#380810"/>
+  <rect x="1" y="8" width="10" height="2" fill="#380810"/>
+  <rect x="3" y="10" width="6" height="1" fill="#380810"/>
+  <rect x="5" y="11" width="2" height="1" fill="#380810"/>
+
+  <!-- Relleno rojo brillante -->
+  <rect x="2" y="1" width="8" height="1" fill="#ff5967"/>
+  <rect x="1" y="2" width="10" height="6" fill="#d92338"/>
+  <rect x="2" y="8" width="8" height="1" fill="#b3172a"/>
+  <rect x="3" y="9" width="6" height="1" fill="#8f1120"/>
+  <rect x="5" y="10" width="2" height="1" fill="#8f1120"/>
+
+  <!-- Cruz médica / vida blanca pixel art -->
+  <rect x="5" y="3" width="2" height="6" fill="#ffffff"/>
+  <rect x="3" y="5" width="6" height="2" fill="#ffffff"/>
+  <rect x="5" y="3" width="2" height="1" fill="#ffe6e9"/>
+</svg>

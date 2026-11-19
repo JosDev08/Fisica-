@@ -208,7 +208,7 @@ func _crear_nucleo_secundario_y_barrera() -> void:
 	area_n.add_child(lbl_estado_nucleo)
 
 	lbl_prompt_nucleo = Label.new()
-	lbl_prompt_nucleo.text = "[E] Activar Núcleo Secundario"
+	lbl_prompt_nucleo.text = "[E] Interactuar"
 	lbl_prompt_nucleo.position = Vector2(-115, -38)
 	lbl_prompt_nucleo.size = Vector2(230, 20)
 	lbl_prompt_nucleo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

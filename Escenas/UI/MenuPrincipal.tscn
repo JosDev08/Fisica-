@@ -1,0 +1,147 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Codigo/UI/menu_principal.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/objetos/moneda_rayo.svg" id="2_rayo"]
+[ext_resource type="Texture2D" path="res://assets/objetos/moneda_tiempo.svg" id="3_tiempo"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_jugger_nog.svg" id="4_jugger"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_stamin_up.svg" id="5_stamin"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_double_tap.svg" id="6_double"]
+
+[node name="MenuPrincipal" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Centro" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelPrincipal" type="PanelContainer" parent="Centro"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Centro/PanelPrincipal"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="CajaTitulo" type="PanelContainer" parent="Centro/PanelPrincipal/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxTitulo" type="VBoxContainer" parent="Centro/PanelPrincipal/VBox/CajaTitulo"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Titulo" type="Label" parent="Centro/PanelPrincipal/VBox/CajaTitulo/VBoxTitulo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.85, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 38
+text = "EC3: FÍSICA ELÉCTRICA"
+horizontal_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="Centro/PanelPrincipal/VBox/CajaTitulo/VBoxTitulo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.9, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "ELECTROSTÁTICA  •  CAPACITORES  •  ELECTROMAGNETISMO"
+horizontal_alignment = 1
+
+[node name="IconosDecorativos" type="HBoxContainer" parent="Centro/PanelPrincipal/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="IconoRayo" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+texture_filter = 1
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+texture = ExtResource("2_rayo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconoTiempo" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+texture_filter = 1
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+texture = ExtResource("3_tiempo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconoJugger" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+texture = ExtResource("4_jugger")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconoStamin" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+texture = ExtResource("5_stamin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconoDouble" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+texture_filter = 1
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+texture = ExtResource("6_double")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Botones" type="VBoxContainer" parent="Centro/PanelPrincipal/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BtnJugar" type="Button" parent="Centro/PanelPrincipal/VBox/Botones"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "JUGAR"
+
+[node name="BtnContinuar" type="Button" parent="Centro/PanelPrincipal/VBox/Botones"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "CONTINUAR"
+
+[node name="LblEstadoGuardado" type="Label" parent="Centro/PanelPrincipal/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.78, 0.9, 1)
+theme_override_font_sizes/font_size = 12
+text = "Verificando checkpoint guardado..."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Separador" type="ColorRect" parent="Centro/PanelPrincipal/VBox"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.18, 0.36, 0.54, 0.75)
+
+[node name="LblControles" type="Label" parent="Centro/PanelPrincipal/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.82, 0.94, 0.9)
+theme_override_font_sizes/font_size = 11
+text = "[A / D / ◄ ►] Mover   •   [Espacio] Saltar   •   [Clic / J / Z] Disparar
+[E] Interactuar   •   [ESC] Pausa"
+horizontal_alignment = 1

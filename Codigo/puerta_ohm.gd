@@ -15,7 +15,7 @@ signal abierta
 @export var objetivo_aleatorio: bool = true
 ## Solo se usa si objetivo_aleatorio es false.
 @export var voltaje_objetivo: int = 24
-@export var texto_aviso: String = "[E] Panel de control"
+@export var texto_aviso: String = "[E] Interactuar"
 @export var duracion_candado: float = 0.6
 @export var duracion_reja: float = 1.0
 

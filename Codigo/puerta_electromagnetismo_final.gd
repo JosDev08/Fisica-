@@ -229,7 +229,7 @@ func _crear_consola_y_puerta_final() -> void:
 	area_c.add_child(spr_c)
 
 	lbl_prompt_consola = Label.new()
-	lbl_prompt_consola.text = "[E] Consola Maestra"
+	lbl_prompt_consola.text = "[E] Interactuar"
 	lbl_prompt_consola.position = Vector2(-110, -64)
 	lbl_prompt_consola.size = Vector2(220, 24)
 	lbl_prompt_consola.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -296,7 +296,7 @@ func _crear_consola_y_puerta_final() -> void:
 	area_p.add_child(col_p)
 
 	lbl_prompt_portal = Label.new()
-	lbl_prompt_portal.text = "[E] Sincronizar Salida"
+	lbl_prompt_portal.text = "[E] Interactuar"
 	lbl_prompt_portal.position = Vector2(-115, -74)
 	lbl_prompt_portal.size = Vector2(230, 24)
 	lbl_prompt_portal.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -525,6 +525,7 @@ func _desbloquear_puerta() -> void:
 func _cargar_escena_4() -> void:
 	if jugador_ref and jugador_ref.has_method("set_physics_process"):
 		jugador_ref.set_physics_process(true)
+	GameManager.completar_meta_nivel(ESCENA_FINAL_BOSQUE, POS_PUERTA)
 	if ResourceLoader.exists(ESCENA_FINAL_BOSQUE):
 		get_tree().change_scene_to_file(ESCENA_FINAL_BOSQUE)
 

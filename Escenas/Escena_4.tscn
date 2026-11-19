@@ -108,6 +108,8 @@ func _completar_nivel() -> void:
 	if completado:
 		return
 	completado = true
+	if Engine.has_singleton(\"GameManager\") or get_node_or_null(\"/root/GameManager\") != null:
+		GameManager.completar_meta_nivel(\"\", global_position)
 	print(\"¡Nivel Final Completado!\")
 	var etiqueta := get_node_or_null(\"AvisoMeta\") as Label
 	if etiqueta:

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Sombra / borde exterior oscuro -->
+  <rect x="5" y="0" width="6" height="1" fill="#3a2104"/>
+  <rect x="3" y="1" width="2" height="1" fill="#3a2104"/>
+  <rect x="11" y="1" width="2" height="1" fill="#3a2104"/>
+  <rect x="2" y="2" width="1" height="1" fill="#3a2104"/>
+  <rect x="13" y="2" width="1" height="1" fill="#3a2104"/>
+  <rect x="1" y="3" width="1" height="2" fill="#3a2104"/>
+  <rect x="14" y="3" width="1" height="2" fill="#3a2104"/>
+  <rect x="0" y="5" width="1" height="6" fill="#3a2104"/>
+  <rect x="15" y="5" width="1" height="6" fill="#3a2104"/>
+  <rect x="1" y="11" width="1" height="2" fill="#3a2104"/>
+  <rect x="14" y="11" width="1" height="2" fill="#3a2104"/>
+  <rect x="2" y="13" width="1" height="1" fill="#3a2104"/>
+  <rect x="13" y="13" width="1" height="1" fill="#3a2104"/>
+  <rect x="3" y="14" width="2" height="1" fill="#3a2104"/>
+  <rect x="11" y="14" width="2" height="1" fill="#3a2104"/>
+  <rect x="5" y="15" width="6" height="1" fill="#3a2104"/>
+
+  <!-- Aro dorado ornamentado -->
+  <rect x="5" y="1" width="6" height="2" fill="#f7c844"/>
+  <rect x="3" y="2" width="10" height="2" fill="#f7c844"/>
+  <rect x="2" y="3" width="12" height="10" fill="#e09f1f"/>
+  <rect x="1" y="5" width="14" height="6" fill="#e09f1f"/>
+  <rect x="3" y="12" width="10" height="2" fill="#b8730c"/>
+  <rect x="5" y="13" width="6" height="2" fill="#b8730c"/>
+
+  <!-- Detalles dorados brillantes / relieves ornamentados -->
+  <rect x="5" y="1" width="6" height="1" fill="#fff29c"/>
+  <rect x="3" y="2" width="2" height="1" fill="#fff29c"/>
+  <rect x="2" y="3" width="1" height="2" fill="#fff29c"/>
+  <rect x="1" y="5" width="1" height="3" fill="#ffd95e"/>
+  <rect x="7" y="1" width="2" height="1" fill="#ffffff"/>
+  <rect x="1" y="7" width="1" height="2" fill="#fff29c"/>
+  <rect x="14" y="7" width="1" height="2" fill="#8f5306"/>
+  <rect x="7" y="14" width="2" height="1" fill="#8f5306"/>
+  <!-- Muescas ornamentales en esquinas -->
+  <rect x="3" y="3" width="1" height="1" fill="#fff29c"/>
+  <rect x="12" y="3" width="1" height="1" fill="#f7c844"/>
+  <rect x="3" y="12" width="1" height="1" fill="#f7c844"/>
+  <rect x="12" y="12" width="1" height="1" fill="#8f5306"/>
+
+  <!-- Bisel interior oscuro -->
+  <rect x="5" y="3" width="6" height="10" fill="#0d3d73"/>
+  <rect x="4" y="4" width="8" height="8" fill="#0d3d73"/>
+  <rect x="3" y="5" width="10" height="6" fill="#0d3d73"/>
+
+  <!-- Centro azul brillante eléctrico -->
+  <rect x="5" y="4" width="6" height="8" fill="#1b8cff"/>
+  <rect x="4" y="5" width="8" height="6" fill="#1b8cff"/>
+  <rect x="5" y="5" width="6" height="6" fill="#47c4ff"/>
+  <rect x="5" y="4" width="3" height="1" fill="#7ce2ff"/>
+  <rect x="4" y="5" width="1" height="2" fill="#7ce2ff"/>
+
+  <!-- Rayo dorado central -->
+  <rect x="8" y="4" width="2" height="1" fill="#ffe666"/>
+  <rect x="7" y="5" width="2" height="1" fill="#fff7b2"/>
+  <rect x="6" y="6" width="2" height="1" fill="#fff7b2"/>
+  <rect x="5" y="7" width="6" height="1" fill="#ffe666"/>
+  <rect x="8" y="8" width="2" height="1" fill="#ffbf24"/>
+  <rect x="7" y="9" width="2" height="1" fill="#ffbf24"/>
+  <rect x="6" y="10" width="2" height="1" fill="#ffe666"/>
+  <rect x="6" y="11" width="1" height="1" fill="#f09c11"/>
+</svg>

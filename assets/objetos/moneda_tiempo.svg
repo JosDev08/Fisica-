@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Corona superior del cronómetro (plateado) -->
+  <rect x="6" y="0" width="4" height="1" fill="#1e2a38"/>
+  <rect x="6" y="1" width="4" height="1" fill="#dce8f5"/>
+  <rect x="7" y="1" width="2" height="1" fill="#ffffff"/>
+  <rect x="7" y="2" width="2" height="1" fill="#8da2b8"/>
+  <!-- Botón lateral derecho -->
+  <rect x="12" y="2" width="2" height="2" fill="#1e2a38"/>
+  <rect x="12" y="3" width="1" height="1" fill="#b7cde3"/>
+
+  <!-- Contorno circular oscuro -->
+  <rect x="5" y="2" width="6" height="1" fill="#1a2636"/>
+  <rect x="3" y="3" width="2" height="1" fill="#1a2636"/>
+  <rect x="11" y="3" width="2" height="1" fill="#1a2636"/>
+  <rect x="2" y="4" width="1" height="2" fill="#1a2636"/>
+  <rect x="13" y="4" width="1" height="2" fill="#1a2636"/>
+  <rect x="1" y="6" width="1" height="5" fill="#1a2636"/>
+  <rect x="14" y="6" width="1" height="5" fill="#1a2636"/>
+  <rect x="2" y="11" width="1" height="2" fill="#1a2636"/>
+  <rect x="13" y="11" width="1" height="2" fill="#1a2636"/>
+  <rect x="3" y="13" width="2" height="1" fill="#1a2636"/>
+  <rect x="11" y="13" width="2" height="1" fill="#1a2636"/>
+  <rect x="5" y="14" width="6" height="1" fill="#1a2636"/>
+
+  <!-- Aro plateado -->
+  <rect x="5" y="3" width="6" height="11" fill="#c7d8ea"/>
+  <rect x="3" y="4" width="10" height="9" fill="#a8bed4"/>
+  <rect x="2" y="6" width="12" height="5" fill="#a8bed4"/>
+  <!-- Brillos plateados -->
+  <rect x="5" y="3" width="6" height="1" fill="#eef6ff"/>
+  <rect x="3" y="4" width="2" height="1" fill="#eef6ff"/>
+  <rect x="2" y="6" width="1" height="2" fill="#eef6ff"/>
+  <rect x="5" y="13" width="6" height="1" fill="#6f87a1"/>
+  <rect x="13" y="9" width="1" height="2" fill="#6f87a1"/>
+
+  <!-- Esfera cian brillante -->
+  <rect x="5" y="4" width="6" height="9" fill="#0d4e66"/>
+  <rect x="4" y="5" width="8" height="7" fill="#0d4e66"/>
+  <rect x="3" y="6" width="10" height="5" fill="#0d4e66"/>
+
+  <rect x="5" y="5" width="6" height="7" fill="#18c9e0"/>
+  <rect x="4" y="6" width="8" height="5" fill="#18c9e0"/>
+  <rect x="5" y="5" width="4" height="3" fill="#6bf2ff"/>
+
+  <!-- Marcas del reloj (12, 3, 6, 9) -->
+  <rect x="7" y="5" width="2" height="1" fill="#e6ffff"/>
+  <rect x="7" y="11" width="2" height="1" fill="#0b6f82"/>
+  <rect x="4" y="8" width="1" height="1" fill="#e6ffff"/>
+  <rect x="11" y="8" width="1" height="1" fill="#0b6f82"/>
+
+  <!-- Manecillas del cronómetro -->
+  <rect x="7" y="6" width="1" height="3" fill="#102536"/>
+  <rect x="8" y="8" width="3" height="1" fill="#102536"/>
+  <rect x="7" y="8" width="1" height="1" fill="#ffffff"/>
+</svg>

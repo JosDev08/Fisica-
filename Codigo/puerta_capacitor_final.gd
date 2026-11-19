@@ -634,6 +634,7 @@ func _ir_a_escena_3() -> void:
 		get_viewport().gui_release_focus()
 	get_tree().paused = false
 	_congelar_jugador(false)
+	GameManager.completar_meta_nivel(ESCENA_SIGUIENTE, global_position)
 	if ResourceLoader.exists(ESCENA_SIGUIENTE):
 		get_tree().change_scene_to_file(ESCENA_SIGUIENTE)
 
