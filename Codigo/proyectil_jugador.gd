@@ -68,9 +68,12 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if _impactado or body == null:
+	if _impactado or body == null or not is_instance_valid(body):
 		return
 	if body.is_in_group("jugador"):
+		return
+	# Ignorar cadáveres de enemigos que ya murieron en el mismo frame
+	if "esta_muerto" in body and bool(body.get("esta_muerto")):
 		return
 
 	_impactado = true

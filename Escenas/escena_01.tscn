@@ -33,6 +33,7 @@
 [ext_resource type="Script" uid="uid://bk0l01vnj7rtc" path="res://Codigo/puzzle_electrostatica_coulomb.gd" id="31_coulomb"]
 [ext_resource type="Script" uid="uid://bjrm6e43n0jcu" path="res://Codigo/puzzle_electrodinamica_ohm.gd" id="32_ohm"]
 [ext_resource type="Script" uid="uid://dvhp0u5dkex2s" path="res://Codigo/salida_nivel_1.gd" id="33_salida"]
+[ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="34_zona_muerte"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -905,3 +906,21 @@ script = ExtResource("32_ohm")
 
 [node name="SalidaNivel1" type="Node2D" parent="." unique_id=1840010103]
 script = ExtResource("33_salida")
+
+[node name="ZonasMuerte" type="Node2D" parent="." unique_id=1954573759]
+
+[node name="ZonaMuerteFosoOhm" parent="ZonasMuerte" unique_id=2139460471 instance=ExtResource("34_zona_muerte")]
+position = Vector2(648, 340)
+tamano_zona = Vector2(88, 96)
+
+[node name="ZonaMuerteBordeIzquierdo" parent="ZonasMuerte" unique_id=1005525872 instance=ExtResource("34_zona_muerte")]
+position = Vector2(-940, 260)
+tamano_zona = Vector2(400, 600)
+
+[node name="ZonaMuerteBordeDerecho" parent="ZonasMuerte" unique_id=2066459321 instance=ExtResource("34_zona_muerte")]
+position = Vector2(2580, 260)
+tamano_zona = Vector2(500, 600)
+
+[node name="ZonaMuerteSeguridad" parent="ZonasMuerte" unique_id=1121496723 instance=ExtResource("34_zona_muerte")]
+position = Vector2(800, 656)
+tamano_zona = Vector2(16000, 300)

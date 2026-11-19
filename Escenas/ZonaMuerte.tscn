@@ -5,9 +5,11 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_zona"]
 size = Vector2(800, 64)
 
-[node name="ZonaMuerte" type="Area2D"]
+[node name="ZonaMuerte" type="Area2D" groups=["zonas_muerte"]]
 collision_layer = 0
-collision_mask = 1
+collision_mask = 3
+monitoring = true
+monitorable = true
 script = ExtResource("1_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://blylkyw71cvdy" path="res://Codigo/puzzle_electroiman_puente.gd" id="8_electroiman"]
 [ext_resource type="Script" uid="uid://cc0e7civn1crm" path="res://Codigo/puzzle_induccion_faraday.gd" id="9_faraday"]
 [ext_resource type="Script" uid="uid://dkqq21wde0x5b" path="res://Codigo/puerta_electromagnetismo_final.gd" id="10_puerta_em"]
+[ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="11_zona_muerte"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_0j3rl")
@@ -1288,3 +1289,33 @@ script = ExtResource("9_faraday")
 
 [node name="PuertaElectromagnetismoFinal" type="Node2D" parent="." unique_id=1950010103]
 script = ExtResource("10_puerta_em")
+
+[node name="ZonasMuerte" type="Node2D" parent="."]
+
+[node name="ZonaMuerteFosoTramo1" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(-840, 120)
+tamano_zona = Vector2(560, 96)
+
+[node name="ZonaMuerteFoso2" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(8, 120)
+tamano_zona = Vector2(140, 96)
+
+[node name="ZonaMuerteFosoElectroiman" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(488, 150)
+tamano_zona = Vector2(140, 96)
+
+[node name="ZonaMuerteFosoCentral" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(1128, 150)
+tamano_zona = Vector2(432, 96)
+
+[node name="ZonaMuerteBordeIzquierdo" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(-1560, 120)
+tamano_zona = Vector2(480, 500)
+
+[node name="ZonaMuerteBordeDerecho" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(4740, 120)
+tamano_zona = Vector2(500, 500)
+
+[node name="ZonaMuerteSeguridad" parent="ZonasMuerte" instance=ExtResource("11_zona_muerte")]
+position = Vector2(1600, 400)
+tamano_zona = Vector2(20000, 300)

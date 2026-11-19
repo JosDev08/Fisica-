@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://Codigo/puzzle_puente_capacitores.gd" id="29_p1cap"]
 [ext_resource type="Script" path="res://Codigo/puzzle_elevador_energia.gd" id="30_p2cap"]
 [ext_resource type="Script" path="res://Codigo/puerta_capacitor_final.gd" id="31_p3cap"]
+[ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="32_zona_muerte"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_nvj0p")
@@ -1006,3 +1007,25 @@ position = Vector2(1435, 103)
 
 [node name="enemigo_6" parent="." unique_id=1788783403 instance=ExtResource("7_gdrao")]
 position = Vector2(2070, 101)
+
+[node name="ZonasMuerte" type="Node2D" parent="."]
+
+[node name="ZonaMuerteFoso1" parent="ZonasMuerte" instance=ExtResource("32_zona_muerte")]
+position = Vector2(-272, 180)
+tamano_zona = Vector2(96, 120)
+
+[node name="ZonaMuerteFoso2" parent="ZonasMuerte" instance=ExtResource("32_zona_muerte")]
+position = Vector2(168, 180)
+tamano_zona = Vector2(460, 120)
+
+[node name="ZonaMuerteBordeIzquierdo" parent="ZonasMuerte" instance=ExtResource("32_zona_muerte")]
+position = Vector2(-1460, 160)
+tamano_zona = Vector2(500, 600)
+
+[node name="ZonaMuerteBordeDerecho" parent="ZonasMuerte" instance=ExtResource("32_zona_muerte")]
+position = Vector2(3900, 220)
+tamano_zona = Vector2(500, 600)
+
+[node name="ZonaMuerteSeguridad" parent="ZonasMuerte" instance=ExtResource("32_zona_muerte")]
+position = Vector2(1200, 528)
+tamano_zona = Vector2(18000, 300)

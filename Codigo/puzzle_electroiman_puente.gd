@@ -203,8 +203,12 @@ func _activar_checkpoint(idx: int, spawn_pos: Vector2, body: CharacterBody2D) ->
 	ultimo_checkpoint_pos = spawn_pos
 	if idx > indice_checkpoint_activo:
 		indice_checkpoint_activo = idx
-	if body and "vida_actual" in body:
-		body.vida_actual = 100
+	if get_tree() and get_tree().current_scene and not get_tree().current_scene.scene_file_path.is_empty():
+		GameManager.registrar_checkpoint(get_tree().current_scene.scene_file_path, spawn_pos, true)
+	if body and body.has_method("sincronizar_con_game_manager"):
+		body.sincronizar_con_game_manager(true)
+	elif body and "vida_actual" in body:
+		body.vida_actual = GameManager.obtener_vida_maxima()
 	for i in range(_luces_checkpoint.size()):
 		var activo := (i + 1) <= indice_checkpoint_activo
 		_luces_checkpoint[i].color = Color(0.2, 1.0, 0.55, 1.0) if activo else Color(0.9, 0.3, 0.3, 0.95)
@@ -212,31 +216,10 @@ func _activar_checkpoint(idx: int, spawn_pos: Vector2, body: CharacterBody2D) ->
 			_labels_checkpoint[i].text = "✓ CHECKPOINT %02d" % idx
 			_labels_checkpoint[i].add_theme_color_override("font_color", Color(0.25, 1.0, 0.58))
 
-func _verificar_rescate_jugador(delta: float) -> void:
-	if not is_instance_valid(jugador_ref):
-		var root := get_tree().current_scene if get_tree() else null
-		if root:
-			jugador_ref = root.get_node_or_null("CharacterBody2D") as CharacterBody2D
-	if not is_instance_valid(jugador_ref):
-		return
-
-	var cayo_al_vacio := jugador_ref.global_position.y > 315.0
-	var murio := ("esta_muerto" in jugador_ref and bool(jugador_ref.esta_muerto))
-	if cayo_al_vacio or murio:
-		_timer_reaparicion += delta
-		if cayo_al_vacio or _timer_reaparicion >= 0.55:
-			_timer_reaparicion = 0.0
-			jugador_ref.global_position = ultimo_checkpoint_pos
-			jugador_ref.velocity = Vector2.ZERO
-			if "vida_actual" in jugador_ref:
-				jugador_ref.vida_actual = 100
-			if "esta_muerto" in jugador_ref:
-				jugador_ref.esta_muerto = false
-			var anim := jugador_ref.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
-			if anim:
-				anim.play("Reposo")
-	else:
-		_timer_reaparicion = 0.0
+func _verificar_rescate_jugador(_delta: float) -> void:
+	# Delegado a ZonaMuerte + GameManager + PantallaMuerte para que toda caída
+	# muestre PantallaMuerte y permita reintentar desde el último checkpoint.
+	pass
 
 func _crear_electroiman_y_puente() -> void:
 	var nodo_iman := Node2D.new()

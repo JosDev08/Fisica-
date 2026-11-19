@@ -2,8 +2,8 @@ extends CanvasLayer
 
 # ==============================================================================
 # PANTALLA DE MUERTE (res://Escenas/PantallaMuerte.tscn)
-# Se muestra cuando el jugador cae a una ZonaMuerte, su vida llega a 0
-# o el temporizador llega a 0. Permite reaparecer en el último checkpoint.
+# CanvasLayer en layer = 100 (por encima del HUD y efectos de cámara) y
+# process_mode = PROCESS_MODE_ALWAYS para responder aunque el árbol esté pausado.
 # ==============================================================================
 
 const COLOR_ROJO := Color(1.0, 0.28, 0.32)
@@ -18,7 +18,7 @@ const COLOR_ORO := Color(0.98, 0.82, 0.28)
 
 
 func _ready() -> void:
-	layer = 30
+	layer = 100
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("pantalla_muerte")
 	visible = false
@@ -47,10 +47,11 @@ func _on_jugador_murio(motivo: String) -> void:
 	var nivel := GameManager.obtener_nombre_nivel(GameManager.checkpoint_escena)
 	lbl_checkpoint.text = "Último checkpoint: %s\nConservarás tus Monedas de Rayo y mejoras de partida." % nivel
 
-	# Pequeña pausa breve para apreciar la animación de muerte en combate
-	var es_tiempo := motivo.to_upper().contains("TIEMPO")
-	if not es_tiempo and is_inside_tree():
-		await get_tree().create_timer(0.55, true).timeout
+	# En caídas al vacío o fin de tiempo mostrar de inmediato; en combate breve pausa de animación
+	var motivo_mayus := motivo.to_upper()
+	var mostrar_inmediato := motivo_mayus.contains("VACÍO") or motivo_mayus.contains("VACIO") or motivo_mayus.contains("TIEMPO")
+	if not mostrar_inmediato and is_inside_tree():
+		await get_tree().create_timer(0.45, true).timeout
 		if not GameManager.jugador_muerto:
 			return
 

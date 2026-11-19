@@ -216,6 +216,8 @@ func reaparecer_en_checkpoint() -> void:
 	_modales_abiertos = 0
 	vida_actual = obtener_vida_maxima()
 	tiempo_restante = TIEMPO_NIVEL_DEFAULT
+	get_tree().paused = false
+	reiniciar_zonas_muerte()
 
 	var escena_destino := checkpoint_escena
 	if escena_destino.is_empty() or not ResourceLoader.exists(escena_destino):
@@ -224,12 +226,20 @@ func reaparecer_en_checkpoint() -> void:
 		else:
 			escena_destino = ESCENA_NIVEL_1
 
-	_usar_posicion_pendiente = (checkpoint_posicion != Vector2.ZERO)
+	_usar_posicion_pendiente = tiene_checkpoint and (checkpoint_posicion != Vector2.ZERO)
 	_posicion_pendiente_respawn = checkpoint_posicion
 
-	get_tree().paused = false
 	_escena_actual_id = -1
 	get_tree().change_scene_to_file(escena_destino)
+
+
+func reiniciar_zonas_muerte() -> void:
+	for zona in get_tree().get_nodes_in_group("zonas_muerte"):
+		if is_instance_valid(zona):
+			if zona.has_method("reiniciar"):
+				zona.reiniciar()
+			elif "activada" in zona:
+				zona.activada = false
 
 
 func volver_al_menu_principal() -> void:
@@ -491,7 +501,8 @@ func _configurar_escena_juego(escena: Node) -> void:
 	elif not ruta.is_empty() and ((not tiene_checkpoint) or checkpoint_escena != ruta):
 		registrar_checkpoint(ruta, Vector2.ZERO, false)
 
-	# 2. Garantizar HUD y Pantalla de Muerte presentes en cualquier escena de juego
+	# 2. Reiniciar bandera activada en todas las zonas de muerte y garantizar UI
+	reiniciar_zonas_muerte()
 	_asegurar_ui_de_nivel(escena)
 
 	# 3. Iniciar cuenta regresiva del nivel y emitir estado inicial a la UI
