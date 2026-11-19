@@ -170,10 +170,11 @@ func _on_tiempo_cambiado(segundos: float) -> void:
 	var segs: int = total_seg % 60
 	lbl_tiempo.text = "%02d:%02d" % [mins, segs]
 
-	_en_alerta_tiempo = segundos <= 15.0 and segundos > 0.0
-	if segundos <= 15.0:
+	_en_alerta_tiempo = segundos < 15.0 and segundos > 0.0
+	if segundos < 15.0:
 		lbl_tiempo.add_theme_color_override("font_color", COLOR_ROJO)
 	else:
+		_tiempo_alerta_fase = 0.0
 		lbl_tiempo.add_theme_color_override("font_color", Color(0.82, 0.96, 1.0))
 		lbl_tiempo.modulate = Color.WHITE
 

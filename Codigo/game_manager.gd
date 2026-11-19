@@ -36,7 +36,9 @@ const COSTOS_VIDA: Array[int] = [3, 5, 7]
 const COSTOS_VELOCIDAD: Array[int] = [3, 5, 7]
 const COSTOS_DANIO: Array[int] = [4, 6, 8]
 
-const TIEMPO_NIVEL_DEFAULT: float = 120.0
+const TIEMPO_NIVEL_DEFAULT: float = 65.0
+
+var tiempo_inicial_nivel: float = 65.0
 
 # Estado persistente de la partida activa (conservado entre niveles y checkpoints)
 var monedas_rayo: int = 0
@@ -57,7 +59,7 @@ var mejoras: Dictionary = {
 
 # Estado temporal de la sesión en curso
 var vida_actual: int = VIDA_BASE
-var tiempo_restante: float = TIEMPO_NIVEL_DEFAULT
+var tiempo_restante: float = 65.0
 var temporizador_activo: bool = false
 var jugador_muerto: bool = false
 var en_pausa: bool = false
@@ -194,7 +196,7 @@ func nueva_partida() -> void:
 	checkpoint_posicion = Vector2.ZERO
 	tiene_checkpoint = true
 	vida_actual = obtener_vida_maxima()
-	tiempo_restante = TIEMPO_NIVEL_DEFAULT
+	tiempo_restante = tiempo_inicial_nivel
 	temporizador_activo = false
 	jugador_muerto = false
 	en_pausa = false
@@ -223,6 +225,7 @@ func continuar_partida() -> void:
 	en_pausa = false
 	_modales_abiertos = 0
 	vida_actual = obtener_vida_maxima()
+	tiempo_restante = tiempo_inicial_nivel
 	_usar_posicion_pendiente = (checkpoint_posicion != Vector2.ZERO)
 	_posicion_pendiente_respawn = checkpoint_posicion
 
@@ -239,7 +242,7 @@ func reaparecer_en_checkpoint() -> void:
 	en_pausa = false
 	_modales_abiertos = 0
 	vida_actual = obtener_vida_maxima()
-	tiempo_restante = TIEMPO_NIVEL_DEFAULT
+	tiempo_restante = tiempo_inicial_nivel
 	get_tree().paused = false
 	reiniciar_zonas_muerte()
 
@@ -315,8 +318,9 @@ func sumar_monedas(cantidad: int = 1) -> void:
 	monedas_cambiadas.emit(monedas_rayo)
 
 
-func iniciar_temporizador(segundos: float = TIEMPO_NIVEL_DEFAULT) -> void:
-	tiempo_restante = maxf(1.0, segundos)
+func iniciar_temporizador(segundos: float = -1.0) -> void:
+	var tiempo_obj: float = tiempo_inicial_nivel if segundos <= 0.0 else segundos
+	tiempo_restante = maxf(1.0, tiempo_obj)
 	temporizador_activo = true
 	tiempo_cambiado.emit(tiempo_restante)
 
@@ -592,7 +596,7 @@ func _configurar_escena_juego(escena: Node) -> void:
 	_asegurar_ui_de_nivel(escena)
 
 	# 3. Iniciar cuenta regresiva del nivel y emitir estado inicial a la UI
-	iniciar_temporizador(TIEMPO_NIVEL_DEFAULT)
+	iniciar_temporizador(tiempo_inicial_nivel)
 	monedas_cambiadas.emit(monedas_rayo)
 	mejoras_cambiadas.emit(mejoras.duplicate())
 	vida_cambiada.emit(vida_actual, obtener_vida_maxima())
