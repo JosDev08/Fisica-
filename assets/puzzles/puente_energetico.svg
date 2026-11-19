@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="20" viewBox="0 0 160 20" shape-rendering="crispEdges">
+  <!-- Anclajes metálicos izquierdo y derecho -->
+  <rect x="0" y="0" width="14" height="20" fill="#1a2639"/>
+  <rect x="2" y="2" width="10" height="16" fill="#324666"/>
+  <rect x="10" y="6" width="4" height="8" fill="#38e8ff"/>
+  <rect x="146" y="0" width="14" height="20" fill="#1a2639"/>
+  <rect x="148" y="2" width="10" height="16" fill="#324666"/>
+  <rect x="146" y="6" width="4" height="8" fill="#38e8ff"/>
+  <!-- Cuerpo energético del puente -->
+  <rect x="14" y="2" width="132" height="16" fill="#0e4a66"/>
+  <rect x="14" y="4" width="132" height="12" fill="#24b8e6"/>
+  <rect x="14" y="8" width="132" height="4" fill="#a8f7ff"/>
+  <!-- Segmentos pixel art -->
+  <rect x="34" y="2" width="4" height="16" fill="#123247"/>
+  <rect x="58" y="2" width="4" height="16" fill="#123247"/>
+  <rect x="82" y="2" width="4" height="16" fill="#123247"/>
+  <rect x="106" y="2" width="4" height="16" fill="#123247"/>
+  <rect x="130" y="2" width="4" height="16" fill="#123247"/>
+</svg>

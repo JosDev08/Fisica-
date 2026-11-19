@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="64" viewBox="0 0 48 64" shape-rendering="crispEdges">
+  <!-- Base y pedestal -->
+  <rect x="4" y="56" width="40" height="8" fill="#182234"/>
+  <rect x="6" y="58" width="36" height="4" fill="#2c3e5a"/>
+  <rect x="8" y="8" width="32" height="48" fill="#121a28"/>
+  <rect x="10" y="10" width="28" height="44" fill="#1d2c44"/>
+  <!-- Marco superior e indicadores -->
+  <rect x="12" y="4" width="24" height="6" fill="#223452"/>
+  <rect x="16" y="6" width="16" height="2" fill="#38e8ff"/>
+  <!-- Pantalla principal (Equilibrio Coulomb: +q1 ... q0 ... +q2) -->
+  <rect x="12" y="14" width="24" height="20" fill="#07121f"/>
+  <rect x="13" y="15" width="22" height="18" fill="#0b2238"/>
+  <rect x="15" y="23" width="18" height="2" fill="#226688"/>
+  <!-- Carga q1 izquierda -->
+  <rect x="15" y="21" width="4" height="6" fill="#ff5566"/>
+  <rect x="16" y="20" width="2" height="8" fill="#ff8899"/>
+  <!-- Carga prueba q0 -->
+  <rect x="21" y="22" width="4" height="4" fill="#ffdd44"/>
+  <!-- Carga q2 derecha -->
+  <rect x="29" y="20" width="4" height="8" fill="#38e8ff"/>
+  <rect x="30" y="19" width="2" height="10" fill="#a8f7ff"/>
+  <!-- Panel de botones y rejilla -->
+  <rect x="12" y="38" width="24" height="8" fill="#0e1827"/>
+  <rect x="14" y="40" width="4" height="4" fill="#38e8ff"/>
+  <rect x="20" y="40" width="4" height="4" fill="#ffdd44"/>
+  <rect x="26" y="40" width="4" height="4" fill="#3be880"/>
+  <rect x="32" y="40" width="2" height="4" fill="#ff5566"/>
+  <!-- Ventilación inferior -->
+  <rect x="14" y="49" width="20" height="2" fill="#0c1320"/>
+  <rect x="14" y="53" width="20" height="2" fill="#0c1320"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="112" viewBox="0 0 28 112" shape-rendering="crispEdges">
+  <!-- Emisor superior -->
+  <rect x="2" y="0" width="24" height="12" fill="#1b2638"/>
+  <rect x="4" y="2" width="20" height="8" fill="#30435f"/>
+  <rect x="6" y="10" width="16" height="4" fill="#ff3b5c"/>
+  <!-- Haz de plasma central -->
+  <rect x="6" y="14" width="16" height="84" fill="#ff2a55" fill-opacity="0.35"/>
+  <rect x="10" y="14" width="8" height="84" fill="#ff4d73" fill-opacity="0.75"/>
+  <rect x="12" y="14" width="4" height="84" fill="#ffd6e0"/>
+  <!-- Anillos energéticos -->
+  <rect x="6" y="26" width="16" height="4" fill="#ff8fa3"/>
+  <rect x="6" y="46" width="16" height="4" fill="#ff8fa3"/>
+  <rect x="6" y="66" width="16" height="4" fill="#ff8fa3"/>
+  <rect x="6" y="86" width="16" height="4" fill="#ff8fa3"/>
+  <!-- Emisor inferior -->
+  <rect x="6" y="98" width="16" height="4" fill="#ff3b5c"/>
+  <rect x="2" y="100" width="24" height="12" fill="#1b2638"/>
+  <rect x="4" y="102" width="20" height="8" fill="#30435f"/>
+</svg>

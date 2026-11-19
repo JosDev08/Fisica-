@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="112" viewBox="0 0 36 112" shape-rendering="crispEdges">
+  <!-- Marco de acero -->
+  <rect x="0" y="0" width="36" height="112" fill="#182028"/>
+  <rect x="3" y="3" width="30" height="106" fill="#354352"/>
+  <!-- Placas remachadas -->
+  <rect x="6" y="8" width="24" height="24" fill="#46586b"/>
+  <rect x="6" y="38" width="24" height="36" fill="#2a3542"/>
+  <rect x="6" y="80" width="24" height="24" fill="#46586b"/>
+  <!-- Franjas de advertencia -->
+  <rect x="6" y="32" width="6" height="6" fill="#ffbe33"/>
+  <rect x="18" y="32" width="6" height="6" fill="#ffbe33"/>
+  <rect x="12" y="74" width="6" height="6" fill="#ffbe33"/>
+  <rect x="24" y="74" width="6" height="6" fill="#ffbe33"/>
+  <!-- Núcleo de bloqueo central -->
+  <rect x="11" y="46" width="14" height="20" fill="#161d24"/>
+  <rect x="14" y="50" width="8" height="12" fill="#ff4757"/>
+  <rect x="16" y="53" width="4" height="6" fill="#ffd6db"/>
+  <!-- Remaches -->
+  <rect x="8" y="10" width="2" height="2" fill="#8ca2b8"/>
+  <rect x="26" y="10" width="2" height="2" fill="#8ca2b8"/>
+  <rect x="8" y="100" width="2" height="2" fill="#8ca2b8"/>
+  <rect x="26" y="100" width="2" height="2" fill="#8ca2b8"/>
+</svg>

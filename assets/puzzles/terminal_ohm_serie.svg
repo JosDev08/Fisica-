@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="64" viewBox="0 0 48 64" shape-rendering="crispEdges">
+  <!-- Base industrial -->
+  <rect x="4" y="56" width="40" height="8" fill="#241c14"/>
+  <rect x="6" y="58" width="36" height="4" fill="#4a3824"/>
+  <rect x="8" y="8" width="32" height="48" fill="#1c2228"/>
+  <rect x="10" y="10" width="28" height="44" fill="#2c3640"/>
+  <!-- Luz superior de estado -->
+  <rect x="14" y="4" width="20" height="6" fill="#3b4856"/>
+  <rect x="18" y="6" width="12" height="2" fill="#ffbe33"/>
+  <!-- Pantalla circuito serie V -> R_motor -> Rx -->
+  <rect x="12" y="14" width="24" height="20" fill="#091314"/>
+  <rect x="13" y="15" width="22" height="18" fill="#0f2622"/>
+  <rect x="15" y="18" width="18" height="2" fill="#3be880"/>
+  <rect x="15" y="28" width="18" height="2" fill="#3be880"/>
+  <rect x="15" y="18" width="2" height="12" fill="#3be880"/>
+  <rect x="31" y="18" width="2" height="12" fill="#3be880"/>
+  <!-- Resistor serie en pantalla -->
+  <rect x="19" y="17" width="10" height="4" fill="#ffbe33"/>
+  <rect x="21" y="27" width="6" height="4" fill="#38e8ff"/>
+  <!-- Controles -->
+  <rect x="12" y="38" width="24" height="8" fill="#13191f"/>
+  <rect x="14" y="40" width="6" height="4" fill="#ffbe33"/>
+  <rect x="22" y="40" width="6" height="4" fill="#3be880"/>
+  <rect x="30" y="40" width="4" height="4" fill="#ff5566"/>
+  <!-- Rejilla inferior -->
+  <rect x="14" y="49" width="20" height="2" fill="#12171c"/>
+  <rect x="14" y="53" width="20" height="2" fill="#12171c"/>
+</svg>

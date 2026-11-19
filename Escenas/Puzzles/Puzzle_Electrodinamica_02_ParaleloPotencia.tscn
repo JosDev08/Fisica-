@@ -1,0 +1,81 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Codigo/Puzzles/puzzle_electrodinamica_02_paralelo_potencia.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/puzzles/terminal_potencia_paralelo.svg" id="2_terminal"]
+[ext_resource type="Texture2D" path="res://assets/puzzles/plataforma_elevadora.svg" id="3_elevador"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terminal"]
+size = Vector2(116, 88)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_elevador"]
+size = Vector2(96, 20)
+
+[node name="Puzzle_Electrodinamica_02_ParaleloPotencia" type="Node2D"]
+script = ExtResource("1_script")
+texto_prompt = "[E] Resolver Puzzle"
+
+[node name="TerminalSprite" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -32)
+texture = ExtResource("2_terminal")
+
+[node name="TerminalArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerminalArea"]
+position = Vector2(0, -32)
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="PromptInteractuar" type="Label" parent="TerminalArea"]
+visible = false
+z_index = 25
+offset_left = -104.0
+offset_top = -94.0
+offset_right = 104.0
+offset_bottom = -70.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Resolver Puzzle"
+horizontal_alignment = 1
+
+[node name="RielGuia" type="ColorRect" parent="."]
+z_index = -1
+offset_left = 116.0
+offset_top = -180.0
+offset_right = 124.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.14, 0.24, 0.34, 0.85)
+
+[node name="PlataformaElevadora" type="AnimatableBody2D" parent="."]
+position = Vector2(120, -10)
+collision_layer = 16
+collision_mask = 0
+sync_to_physics = true
+
+[node name="Sprite2D" type="Sprite2D" parent="PlataformaElevadora"]
+texture_filter = 1
+texture = ExtResource("3_elevador")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlataformaElevadora"]
+shape = SubResource("RectangleShape2D_elevador")
+
+[node name="EstadoElevador" type="Label" parent="PlataformaElevadora"]
+z_index = 20
+offset_left = -64.0
+offset_top = -34.0
+offset_right = 64.0
+offset_bottom = -14.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.98, 0.84, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "SIN POTENCIA"
+horizontal_alignment = 1

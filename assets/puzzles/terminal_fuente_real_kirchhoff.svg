@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="64" viewBox="0 0 48 64" shape-rendering="crispEdges">
+  <!-- Base industrial -->
+  <rect x="4" y="56" width="40" height="8" fill="#261c12"/>
+  <rect x="6" y="58" width="36" height="4" fill="#4f3920"/>
+  <rect x="8" y="8" width="32" height="48" fill="#1a2128"/>
+  <rect x="10" y="10" width="28" height="44" fill="#2a3540"/>
+  <!-- Indicador superior de batería -->
+  <rect x="14" y="4" width="20" height="6" fill="#3b4958"/>
+  <rect x="17" y="6" width="14" height="2" fill="#ffaa2b"/>
+  <!-- Pantalla: fuente real (fem + r_i) y carga R_L -->
+  <rect x="12" y="14" width="24" height="20" fill="#091214"/>
+  <rect x="13" y="15" width="22" height="18" fill="#0f2326"/>
+  <!-- Lazo de Kirchhoff -->
+  <rect x="16" y="18" width="16" height="2" fill="#3be880"/>
+  <rect x="16" y="28" width="16" height="2" fill="#3be880"/>
+  <rect x="16" y="18" width="2" height="12" fill="#3be880"/>
+  <rect x="30" y="18" width="2" height="12" fill="#3be880"/>
+  <!-- Batería izquierda -->
+  <rect x="14" y="21" width="6" height="2" fill="#ffaa2b"/>
+  <rect x="15" y="25" width="4" height="2" fill="#ff5566"/>
+  <!-- r_i arriba y R_L derecha -->
+  <rect x="21" y="17" width="6" height="4" fill="#ff5566"/>
+  <rect x="29" y="21" width="4" height="6" fill="#38e8ff"/>
+  <!-- Controles -->
+  <rect x="12" y="38" width="24" height="8" fill="#12181f"/>
+  <rect x="14" y="40" width="6" height="4" fill="#ffaa2b"/>
+  <rect x="22" y="40" width="6" height="4" fill="#38e8ff"/>
+  <rect x="30" y="40" width="4" height="4" fill="#3be880"/>
+  <!-- Rejillas -->
+  <rect x="14" y="49" width="20" height="2" fill="#10161c"/>
+  <rect x="14" y="53" width="20" height="2" fill="#10161c"/>
+</svg>
