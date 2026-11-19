@@ -1,0 +1,107 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Codigo/Puzzles/puzzle_electrostatica_coulomb.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/nivel_1/tablero_electrico.svg" id="2_term"]
+[ext_resource type="Texture2D" path="res://assets/nivel_1/emisor_polaridad.svg" id="3_emisor"]
+[ext_resource type="Texture2D" path="res://assets/nivel_1/esfera_cargada.svg" id="4_esfera"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terminal"]
+size = Vector2(116, 92)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_esfera"]
+radius = 40.0
+
+[node name="PuzzleElectrostaticaCoulomb" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="CableConexion" type="Line2D" parent="."]
+z_index = -1
+points = PackedVector2Array(0, -32, 0, -195, 110, -195)
+width = 4.0
+default_color = Color(0.24, 0.85, 1, 0.75)
+
+[node name="TerminalArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TerminalArea"]
+texture_filter = 1
+position = Vector2(0, -32)
+texture = ExtResource("2_term")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerminalArea"]
+position = Vector2(0, -40)
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="PromptInteractuar" type="Label" parent="TerminalArea"]
+visible = false
+z_index = 25
+offset_left = -90.0
+offset_top = -94.0
+offset_right = 90.0
+offset_bottom = -70.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Interactuar"
+horizontal_alignment = 1
+
+[node name="EmisorSuperior" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(110, -195)
+texture = ExtResource("3_emisor")
+
+[node name="LblEmisor" type="Label" parent="EmisorSuperior"]
+offset_left = -85.0
+offset_top = -48.0
+offset_right = 85.0
+offset_bottom = -26.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.35, 0.95, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "EMISOR q₁"
+horizontal_alignment = 1
+
+[node name="EsferaCargada" type="StaticBody2D" parent="."]
+position = Vector2(110, -44)
+collision_layer = 16
+collision_mask = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="EsferaCargada"]
+texture_filter = 1
+texture = ExtResource("4_esfera")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EsferaCargada"]
+shape = SubResource("CircleShape2D_esfera")
+
+[node name="LblEsfera" type="Label" parent="EsferaCargada"]
+offset_left = -64.0
+offset_top = 42.0
+offset_right = 64.0
+offset_bottom = 64.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.78, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "q₂ = +6 µC"
+horizontal_alignment = 1
+
+[node name="LblEstadoMundo" type="Label" parent="."]
+offset_left = -10.0
+offset_top = -262.0
+offset_right = 230.0
+offset_bottom = -238.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "OBJETIVO: 96 N ↑"
+horizontal_alignment = 1

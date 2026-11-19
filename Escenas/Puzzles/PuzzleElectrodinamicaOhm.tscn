@@ -1,0 +1,91 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Codigo/Puzzles/puzzle_electrodinamica_ohm.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/nivel_1/tablero_electrico.svg" id="2_term"]
+[ext_resource type="Texture2D" path="res://assets/nivel_1/puente_ohm.svg" id="3_puente"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terminal"]
+size = Vector2(116, 92)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_puente"]
+size = Vector2(160, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_barrera"]
+size = Vector2(14, 112)
+
+[node name="PuzzleElectrodinamicaOhm" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="CableConexion" type="Line2D" parent="."]
+z_index = -1
+points = PackedVector2Array(0, -16, 0, 10, 63, 10)
+width = 4.0
+default_color = Color(0.95, 0.72, 0.22, 0.85)
+
+[node name="TerminalArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TerminalArea"]
+texture_filter = 1
+position = Vector2(0, -32)
+texture = ExtResource("2_term")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerminalArea"]
+position = Vector2(0, -40)
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="PromptInteractuar" type="Label" parent="TerminalArea"]
+visible = false
+z_index = 25
+offset_left = -90.0
+offset_top = -94.0
+offset_right = 90.0
+offset_bottom = -70.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Interactuar"
+horizontal_alignment = 1
+
+[node name="PuenteOhm" type="StaticBody2D" parent="."]
+position = Vector2(139, 10)
+collision_layer = 16
+collision_mask = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="PuenteOhm"]
+texture_filter = 1
+texture = ExtResource("3_puente")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PuenteOhm"]
+shape = SubResource("RectangleShape2D_puente")
+disabled = true
+
+[node name="BarreraAbismo" type="StaticBody2D" parent="."]
+position = Vector2(63, -56)
+collision_layer = 16
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BarreraAbismo"]
+shape = SubResource("RectangleShape2D_barrera")
+
+[node name="VisualBarrera" type="Polygon2D" parent="BarreraAbismo"]
+color = Color(1, 0.32, 0.22, 0.75)
+polygon = PackedVector2Array(-5, -56, 5, -56, 5, 56, -5, 56)
+
+[node name="LblEstadoPuente" type="Label" parent="."]
+offset_left = 14.0
+offset_top = -48.0
+offset_right = 264.0
+offset_bottom = -20.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "PUENTE APAGADO"
+horizontal_alignment = 1

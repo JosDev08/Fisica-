@@ -4,12 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://cfhoxf6dh7hy0" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/Tileset.png" id="2_2pbli"]
 [ext_resource type="Texture2D" uid="uid://c1oqlyjuy7ahc" path="res://Recursos/AAASASAS/1 Tiles/Tileset.png" id="2_u3wey"]
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="3_u3wey"]
-[ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="4_33u70"]
 [ext_resource type="Texture2D" uid="uid://c0vqjnbriq5bd" path="res://Recursos/a2/3. NEW CLOUDS/1.png" id="5_mxswm"]
 [ext_resource type="PackedScene" uid="uid://b8ygpea1qro15" path="res://Escenas/enemigo_03.tscn" id="7_2pbli"]
-[ext_resource type="Script" uid="uid://blylkyw71cvdy" path="res://Codigo/puzzle_electroiman_puente.gd" id="8_electroiman"]
-[ext_resource type="Script" uid="uid://cc0e7civn1crm" path="res://Codigo/puzzle_induccion_faraday.gd" id="9_faraday"]
-[ext_resource type="Script" uid="uid://dkqq21wde0x5b" path="res://Codigo/puerta_electromagnetismo_final.gd" id="10_puerta_em"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuzzleElectroimanBobinas.tscn" id="8_puz_electroiman"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuzzleInduccionFaraday.tscn" id="9_puz_faraday"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuertaSalidaElectromagnetismo.tscn" id="10_puerta_em"]
 [ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="11_zona_muerte"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="12_maquina_perks"]
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="13_moneda_rayo"]
@@ -1244,9 +1243,6 @@ limit_right = 4600
 limit_bottom = 360
 position_smoothing_enabled = true
 
-[node name="PuertaOhm" parent="." unique_id=1935477980 instance=ExtResource("4_33u70")]
-position = Vector2(3263, 115)
-
 [node name="CanvasLayer2" type="CanvasLayer" parent="." unique_id=1043227491]
 layer = -1
 
@@ -1283,14 +1279,15 @@ position = Vector2(2380, -26)
 [node name="enemigo_09" parent="." unique_id=1950010105 instance=ExtResource("7_2pbli")]
 position = Vector2(3420, -26)
 
-[node name="PuzzleElectroiman" type="Node2D" parent="." unique_id=1950010101]
-script = ExtResource("8_electroiman")
+[node name="PuzzleElectroimanBobinas" parent="." instance=ExtResource("8_puz_electroiman")]
+position = Vector2(330, 0)
 
-[node name="PuzzleInduccionFaraday" type="Node2D" parent="." unique_id=1950010102]
-script = ExtResource("9_faraday")
+[node name="PuzzleInduccionFaraday" parent="." instance=ExtResource("9_puz_faraday")]
+position = Vector2(2595, 0)
 
-[node name="PuertaElectromagnetismoFinal" type="Node2D" parent="." unique_id=1950010103]
-script = ExtResource("10_puerta_em")
+[node name="PuertaSalidaElectromagnetismo" parent="." instance=ExtResource("10_puerta_em")]
+position = Vector2(3540, 0)
+ruta_siguiente_escena = "res://Escenas/Escena_4.tscn"
 
 [node name="ZonasMuerte" type="Node2D" parent="."]
 

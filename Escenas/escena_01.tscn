@@ -27,12 +27,11 @@
 [ext_resource type="Texture2D" uid="uid://itg0gqigx8r0" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/2.png" id="24_rpopd"]
 [ext_resource type="Texture2D" uid="uid://dmawa60crqvhn" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/3.png" id="25_3bn0j"]
 [ext_resource type="Texture2D" uid="uid://djk10ncqiomka" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Bushes/4.png" id="26_e84pn"]
-[ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="28_kb7tp"]
 [ext_resource type="Texture2D" uid="uid://b6bdf7gcmw5jf" path="res://Recursos/a2/2. NEW CLOUDS/1.png" id="29_65iae"]
 [ext_resource type="PackedScene" uid="uid://cfmxjedk2s834" path="res://Escenas/enemigo.tscn" id="30_hwlub"]
-[ext_resource type="Script" uid="uid://bk0l01vnj7rtc" path="res://Codigo/puzzle_electrostatica_coulomb.gd" id="31_coulomb"]
-[ext_resource type="Script" uid="uid://bjrm6e43n0jcu" path="res://Codigo/puzzle_electrodinamica_ohm.gd" id="32_ohm"]
-[ext_resource type="Script" uid="uid://dvhp0u5dkex2s" path="res://Codigo/salida_nivel_1.gd" id="33_salida"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuzzleElectrostaticaCoulomb.tscn" id="31_puz_coulomb"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuzzleElectrodinamicaOhm.tscn" id="32_puz_ohm"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuertaSalidaOhm.tscn" id="33_puerta_ohm"]
 [ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="34_zona_muerte"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="35_maquina_perks"]
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="36_moneda_rayo"]
@@ -868,9 +867,6 @@ position = Vector2(2, -65)
 position = Vector2(-2, 6)
 zoom = Vector2(2, 2)
 
-[node name="PuertaOhm" parent="." unique_id=1935477980 instance=ExtResource("28_kb7tp")]
-position = Vector2(2227, 112)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1303038274]
 layer = -1
 
@@ -900,14 +896,15 @@ position = Vector2(2130, 73)
 [node name="Enemigo5" parent="." unique_id=1577215261 instance=ExtResource("30_hwlub")]
 position = Vector2(-285, -37)
 
-[node name="PuzzleElectrostatica" type="Node2D" parent="." unique_id=1840010101]
-script = ExtResource("31_coulomb")
+[node name="PuzzleElectrostaticaCoulomb" parent="." instance=ExtResource("31_puz_coulomb")]
+position = Vector2(130, 0)
 
-[node name="PuzzleElectrodinamica" type="Node2D" parent="." unique_id=1840010102]
-script = ExtResource("32_ohm")
+[node name="PuzzleElectrodinamicaOhm" parent="." instance=ExtResource("32_puz_ohm")]
+position = Vector2(525, 0)
 
-[node name="SalidaNivel1" type="Node2D" parent="." unique_id=1840010103]
-script = ExtResource("33_salida")
+[node name="PuertaSalidaOhm" parent="." instance=ExtResource("33_puerta_ohm")]
+position = Vector2(2155, 112)
+ruta_siguiente_escena = "res://Escenas/escena_02.tscn"
 
 [node name="ZonasMuerte" type="Node2D" parent="." unique_id=1954573759]
 

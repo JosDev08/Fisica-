@@ -6,9 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://df0bkbtcqahvc" path="res://Escenas/enemigo_02.tscn" id="7_gdrao"]
 [ext_resource type="Texture2D" uid="uid://c0vqjnbriq5bd" path="res://Recursos/a2/3. NEW CLOUDS/1.png" id="10_bqa2f"]
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="27_sikce"]
-[ext_resource type="Script" path="res://Codigo/puzzle_puente_capacitores.gd" id="29_p1cap"]
-[ext_resource type="Script" path="res://Codigo/puzzle_elevador_energia.gd" id="30_p2cap"]
-[ext_resource type="Script" path="res://Codigo/puerta_capacitor_final.gd" id="31_p3cap"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuzzleCapacitoresSerieParalelo.tscn" id="29_puz_cap_sp"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuzzleEnergiaElevador.tscn" id="30_puz_energia"]
+[ext_resource type="PackedScene" path="res://Escenas/Puzzles/PuertaSalidaCapacitor.tscn" id="31_puerta_cap"]
 [ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="32_zona_muerte"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="33_maquina_perks"]
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="34_moneda_rayo"]
@@ -967,15 +967,15 @@ position = Vector2(-2, 6)
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 
-[node name="PuzzlePuenteCapacitores" type="Node2D" parent="." unique_id=1935477981]
-script = ExtResource("29_p1cap")
+[node name="PuzzleCapacitoresSerieParalelo" parent="." instance=ExtResource("29_puz_cap_sp")]
+position = Vector2(-96, 0)
 
-[node name="PuzzleElevadorEnergia" type="Node2D" parent="." unique_id=1935477982]
-script = ExtResource("30_p2cap")
+[node name="PuzzleEnergiaElevador" parent="." instance=ExtResource("30_puz_energia")]
+position = Vector2(1275, 128)
 
-[node name="PuertaCapacitorFinal" type="Node2D" parent="." unique_id=1935477980]
-position = Vector2(3263, 128)
-script = ExtResource("31_p3cap")
+[node name="PuertaSalidaCapacitor" parent="." instance=ExtResource("31_puerta_cap")]
+position = Vector2(3191, 128)
+ruta_siguiente_escena = "res://Escenas/escena_03.tscn"
 
 [node name="CanvasLayer2" type="CanvasLayer" parent="." unique_id=1043227491]
 layer = -1

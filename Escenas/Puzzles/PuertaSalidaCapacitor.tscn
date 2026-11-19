@@ -1,0 +1,88 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Codigo/Puzzles/puerta_salida_capacitor.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/nivel_2/terminal_capacitor.svg" id="2_term"]
+[ext_resource type="Texture2D" path="res://assets/nivel_2/puerta_capacitor.svg" id="3_puerta"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terminal"]
+size = Vector2(116, 92)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_puerta"]
+size = Vector2(48, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_portal"]
+size = Vector2(64, 120)
+
+[node name="PuertaSalidaCapacitor" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="CableConexion" type="Line2D" parent="."]
+z_index = -1
+points = PackedVector2Array(0, -16, 0, -4, 72, -4, 72, -64)
+width = 5.0
+default_color = Color(0.9, 0.25, 0.3, 0.9)
+
+[node name="TerminalArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TerminalArea"]
+texture_filter = 1
+position = Vector2(0, -32)
+texture = ExtResource("2_term")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerminalArea"]
+position = Vector2(0, -40)
+shape = SubResource("RectangleShape2D_terminal")
+
+[node name="PromptInteractuar" type="Label" parent="TerminalArea"]
+visible = false
+z_index = 25
+offset_left = -90.0
+offset_top = -94.0
+offset_right = 90.0
+offset_bottom = -70.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Interactuar"
+horizontal_alignment = 1
+
+[node name="CompuertaCapacitor" type="StaticBody2D" parent="."]
+position = Vector2(72, -64)
+collision_layer = 16
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="CompuertaCapacitor"]
+texture_filter = 1
+texture = ExtResource("3_puerta")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CompuertaCapacitor"]
+shape = SubResource("RectangleShape2D_puerta")
+
+[node name="PortalSalida" type="Area2D" parent="."]
+position = Vector2(96, -56)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PortalSalida"]
+shape = SubResource("RectangleShape2D_portal")
+
+[node name="LblEstadoPuerta" type="Label" parent="."]
+offset_left = -58.0
+offset_top = -152.0
+offset_right = 202.0
+offset_bottom = -126.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "PUERTA BLOQUEADA"
+horizontal_alignment = 1
