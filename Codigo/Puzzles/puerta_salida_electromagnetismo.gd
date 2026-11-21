@@ -17,6 +17,7 @@ const F2_FRECUENCIAS: Array[float] = [1.0, 2.0, 3.0, 4.0, 5.0]
 @export var ruta_siguiente_escena: String = "res://Escenas/Escena_4.tscn"
 @export var valor_objetivo_fase1: float = 1.50
 @export var valor_objetivo_fase2: float = 180.0
+@export var objetivo_aleatorio: bool = true
 
 var fase_actual: int = 1
 var fase_1_ok: bool = false
@@ -40,6 +41,34 @@ var lbl_formula: Label
 var lbl_a_val: Label
 var lbl_b_val: Label
 var btn_accion: Button
+
+
+func generar_problema() -> void:
+	if objetivo_aleatorio:
+		var candidatas_f1: Array[float] = []
+		for n1 in F1_ESPIRAS:
+			for i1 in F1_CORRIENTES:
+				var b_c: float = float(n1) * i1 * F1_FACTOR
+				if b_c >= 0.75 and is_zero_approx(fmod(round(b_c * 1000.0), 50.0)):
+					if not candidatas_f1.has(b_c):
+						candidatas_f1.append(b_c)
+		if not candidatas_f1.is_empty():
+			valor_objetivo_fase1 = candidatas_f1[randi() % candidatas_f1.size()]
+
+		var n2_w: int = F2_ESPIRAS[randi_range(1, F2_ESPIRAS.size() - 1)]
+		var f2_w: float = F2_FRECUENCIAS[randi_range(1, F2_FRECUENCIAS.size() - 1)]
+		valor_objetivo_fase2 = valor_objetivo_fase1 * float(n2_w) * f2_w
+
+	fase_actual = 1
+	fase_1_ok = false
+	puerta_abierta = false
+	idx_a = randi() % F1_ESPIRAS.size()
+	idx_b = randi() % F1_CORRIENTES.size()
+	var intentos := 0
+	while intentos < 30 and is_equal_approx(_valor_actual(), valor_objetivo_fase1):
+		idx_a = randi() % F1_ESPIRAS.size()
+		idx_b = randi() % F1_CORRIENTES.size()
+		intentos += 1
 
 
 func _inicializar_puzzle() -> void:
@@ -206,8 +235,13 @@ func _ejecutar_accion() -> void:
 		if fase_1_ok or is_equal_approx(val, valor_objetivo_fase1):
 			fase_1_ok = true
 			fase_actual = 2
-			idx_a = 1
-			idx_b = 1
+			idx_a = randi() % F2_ESPIRAS.size()
+			idx_b = randi() % F2_FRECUENCIAS.size()
+			var intentos := 0
+			while intentos < 30 and is_equal_approx(_valor_actual(), valor_objetivo_fase2):
+				idx_a = randi() % F2_ESPIRAS.size()
+				idx_b = randi() % F2_FRECUENCIAS.size()
+				intentos += 1
 			_actualizar_estado()
 	else:
 		if is_equal_approx(val, valor_objetivo_fase2):

@@ -3,16 +3,14 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 # ==============================================================================
 # PUZZLE ELECTRODINÁMICA 01: FUENTE REAL Y KIRCHHOFF (Física II/III Ingeniería)
 # Fórmulas destacadas: V_ab = fem - I * r_i   |   I = V_ab / R_L
-# Datos: fem = 48 V, r_i = 2 Ohm, V_ab = 40 V nominal.
-# Solución: I = (48 - 40) / 2 = 4 A => R_L = V_ab / I = 40 / 4 = 10 Ohm.
-# Opciones: 8 Ohm, 10 Ohm, 12 Ohm, 20 Ohm.
+# Genera fem, r_i y V_ab aleatorios con I y R_L enteros exactos, 3 distractores
+# realistas y mezcla los 4 botones con opciones.shuffle().
 # Al resolver: abre suavemente la compuerta metálica hija en Capa 5 (Suelo).
 # ==============================================================================
 
-const FEM_V := 48.0
-const R_INTERNA_OHM := 2.0
-const VAB_OBJETIVO_V := 40.0
-const OPCIONES_RL: Array[int] = [8, 10, 12, 20]
+const OPCIONES_RI: Array[int] = [1, 2, 3, 4]
+const OPCIONES_I: Array[int] = [2, 3, 4, 5, 6]
+const OPCIONES_RL_BASE: Array[int] = [6, 8, 10, 12, 15, 16, 20]
 
 @export var respuesta_correcta_ohm: int = 10
 @export var altura_apertura: float = 116.0
@@ -23,11 +21,18 @@ const OPCIONES_RL: Array[int] = [8, 10, 12, 20]
 @onready var compuerta_sprite: Sprite2D = $CompuertaMetalica/Sprite2D
 @onready var lbl_estado_compuerta: Label = $CompuertaMetalica/EstadoCompuerta
 
+var fem_v: int = 48
+var r_interna_ohm: int = 2
+var vab_objetivo_v: int = 40
+var i_nominal_a: int = 4
+var opciones_rl: Array[int] = []
+
 var resuelto: bool = false
 var pos_cerrada: Vector2 = Vector2.ZERO
 var pos_abierta: Vector2 = Vector2.ZERO
-var indice_sel: int = 0 # Inicia en 8 Ohm (no resuelto)
+var indice_sel: int = 0
 
+var lbl_enunciado: Label
 var botones_opcion: Array[Button] = []
 var lbl_lectura: Label
 var barra_vab: ProgressBar
@@ -41,6 +46,39 @@ func _init() -> void:
 	ancho_panel = 680.0
 
 
+func generar_problema() -> void:
+	var combinaciones: Array = []
+	for ri in OPCIONES_RI:
+		for i_val in OPCIONES_I:
+			for rl in OPCIONES_RL_BASE:
+				var vab: int = i_val * rl
+				var fem: int = vab + i_val * ri
+				if fem >= 20 and fem <= 120 and rl > ri:
+					combinaciones.append([fem, ri, vab, i_val, rl])
+
+	var elegida: Array = combinaciones[randi() % combinaciones.size()]
+	fem_v = int(elegida[0])
+	r_interna_ohm = int(elegida[1])
+	vab_objetivo_v = int(elegida[2])
+	i_nominal_a = int(elegida[3])
+	respuesta_correcta_ohm = int(elegida[4])
+
+	# 3 distractores típicos: R_total (dividir fem/I), restar r_i extra, o doblar R_L
+	var d_rtotal: int = respuesta_correcta_ohm + r_interna_ohm
+	var d_menos_ri: int = maxi(2, respuesta_correcta_ohm - r_interna_ohm)
+	var d_doble: int = respuesta_correcta_ohm * 2
+	var d_mitad: int = maxi(2, int(round(float(respuesta_correcta_ohm) * 0.5)))
+
+	opciones_rl = construir_opciones_int(
+		respuesta_correcta_ohm,
+		[d_rtotal, d_menos_ri, d_doble, d_mitad],
+		2,
+		100,
+		2
+	)
+	indice_sel = indice_inicial_no_correcto(opciones_rl, respuesta_correcta_ohm)
+
+
 func _inicializar_puzzle() -> void:
 	if compuerta_body != null:
 		pos_cerrada = compuerta_body.position
@@ -49,7 +87,6 @@ func _inicializar_puzzle() -> void:
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
-	# Recuadro destacado de fórmulas físicas
 	var caja_formula := PanelContainer.new()
 	caja_formula.add_theme_stylebox_override("panel", crear_caja(Color(0.11, 0.09, 0.05, 0.98), COLOR_AMARILLO, 2, 10))
 	vbox.add_child(caja_formula)
@@ -63,19 +100,18 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	lbl_formula.add_theme_constant_override("outline_size", 3)
 	caja_formula.add_child(lbl_formula)
 
-	# Enunciado con datos de ingeniería
 	var caja_enunciado := PanelContainer.new()
 	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.06, 0.10, 0.13, 0.96), COLOR_CIAN, 2, 12))
 	vbox.add_child(caja_enunciado)
 
-	var lbl_enunciado := Label.new()
+	lbl_enunciado = Label.new()
 	lbl_enunciado.text = (
 		"FÍSICA II/III — ACTUADOR CON FUENTE REAL:\n"
-		+ "Una batería industrial de fem = 48 V con resistencia interna r_i = 2 Ohm alimenta el actuador "
+		+ "Una batería industrial de fem = %d V con resistencia interna r_i = %d Ohm alimenta el actuador "
 		+ "de una compuerta. Para operar en su punto nominal requiere un voltaje en terminales exacto "
-		+ "V_ab = 40 V.\n"
+		+ "V_ab = %d V.\n"
 		+ "Selecciona la resistencia de carga R_L del actuador."
-	)
+	) % [fem_v, r_interna_ohm, vab_objetivo_v]
 	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_enunciado.add_theme_font_size_override("font_size", 14)
 	lbl_enunciado.add_theme_color_override("font_color", Color(0.95, 0.97, 0.99))
@@ -94,9 +130,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	vbox.add_child(fila_opc)
 
 	botones_opcion.clear()
-	for i in range(OPCIONES_RL.size()):
+	for i in range(opciones_rl.size()):
 		var btn := Button.new()
-		btn.text = "%d Ohm" % OPCIONES_RL[i]
+		btn.text = "%d Ohm" % opciones_rl[i]
 		btn.custom_minimum_size = Vector2(132, 40)
 		btn.focus_mode = Control.FOCUS_NONE
 		var idx_local := i
@@ -104,7 +140,6 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 		fila_opc.add_child(btn)
 		botones_opcion.append(btn)
 
-	# Telemetría de terminales
 	var caja_sim := PanelContainer.new()
 	caja_sim.add_theme_stylebox_override("panel", crear_caja(Color(0.04, 0.08, 0.11, 0.96), Color(0.28, 0.65, 0.52), 2, 10))
 	vbox.add_child(caja_sim)
@@ -125,7 +160,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	v_sim.add_child(barra_vab)
 
 	lbl_feedback = Label.new()
-	lbl_feedback.text = "Halla primero la corriente I desde la caída interna (fem - V_ab = I * r_i) y luego R_L."
+	lbl_feedback.text = "Halla I desde (%d - %d) = I * %d y luego despeja R_L = %d / I." % [
+		fem_v, vab_objetivo_v, r_interna_ohm, vab_objetivo_v
+	]
 	lbl_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_feedback.add_theme_font_size_override("font_size", 13)
@@ -156,7 +193,7 @@ func _procesar_tecla_panel(kc: int) -> bool:
 		_seleccionar_opcion(maxi(0, indice_sel - 1))
 		return true
 	if kc == KEY_RIGHT or kc == KEY_D:
-		_seleccionar_opcion(mini(OPCIONES_RL.size() - 1, indice_sel + 1))
+		_seleccionar_opcion(mini(opciones_rl.size() - 1, indice_sel + 1))
 		return true
 	if kc == KEY_ENTER or kc == KEY_KP_ENTER:
 		_comprobar_respuesta()
@@ -167,14 +204,14 @@ func _procesar_tecla_panel(kc: int) -> bool:
 func _seleccionar_opcion(idx: int) -> void:
 	if resuelto:
 		return
-	indice_sel = clampi(idx, 0, OPCIONES_RL.size() - 1)
+	indice_sel = clampi(idx, 0, opciones_rl.size() - 1)
 	_actualizar_ui()
 
 
 func _actualizar_ui() -> void:
-	var rl_sel: int = OPCIONES_RL[indice_sel]
-	var i_real: float = FEM_V / (R_INTERNA_OHM + float(rl_sel))
-	var vab_real: float = FEM_V - i_real * R_INTERNA_OHM
+	var rl_sel: int = opciones_rl[indice_sel]
+	var i_real: float = float(fem_v) / float(r_interna_ohm + rl_sel)
+	var vab_real: float = float(fem_v) - i_real * float(r_interna_ohm)
 
 	for i in range(botones_opcion.size()):
 		var activo := (i == indice_sel)
@@ -183,11 +220,10 @@ func _actualizar_ui() -> void:
 		botones_opcion[i].disabled = resuelto
 
 	lbl_lectura.text = (
-		"R_L = %d Ohm  |  I = 48/(2+%d) = %.2f A  =>  V_ab = %.2f V   (Nominal: 40.00 V)"
-		% [rl_sel, rl_sel, i_real, vab_real]
+		"Opción: R_L = %d Ohm  |  fem = %d V, r_i = %d Ohm  |  Nominal: V_ab = %d V"
+		% [rl_sel, fem_v, r_interna_ohm, vab_objetivo_v]
 	)
-	var col_barra := COLOR_VERDE if rl_sel == respuesta_correcta_ohm else (COLOR_ROJO if vab_real < VAB_OBJETIVO_V else COLOR_AMARILLO)
-	actualizar_barra(barra_vab, vab_real, FEM_V, col_barra)
+	actualizar_barra(barra_vab, vab_real, float(fem_v), COLOR_VERDE if resuelto else COLOR_CIAN)
 
 	if resuelto:
 		btn_comprobar.text = "COMPUERTA METÁLICA ABIERTA — CERRAR"
@@ -202,32 +238,33 @@ func _comprobar_respuesta() -> void:
 		cerrar_panel()
 		return
 
-	var rl_sel: int = OPCIONES_RL[indice_sel]
-	var i_real: float = FEM_V / (R_INTERNA_OHM + float(rl_sel))
-	var vab_real: float = FEM_V - i_real * R_INTERNA_OHM
+	var rl_sel: int = opciones_rl[indice_sel]
+	var i_real: float = float(fem_v) / float(r_interna_ohm + rl_sel)
+	var vab_real: float = float(fem_v) - i_real * float(r_interna_ohm)
+	var caida_int: int = fem_v - vab_objetivo_v
 
 	if rl_sel == respuesta_correcta_ohm:
 		resuelto = true
 		lbl_feedback.text = (
-			"¡CORRECTO! Paso 1: De V_ab = fem - I * r_i => 40 = 48 - I * 2 => I = 8 / 2 = 4 A.\n"
-			+ "Paso 2: Aplicamos Ley de Ohm a la carga: R_L = V_ab / I = 40 / 4 = 10 Ohm.\n"
-			+ "Actuador en punto nominal (40 V, 4 A). Abriendo compuerta metálica."
-		)
+			"¡CORRECTO! Paso 1: De V_ab = fem - I * r_i => I = (%d - %d) / %d = %d / %d = %d A.\n"
+			+ "Paso 2: Aplicamos Ley de Ohm en la carga: R_L = V_ab / I = %d / %d = %d Ohm.\n"
+			+ "Actuador en punto nominal (%d V, %d A). Abriendo compuerta metálica."
+		) % [fem_v, vab_objetivo_v, r_interna_ohm, caida_int, r_interna_ohm, i_nominal_a, vab_objetivo_v, i_nominal_a, respuesta_correcta_ohm, vab_objetivo_v, i_nominal_a]
 		lbl_feedback.add_theme_color_override("font_color", COLOR_VERDE)
 		_aplicar_estado_compuerta()
 		_actualizar_ui()
 		return
 
-	if vab_real < VAB_OBJETIVO_V:
+	if vab_real < float(vab_objetivo_v):
 		lbl_feedback.text = (
-			"INCORRECTO (R_L = %d Ohm): La corriente sube a I = %.2f A y el voltaje cae a V_ab = %.2f V (< 40 V).\n"
-			+ "Paso a paso: Despeja I = (48 - 40) / 2 = 4 A y luego calcula R_L = 40 / 4."
-		) % [rl_sel, i_real, vab_real]
+			"INCORRECTO (R_L = %d Ohm): La corriente sube a I = %.2f A y el voltaje cae a V_ab = %.2f V (< %d V).\n"
+			+ "Paso a paso: Despeja I = (%d - %d) / %d = %d A y luego R_L = %d / %d."
+		) % [rl_sel, i_real, vab_real, vab_objetivo_v, fem_v, vab_objetivo_v, r_interna_ohm, i_nominal_a, vab_objetivo_v, i_nominal_a]
 	else:
 		lbl_feedback.text = (
-			"INCORRECTO (R_L = %d Ohm): Con R_L = %d Ohm circula I = %.2f A y V_ab = %.2f V (> 40 V).\n"
-			+ "Paso a paso: No dividas la fem (48 V) entre 4 A; usa el voltaje en terminales R_L = V_ab / I = 40 / 4."
-		) % [rl_sel, rl_sel, i_real, vab_real]
+			"INCORRECTO (R_L = %d Ohm): Con R_L = %d Ohm circula I = %.2f A y V_ab = %.2f V (> %d V).\n"
+			+ "Paso a paso: No dividas fem (%d V) entre %d A; usa V_ab en terminales: R_L = %d / %d."
+		) % [rl_sel, rl_sel, i_real, vab_real, vab_objetivo_v, fem_v, i_nominal_a, vab_objetivo_v, i_nominal_a]
 	lbl_feedback.add_theme_color_override("font_color", COLOR_ROJO)
 
 

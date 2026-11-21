@@ -8,10 +8,11 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 
 const VALORES_N: Array[int] = [20, 30, 40, 50, 60]
 const VALORES_F: Array[float] = [1.0, 2.0, 3.0, 4.0, 5.0]
+const VALORES_FLUJO: Array[float] = [0.5, 1.0, 2.0]
 
 @export var valor_objetivo: float = 120.0
 @export var flujo_base_wb: float = 1.0
-@export var objetivo_aleatorio: bool = false
+@export var objetivo_aleatorio: bool = true
 
 var idx_n: int = 1
 var idx_f: int = 1
@@ -35,27 +36,29 @@ var lbl_n_val: Label
 var lbl_f_val: Label
 
 
+func generar_problema() -> void:
+	if objetivo_aleatorio:
+		flujo_base_wb = VALORES_FLUJO[randi() % VALORES_FLUJO.size()]
+		var nw: int = VALORES_N[randi_range(1, VALORES_N.size() - 1)]
+		var fw: float = VALORES_F[randi_range(1, VALORES_F.size() - 1)]
+		valor_objetivo = float(nw) * fw * flujo_base_wb
+
+	idx_n = randi() % VALORES_N.size()
+	idx_f = randi() % VALORES_F.size()
+	var intentos := 0
+	while intentos < 25 and is_equal_approx(_calcular_fem(), valor_objetivo):
+		idx_n = randi() % VALORES_N.size()
+		idx_f = randi() % VALORES_F.size()
+		intentos += 1
+	completado = false
+
+
 func _inicializar_puzzle() -> void:
 	titulo_panel = "GENERADOR DE FARADAY — INDUCCIÓN (ε = N · f · ΔΦ)"
 	if lbl_titulo_ui != null:
 		lbl_titulo_ui.text = titulo_panel
 	if compuerta_body != null:
 		_pos_compuerta_cerrada = compuerta_body.position
-
-	if objetivo_aleatorio:
-		var nw := VALORES_N[randi_range(1, VALORES_N.size() - 1)]
-		var fw := VALORES_F[randi_range(1, VALORES_F.size() - 1)]
-		valor_objetivo = float(nw) * fw * flujo_base_wb
-
-	idx_n = 1
-	idx_f = 1
-	var intentos := 0
-	while intentos < 25 and is_equal_approx(_calcular_fem(), valor_objetivo):
-		idx_n = randi_range(0, VALORES_N.size() - 1)
-		idx_f = randi_range(0, VALORES_F.size() - 1)
-		intentos += 1
-
-	completado = false
 	_actualizar_estado(false)
 
 

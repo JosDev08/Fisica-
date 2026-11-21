@@ -37,11 +37,7 @@ var btn_verificar: Button
 var btn_siguiente: Button
 
 
-func _inicializar_puzzle() -> void:
-	titulo_panel = "COMPUERTA DE SALIDA — LEY DE OHM (V = I × R)"
-	if lbl_titulo_ui != null:
-		lbl_titulo_ui.text = titulo_panel
-
+func generar_problema() -> void:
 	if objetivo_aleatorio:
 		var i_win := randi_range(maxi(2, corriente_min), corriente_max)
 		var r_win := randi_range(maxi(2, resistencia_min), resistencia_max)
@@ -54,6 +50,12 @@ func _inicializar_puzzle() -> void:
 		corriente_val = randi_range(corriente_min, corriente_max)
 		resistencia_val = randi_range(resistencia_min, resistencia_max)
 		intentos += 1
+
+
+func _inicializar_puzzle() -> void:
+	titulo_panel = "COMPUERTA DE SALIDA — LEY DE OHM (V = I × R)"
+	if lbl_titulo_ui != null:
+		lbl_titulo_ui.text = titulo_panel
 
 	if portal_area != null:
 		portal_area.collision_layer = 0

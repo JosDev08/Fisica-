@@ -2,15 +2,15 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 
 # ==============================================================================
 # PUZZLE ELECTRODINÁMICA 01: LEY DE OHM EN SERIE (Nivel Preuniversitario UNI)
-# Enunciado: V = 60 V, R_motor = 4 Ohm, I = 5 A exigida por el fusible.
-# Fórmula: V = I * (R_motor + Rx) => 60 = 5 * (4 + Rx) => Rx = 8 Ohm.
-# Al resolver: abre suavemente la compuerta metálica hija.
+# Fórmula destacada: V = I * (R_motor + Rx)  =>  Rx = (V / I) - R_motor
+# Genera V, R_motor e I aleatorios con Rx entero exacto, 3 distractores realistas
+# (R_total sin restar R_motor, sumar en vez de restar, etc.) y opciones.shuffle().
+# Al resolver: abre suavemente la compuerta metálica hija en Capa 5 (Suelo).
 # ==============================================================================
 
-const VOLTAJE_V := 60.0
-const R_MOTOR_OHM := 4.0
-const CORRIENTE_OBJETIVO_A := 5.0
-const OPCIONES_RX: Array[int] = [2, 4, 6, 8, 10, 12]
+const OPCIONES_I_OBJ: Array[int] = [2, 3, 4, 5, 6]
+const OPCIONES_RMOTOR: Array[int] = [2, 3, 4, 5, 6]
+const OPCIONES_RX_BASE: Array[int] = [4, 6, 8, 10, 12, 14]
 
 @export var respuesta_correcta_ohm: int = 8
 @export var altura_apertura: float = 116.0
@@ -21,11 +21,17 @@ const OPCIONES_RX: Array[int] = [2, 4, 6, 8, 10, 12]
 @onready var compuerta_sprite: Sprite2D = $CompuertaMetalica/Sprite2D
 @onready var lbl_estado_compuerta: Label = $CompuertaMetalica/EstadoCompuerta
 
+var voltaje_v: int = 60
+var r_motor_ohm: int = 4
+var corriente_objetivo_a: int = 5
+var opciones_rx: Array[int] = []
+
 var resuelto: bool = false
 var pos_cerrada: Vector2 = Vector2.ZERO
 var pos_abierta: Vector2 = Vector2.ZERO
-var indice_sel: int = 1 # Inicia en Rx = 4 Ohm (no resuelto)
+var indice_sel: int = 0
 
+var lbl_enunciado: Label
 var botones_opcion: Array[Button] = []
 var lbl_lectura: Label
 var barra_corriente: ProgressBar
@@ -36,7 +42,38 @@ var btn_comprobar: Button
 func _init() -> void:
 	titulo_panel = "ELECTRODINÁMICA 01 — LEY DE OHM EN SERIE"
 	texto_prompt = "[E] Resolver Puzzle"
-	ancho_panel = 660.0
+	ancho_panel = 680.0
+
+
+func generar_problema() -> void:
+	var combos: Array = []
+	for i_val in OPCIONES_I_OBJ:
+		for rm in OPCIONES_RMOTOR:
+			for rx in OPCIONES_RX_BASE:
+				var v_val: int = i_val * (rm + rx)
+				if v_val >= 24 and v_val <= 120:
+					combos.append([v_val, rm, i_val, rx])
+
+	var elegida: Array = combos[randi() % combos.size()]
+	voltaje_v = int(elegida[0])
+	r_motor_ohm = int(elegida[1])
+	corriente_objetivo_a = int(elegida[2])
+	respuesta_correcta_ohm = int(elegida[3])
+
+	# 3 distractores típicos: R_total (V/I sin restar R_motor), restar R_motor de más, mitad
+	var d_rtotal: int = respuesta_correcta_ohm + r_motor_ohm
+	var d_menos: int = maxi(2, respuesta_correcta_ohm - r_motor_ohm)
+	var d_mitad: int = maxi(2, int(round(float(respuesta_correcta_ohm) * 0.5)))
+	var d_doble: int = respuesta_correcta_ohm * 2
+
+	opciones_rx = construir_opciones_int(
+		respuesta_correcta_ohm,
+		[d_rtotal, d_menos, d_mitad, d_doble],
+		2,
+		60,
+		2
+	)
+	indice_sel = indice_inicial_no_correcto(opciones_rx, respuesta_correcta_ohm)
 
 
 func _inicializar_puzzle() -> void:
@@ -47,17 +84,30 @@ func _inicializar_puzzle() -> void:
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
+	var caja_formula := PanelContainer.new()
+	caja_formula.add_theme_stylebox_override("panel", crear_caja(Color(0.11, 0.09, 0.05, 0.98), COLOR_AMARILLO, 2, 10))
+	vbox.add_child(caja_formula)
+
+	var lbl_formula := Label.new()
+	lbl_formula.text = "FÓRMULA:   V = I * (R_motor + Rx)   =>   Rx = (V / I) - R_motor"
+	lbl_formula.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_formula.add_theme_font_size_override("font_size", 16)
+	lbl_formula.add_theme_color_override("font_color", COLOR_AMARILLO)
+	lbl_formula.add_theme_color_override("font_outline_color", Color.BLACK)
+	lbl_formula.add_theme_constant_override("outline_size", 3)
+	caja_formula.add_child(lbl_formula)
+
 	var caja_enunciado := PanelContainer.new()
-	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.07, 0.11, 0.14, 0.96), COLOR_AMARILLO, 2, 12))
+	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.07, 0.11, 0.14, 0.96), COLOR_CIAN, 2, 12))
 	vbox.add_child(caja_enunciado)
 
-	var lbl_enunciado := Label.new()
+	lbl_enunciado = Label.new()
 	lbl_enunciado.text = (
 		"ENUNCIADO (Nivel Preuniversitario):\n"
-		+ "Una fuente de V = 60 V alimenta un motor de R_motor = 4 Ohm, pero el circuito exige exactamente "
-		+ "I = 5 A para no quemar el fusible.\n"
+		+ "Una fuente de V = %d V alimenta un motor de R_motor = %d Ohm, pero el circuito exige exactamente "
+		+ "I = %d A para no quemar el fusible.\n"
 		+ "Elige la resistencia protectora Rx que debe conectarse en serie (V = I * (R_motor + Rx))."
-	)
+	) % [voltaje_v, r_motor_ohm, corriente_objetivo_a]
 	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_enunciado.add_theme_font_size_override("font_size", 14)
 	lbl_enunciado.add_theme_color_override("font_color", Color(0.95, 0.97, 0.99))
@@ -67,19 +117,19 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	lbl_sel_titulo.text = "ELIGE LA RESISTENCIA PROTECTORA Rx EN SERIE:"
 	lbl_sel_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_sel_titulo.add_theme_font_size_override("font_size", 13)
-	lbl_sel_titulo.add_theme_color_override("font_color", COLOR_AMARILLO)
+	lbl_sel_titulo.add_theme_color_override("font_color", COLOR_CIAN)
 	vbox.add_child(lbl_sel_titulo)
 
 	var fila_opc := HBoxContainer.new()
 	fila_opc.alignment = BoxContainer.ALIGNMENT_CENTER
-	fila_opc.add_theme_constant_override("separation", 8)
+	fila_opc.add_theme_constant_override("separation", 12)
 	vbox.add_child(fila_opc)
 
 	botones_opcion.clear()
-	for i in range(OPCIONES_RX.size()):
+	for i in range(opciones_rx.size()):
 		var btn := Button.new()
-		btn.text = "%d Ohm" % OPCIONES_RX[i]
-		btn.custom_minimum_size = Vector2(92, 38)
+		btn.text = "%d Ohm" % opciones_rx[i]
+		btn.custom_minimum_size = Vector2(132, 40)
 		btn.focus_mode = Control.FOCUS_NONE
 		var idx_local := i
 		btn.pressed.connect(func() -> void: _seleccionar_opcion(idx_local))
@@ -106,7 +156,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	v_sim.add_child(barra_corriente)
 
 	lbl_feedback = Label.new()
-	lbl_feedback.text = "Calcula R_total = V / I y resta R_motor para hallar Rx."
+	lbl_feedback.text = "Calcula R_total = %d / %d y resta R_motor = %d Ohm para hallar Rx." % [
+		voltaje_v, corriente_objetivo_a, r_motor_ohm
+	]
 	lbl_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_feedback.add_theme_font_size_override("font_size", 13)
@@ -137,7 +189,7 @@ func _procesar_tecla_panel(kc: int) -> bool:
 		_seleccionar_opcion(maxi(0, indice_sel - 1))
 		return true
 	if kc == KEY_RIGHT or kc == KEY_D:
-		_seleccionar_opcion(mini(OPCIONES_RX.size() - 1, indice_sel + 1))
+		_seleccionar_opcion(mini(opciones_rx.size() - 1, indice_sel + 1))
 		return true
 	if kc == KEY_ENTER or kc == KEY_KP_ENTER:
 		_comprobar_respuesta()
@@ -148,14 +200,14 @@ func _procesar_tecla_panel(kc: int) -> bool:
 func _seleccionar_opcion(idx: int) -> void:
 	if resuelto:
 		return
-	indice_sel = clampi(idx, 0, OPCIONES_RX.size() - 1)
+	indice_sel = clampi(idx, 0, opciones_rx.size() - 1)
 	_actualizar_ui()
 
 
 func _actualizar_ui() -> void:
-	var rx_sel: int = OPCIONES_RX[indice_sel]
-	var r_eq: float = R_MOTOR_OHM + float(rx_sel)
-	var i_calc: float = VOLTAJE_V / r_eq
+	var rx_sel: int = opciones_rx[indice_sel]
+	var r_eq: float = float(r_motor_ohm + rx_sel)
+	var i_calc: float = float(voltaje_v) / r_eq
 
 	for i in range(botones_opcion.size()):
 		var activo := (i == indice_sel)
@@ -163,13 +215,11 @@ func _actualizar_ui() -> void:
 		estilizar_boton(botones_opcion[i], col, resuelto and not activo)
 		botones_opcion[i].disabled = resuelto
 
-	var aviso_fusible := "  [¡FUSIBLE EN RIESGO!]" if i_calc > CORRIENTE_OBJETIVO_A + 0.01 else ""
 	lbl_lectura.text = (
-		"R_eq = 4 + %d = %.0f Ohm  =>  I = 60 / %.0f = %.2f A  (Meta: 5.00 A)%s"
-		% [rx_sel, r_eq, r_eq, i_calc, aviso_fusible]
+		"Opción: Rx = %d Ohm  |  V = %d V, R_motor = %d Ohm  |  Meta: I = %d A"
+		% [rx_sel, voltaje_v, r_motor_ohm, corriente_objetivo_a]
 	)
-	var col_barra := COLOR_VERDE if rx_sel == respuesta_correcta_ohm else (COLOR_ROJO if i_calc > CORRIENTE_OBJETIVO_A else COLOR_AMARILLO)
-	actualizar_barra(barra_corriente, i_calc, 10.0, col_barra)
+	actualizar_barra(barra_corriente, i_calc, float(corriente_objetivo_a) * 2.0, COLOR_VERDE if resuelto else COLOR_CIAN)
 
 	if resuelto:
 		btn_comprobar.text = "COMPUERTA METÁLICA ABIERTA — CERRAR"
@@ -184,31 +234,32 @@ func _comprobar_respuesta() -> void:
 		cerrar_panel()
 		return
 
-	var rx_sel: int = OPCIONES_RX[indice_sel]
-	var r_eq: float = R_MOTOR_OHM + float(rx_sel)
-	var i_calc: float = VOLTAJE_V / r_eq
+	var rx_sel: int = opciones_rx[indice_sel]
+	var r_eq: int = r_motor_ohm + rx_sel
+	var r_tot_meta: int = r_motor_ohm + respuesta_correcta_ohm
+	var i_calc: float = float(voltaje_v) / float(r_eq)
 
 	if rx_sel == respuesta_correcta_ohm:
 		resuelto = true
 		lbl_feedback.text = (
-			"¡CORRECTO! En serie las resistencias se suman: R_total = V/I = 60/5 = 12 Ohm.\n"
-			+ "Entonces Rx = 12 - 4 = 8 Ohm. Corriente segura de 5 A alcanzada: abriendo compuerta metálica."
-		)
+			"¡CORRECTO! En serie R_total = V / I = %d / %d = %d Ohm.\n"
+			+ "Entonces Rx = %d - %d = %d Ohm. Corriente segura de %d A alcanzada: abriendo compuerta."
+		) % [voltaje_v, corriente_objetivo_a, r_tot_meta, r_tot_meta, r_motor_ohm, respuesta_correcta_ohm, corriente_objetivo_a]
 		lbl_feedback.add_theme_color_override("font_color", COLOR_VERDE)
 		_aplicar_estado_compuerta()
 		_actualizar_ui()
 		return
 
-	if i_calc > CORRIENTE_OBJETIVO_A:
+	if i_calc > float(corriente_objetivo_a):
 		lbl_feedback.text = (
-			"INCORRECTO (Rx = %d Ohm): I = 60 / %.0f = %.2f A > 5 A. ¡La corriente excede el fusible!\n"
-			+ "Pista: Necesitas mayor resistencia en serie. Despeja R_total = 60 / 5 = 12 Ohm y luego Rx = R_total - 4."
-		) % [rx_sel, r_eq, i_calc]
+			"INCORRECTO (Rx = %d Ohm): R_eq = %d + %d = %d Ohm => I = %d / %d = %.2f A > %d A (fusible en riesgo).\n"
+			+ "Pista: Despeja R_total = %d / %d = %d Ohm y resta R_motor = %d Ohm."
+		) % [rx_sel, r_motor_ohm, rx_sel, r_eq, voltaje_v, r_eq, i_calc, corriente_objetivo_a, voltaje_v, corriente_objetivo_a, r_tot_meta, r_motor_ohm]
 	else:
 		lbl_feedback.text = (
-			"INCORRECTO (Rx = %d Ohm): I = 60 / %.0f = %.2f A < 5 A. El motor no recibe suficiente corriente.\n"
-			+ "Pista: Reduce Rx para que R_motor + Rx = V / I = 12 Ohm."
-		) % [rx_sel, r_eq, i_calc]
+			"INCORRECTO (Rx = %d Ohm): R_eq = %d Ohm => I = %.2f A < %d A (corriente insuficiente).\n"
+			+ "Pista: Reduce Rx para que R_motor + Rx = %d / %d = %d Ohm."
+		) % [rx_sel, r_eq, i_calc, corriente_objetivo_a, voltaje_v, corriente_objetivo_a, r_tot_meta]
 	lbl_feedback.add_theme_color_override("font_color", COLOR_ROJO)
 
 

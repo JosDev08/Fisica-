@@ -3,13 +3,20 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 # ==============================================================================
 # PUZZLE ELECTROSTÁTICA 02: LEY DE GAUSS EN SONDA (Física II/III Ingeniería)
 # Fórmula destacada: E = (k * Q) / r^2   (Ley de Gauss, r > R)
-# Datos: R = 0.2 m, Q = +8 uC, r = 0.6 m, k = 9 x 10^9 N*m^2/C^2.
-# Solución: E = (9e9 * 8e-6) / 0.6^2 = 72000 / 0.36 = 200000 N/C = 200 kN/C.
-# Opciones: 72 kN/C, 120 kN/C, 200 kN/C, 360 kN/C.
+# Genera R, r y Q aleatorios con solución entera exacta en kN/C, 3 distractores
+# realistas (sin elevar r^2, sin dividir, confundir r con R) y opciones.shuffle().
 # Al resolver: activa y solidifica el puente energético hijo en Capa 5 (Suelo).
 # ==============================================================================
 
-const OPCIONES_E_KNC: Array[int] = [72, 120, 200, 360]
+# Configuraciones [R_m, r_m, Q_lista_uC] que siempre producen E entero exacto en kN/C:
+# E_kNC = (9 * Q_uC) / (r_m^2)
+const CONFIGS_GAUSS: Array = [
+	[0.10, 0.30, [2, 3, 4, 5, 6]],      # 100 * Q -> 200..600 kN/C
+	[0.20, 0.50, [5, 10, 15]],          # 36 * Q  -> 180, 360, 540 kN/C
+	[0.20, 0.60, [4, 8, 12, 16]],       # 25 * Q  -> 100, 200, 300, 400 kN/C
+	[0.30, 0.90, [9, 18, 27]],          # 100/9*Q -> 100, 200, 300 kN/C
+	[0.25, 1.00, [8, 10, 12, 16, 20]],  # 9 * Q   -> 72, 90, 108, 144, 180 kN/C
+]
 
 @export var respuesta_correcta_knc: int = 200
 
@@ -18,10 +25,16 @@ const OPCIONES_E_KNC: Array[int] = [72, 120, 200, 360]
 @onready var puente_sprite: Sprite2D = $PuenteEnergetico/Sprite2D
 @onready var lbl_estado_puente: Label = $PuenteEnergetico/EstadoPuente
 
+var radio_esfera_m: float = 0.20
+var dist_sonda_m: float = 0.60
+var carga_q_uc: int = 8
+var opciones_e_knc: Array[int] = []
+
 var resuelto: bool = false
-var indice_sel: int = 1 # Inicia en 120 kN/C (no resuelto)
+var indice_sel: int = 0
 var tiempo_fx: float = 0.0
 
+var lbl_enunciado: Label
 var botones_opcion: Array[Button] = []
 var lbl_lectura: Label
 var barra_gauss: ProgressBar
@@ -35,12 +48,37 @@ func _init() -> void:
 	ancho_panel = 680.0
 
 
+func generar_problema() -> void:
+	var cfg: Array = CONFIGS_GAUSS[randi() % CONFIGS_GAUSS.size()]
+	radio_esfera_m = float(cfg[0])
+	dist_sonda_m = float(cfg[1])
+	var lista_q: Array = cfg[2]
+	carga_q_uc = int(lista_q[randi() % lista_q.size()])
+
+	var num_kq_kn: float = 9.0 * float(carga_q_uc) # en kN*m^2/C
+	respuesta_correcta_knc = int(round(num_kq_kn / (dist_sonda_m * dist_sonda_m)))
+
+	# 3 distractores típicos: olvidar r^2 (kQ/r), olvidar dividir (kQ), factor erróneo (1.8x o 0.5x)
+	var d_sin_cuadrado: int = maxi(10, int(round(num_kq_kn / dist_sonda_m)))
+	var d_solo_kq: int = maxi(10, int(round(num_kq_kn)))
+	var d_alto: int = int(round(float(respuesta_correcta_knc) * 1.8))
+	var d_mitad: int = maxi(10, int(round(float(respuesta_correcta_knc) * 0.5)))
+
+	opciones_e_knc = construir_opciones_int(
+		respuesta_correcta_knc,
+		[d_sin_cuadrado, d_alto, d_solo_kq, d_mitad],
+		10,
+		5000,
+		maxi(20, int(round(float(respuesta_correcta_knc) * 0.25)))
+	)
+	indice_sel = indice_inicial_no_correcto(opciones_e_knc, respuesta_correcta_knc)
+
+
 func _inicializar_puzzle() -> void:
 	_aplicar_estado_puente(true)
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
-	# Recuadro destacado de fórmula física
 	var caja_formula := PanelContainer.new()
 	caja_formula.add_theme_stylebox_override("panel", crear_caja(Color(0.10, 0.08, 0.22, 0.98), COLOR_AMARILLO, 2, 10))
 	vbox.add_child(caja_formula)
@@ -54,19 +92,18 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	lbl_formula.add_theme_constant_override("outline_size", 3)
 	caja_formula.add_child(lbl_formula)
 
-	# Enunciado con datos de ingeniería
 	var caja_enunciado := PanelContainer.new()
 	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.06, 0.06, 0.16, 0.96), COLOR_CIAN, 2, 12))
 	vbox.add_child(caja_enunciado)
 
-	var lbl_enunciado := Label.new()
+	lbl_enunciado = Label.new()
 	lbl_enunciado.text = (
 		"FÍSICA II/III — SENSOR ESFÉRICO DE ALTO VOLTAJE:\n"
-		+ "Un sensor de alto voltaje modela un nodo esférico conductor de radio R = 0.2 m con carga neta "
-		+ "Q = +8 uC (k = 9 x 10^9 N*m^2/C^2).\n"
-		+ "Calcula la intensidad de campo eléctrico E en la sonda ubicada a r = 0.6 m del centro "
+		+ "Un sensor de alto voltaje modela un nodo esférico conductor de radio R = %.2f m con carga neta "
+		+ "Q = +%d uC (k = 9 x 10^9 N*m^2/C^2).\n"
+		+ "Calcula la intensidad de campo eléctrico E en la sonda ubicada a r = %.2f m del centro "
 		+ "para energizar el puente."
-	)
+	) % [radio_esfera_m, carga_q_uc, dist_sonda_m]
 	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_enunciado.add_theme_font_size_override("font_size", 14)
 	lbl_enunciado.add_theme_color_override("font_color", Color(0.92, 0.97, 1.0))
@@ -85,9 +122,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	vbox.add_child(fila_opc)
 
 	botones_opcion.clear()
-	for i in range(OPCIONES_E_KNC.size()):
+	for i in range(opciones_e_knc.size()):
 		var btn := Button.new()
-		btn.text = "%d kN/C" % OPCIONES_E_KNC[i]
+		btn.text = "%d kN/C" % opciones_e_knc[i]
 		btn.custom_minimum_size = Vector2(132, 40)
 		btn.focus_mode = Control.FOCUS_NONE
 		var idx_local := i
@@ -95,7 +132,6 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 		fila_opc.add_child(btn)
 		botones_opcion.append(btn)
 
-	# Telemetría de la sonda
 	var caja_sim := PanelContainer.new()
 	caja_sim.add_theme_stylebox_override("panel", crear_caja(Color(0.05, 0.05, 0.13, 0.96), Color(0.48, 0.40, 0.88), 2, 10))
 	vbox.add_child(caja_sim)
@@ -116,7 +152,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	v_sim.add_child(barra_gauss)
 
 	lbl_feedback = Label.new()
-	lbl_feedback.text = "Para r = 0.6 m > R = 0.2 m, toda la carga Q actúa como puntual en el centro. Evalúa E."
+	lbl_feedback.text = "Para r = %.2f m > R = %.2f m, toda la carga Q = +%d uC actúa desde el centro." % [
+		dist_sonda_m, radio_esfera_m, carga_q_uc
+	]
 	lbl_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_feedback.add_theme_font_size_override("font_size", 13)
@@ -147,7 +185,7 @@ func _procesar_tecla_panel(kc: int) -> bool:
 		_seleccionar_opcion(maxi(0, indice_sel - 1))
 		return true
 	if kc == KEY_RIGHT or kc == KEY_D:
-		_seleccionar_opcion(mini(OPCIONES_E_KNC.size() - 1, indice_sel + 1))
+		_seleccionar_opcion(mini(opciones_e_knc.size() - 1, indice_sel + 1))
 		return true
 	if kc == KEY_ENTER or kc == KEY_KP_ENTER:
 		_comprobar_respuesta()
@@ -158,13 +196,15 @@ func _procesar_tecla_panel(kc: int) -> bool:
 func _seleccionar_opcion(idx: int) -> void:
 	if resuelto:
 		return
-	indice_sel = clampi(idx, 0, OPCIONES_E_KNC.size() - 1)
+	indice_sel = clampi(idx, 0, opciones_e_knc.size() - 1)
 	_actualizar_ui()
 
 
 func _actualizar_ui() -> void:
-	var e_sel: int = OPCIONES_E_KNC[indice_sel]
-	var q_impl_uc: float = (float(e_sel) * 1.0e3 * 0.36) / 9.0e9 * 1.0e6
+	var e_sel: int = opciones_e_knc[indice_sel]
+	var max_opc: float = 1.0
+	for v in opciones_e_knc:
+		max_opc = maxf(max_opc, float(v))
 
 	for i in range(botones_opcion.size()):
 		var activo := (i == indice_sel)
@@ -173,11 +213,10 @@ func _actualizar_ui() -> void:
 		botones_opcion[i].disabled = resuelto
 
 	lbl_lectura.text = (
-		"Calibración elegida: E = %d kN/C  (implica Q_enc = %.1f uC a r = 0.6 m; dato real: Q = +8.0 uC)"
-		% [e_sel, q_impl_uc]
+		"Calibración elegida: E = %d kN/C   |   Datos: Q = +%d uC, r = %.2f m (r > R)"
+		% [e_sel, carga_q_uc, dist_sonda_m]
 	)
-	var col_barra := COLOR_VERDE if e_sel == respuesta_correcta_knc else (COLOR_ROJO if e_sel > respuesta_correcta_knc else COLOR_AMARILLO)
-	actualizar_barra(barra_gauss, float(e_sel), 360.0, col_barra)
+	actualizar_barra(barra_gauss, float(e_sel), max_opc, COLOR_VERDE if resuelto else COLOR_CIAN)
 
 	if resuelto:
 		btn_comprobar.text = "PUENTE ENERGÉTICO SOLIDIFICADO — CERRAR"
@@ -192,34 +231,33 @@ func _comprobar_respuesta() -> void:
 		cerrar_panel()
 		return
 
-	var e_sel: int = OPCIONES_E_KNC[indice_sel]
+	var e_sel: int = opciones_e_knc[indice_sel]
+	var kq_val: float = 9000.0 * float(carga_q_uc)
+	var r2_val: float = dist_sonda_m * dist_sonda_m
+
 	if e_sel == respuesta_correcta_knc:
 		resuelto = true
 		lbl_feedback.text = (
-			"¡CORRECTO! Paso 1: Como r = 0.6 m > R = 0.2 m, por Ley de Gauss E = (k * Q) / r^2.\n"
-			+ "Paso 2: k * Q = (9x10^9) * (8x10^-6) = 72000 N*m^2/C; r^2 = (0.6)^2 = 0.36 m^2.\n"
-			+ "Paso 3: E = 72000 / 0.36 = 200000 N/C = 200 kN/C. Puente energético solidificado."
-		)
+			"¡CORRECTO! Paso 1: Como r = %.2f m > R = %.2f m, por Ley de Gauss E = (k * Q) / r^2.\n"
+			+ "Paso 2: k * Q = (9x10^9) * (%dx10^-6) = %.0f N*m^2/C; r^2 = (%.2f)^2 = %.2f m^2.\n"
+			+ "Paso 3: E = %.0f / %.2f = %d kN/C. Puente energético solidificado."
+		) % [dist_sonda_m, radio_esfera_m, carga_q_uc, kq_val, dist_sonda_m, r2_val, kq_val, r2_val, respuesta_correcta_knc]
 		lbl_feedback.add_theme_color_override("font_color", COLOR_VERDE)
 		_aplicar_estado_puente(false)
 		_actualizar_ui()
 		return
 
-	if e_sel == 120:
+	var d_sin_cuad: int = int(round((9.0 * float(carga_q_uc)) / dist_sonda_m))
+	if e_sel == d_sin_cuad:
 		lbl_feedback.text = (
-			"INCORRECTO (120 kN/C): Ese valor sale de dividir k*Q / r (72000 / 0.6) sin elevar r al cuadrado.\n"
-			+ "Paso a paso: Eleva r = 0.6 m al cuadrado => r^2 = 0.36 m^2, y luego calcula 72000 / 0.36."
-		)
-	elif e_sel == 72:
-		lbl_feedback.text = (
-			"INCORRECTO (72 kN/C): 72000 es únicamente el numerador k * Q = (9x10^9) * (8x10^-6).\n"
-			+ "Paso a paso: Falta dividir entre r^2 = (0.6)^2 = 0.36 m^2."
-		)
+			"INCORRECTO (%d kN/C): Ese valor sale de dividir k*Q / r sin elevar r al cuadrado.\n"
+			+ "Paso a paso: Eleva r = %.2f m al cuadrado (r^2 = %.2f m^2) y calcula %.0f / %.2f."
+		) % [e_sel, dist_sonda_m, r2_val, kq_val, r2_val]
 	else:
 		lbl_feedback.text = (
-			"INCORRECTO (360 kN/C): No uses el radio de la esfera R = 0.2 m ni mezcles r con R.\n"
-			+ "Paso a paso: La sonda está a r = 0.6 m del centro => E = (9x10^9 * 8x10^-6) / (0.6)^2."
-		)
+			"INCORRECTO (%d kN/C): Recuerda que el campo depende de r = %.2f m (no del radio interno R = %.2f m).\n"
+			+ "Paso a paso: E = (9x10^9 * %dx10^-6) / (%.2f)^2 = %.0f / %.2f N/C."
+		) % [e_sel, dist_sonda_m, radio_esfera_m, carga_q_uc, dist_sonda_m, kq_val, r2_val]
 	lbl_feedback.add_theme_color_override("font_color", COLOR_ROJO)
 
 

@@ -33,23 +33,25 @@ var lbl_v_val: Label
 var btn_avanzar: Button
 
 
+func generar_problema() -> void:
+	if objetivo_aleatorio:
+		var c_w: float = OPCIONES_C[randi() % OPCIONES_C.size()]
+		var v_w: float = OPCIONES_V[randi_range(1, OPCIONES_V.size() - 1)]
+		valor_objetivo = c_w * v_w
+
+	idx_c = randi() % OPCIONES_C.size()
+	idx_v = randi() % OPCIONES_V.size()
+	var intentos := 0
+	while intentos < 30 and is_equal_approx(_calcular_q(), valor_objetivo):
+		idx_c = randi() % OPCIONES_C.size()
+		idx_v = randi() % OPCIONES_V.size()
+		intentos += 1
+
+
 func _inicializar_puzzle() -> void:
 	titulo_panel = "COMPUERTA CAPACITOR — CARGA Q = C · V"
 	if lbl_titulo_ui != null:
 		lbl_titulo_ui.text = titulo_panel
-
-	if objetivo_aleatorio:
-		var c_w: float = OPCIONES_C[randi_range(0, OPCIONES_C.size() - 1)]
-		var v_w: float = OPCIONES_V[randi_range(1, OPCIONES_V.size() - 1)]
-		valor_objetivo = c_w * v_w
-
-	idx_c = randi_range(0, OPCIONES_C.size() - 1)
-	idx_v = randi_range(0, OPCIONES_V.size() - 1)
-	var intentos := 0
-	while intentos < 30 and is_equal_approx(_calcular_q(), valor_objetivo):
-		idx_c = randi_range(0, OPCIONES_C.size() - 1)
-		idx_v = randi_range(0, OPCIONES_V.size() - 1)
-		intentos += 1
 
 	if portal_area != null:
 		portal_area.collision_layer = 0

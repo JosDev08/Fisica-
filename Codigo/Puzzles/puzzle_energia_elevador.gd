@@ -7,7 +7,7 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 # - Expone distancia_elevador, velocidad_elevador y valor_objetivo en Inspector.
 # ==============================================================================
 
-const C0_BASE: float = 2.0
+const OPCIONES_C0: Array[float] = [1.0, 2.0, 4.0]
 const VOLTAJES: Array[float] = [2.0, 4.0, 6.0, 8.0, 10.0, 12.0]
 const NOMBRES_K: Array[String] = ["AIRE (κ=1)", "VIDRIO (κ=2)", "CERÁMICA (κ=4)"]
 const CONSTANTES_K: Array[float] = [1.0, 2.0, 4.0]
@@ -17,6 +17,7 @@ const CONSTANTES_K: Array[float] = [1.0, 2.0, 4.0]
 @export var distancia_elevador: float = 174.0
 @export var velocidad_elevador: float = 1.15
 
+var c0_base: float = 2.0
 var idx_k: int = 0
 var idx_v: int = 1
 var elevador_activo: bool = false
@@ -37,6 +38,23 @@ var lbl_v_val: Label
 var botones_k: Array[Button] = []
 
 
+func generar_problema() -> void:
+	if objetivo_aleatorio:
+		c0_base = OPCIONES_C0[randi() % OPCIONES_C0.size()]
+		var k_w: float = CONSTANTES_K[randi() % CONSTANTES_K.size()]
+		var v_w: float = VOLTAJES[randi_range(1, VOLTAJES.size() - 1)]
+		valor_objetivo = 0.5 * (k_w * c0_base) * v_w * v_w
+
+	idx_k = randi() % CONSTANTES_K.size()
+	idx_v = randi() % VOLTAJES.size()
+	var intentos := 0
+	while intentos < 30 and is_equal_approx(_calcular_u(), valor_objetivo):
+		idx_k = randi() % CONSTANTES_K.size()
+		idx_v = randi() % VOLTAJES.size()
+		intentos += 1
+	elevador_activo = false
+
+
 func _inicializar_puzzle() -> void:
 	titulo_panel = "PLATAFORMA ELEVADORA — ENERGÍA U = ½ · C · V²"
 	if lbl_titulo_ui != null:
@@ -48,27 +66,12 @@ func _inicializar_puzzle() -> void:
 			_pos_elevador_base + Vector2(0, 8),
 			_pos_elevador_base - Vector2(0, distancia_elevador + 8),
 		])
-
-	if objetivo_aleatorio:
-		var k_w: float = CONSTANTES_K[randi_range(0, CONSTANTES_K.size() - 1)]
-		var v_w: float = VOLTAJES[randi_range(1, VOLTAJES.size() - 1)]
-		valor_objetivo = 0.5 * (k_w * C0_BASE) * v_w * v_w
-
-	idx_k = randi_range(0, CONSTANTES_K.size() - 1)
-	idx_v = randi_range(0, VOLTAJES.size() - 1)
-	var intentos := 0
-	while intentos < 30 and is_equal_approx(_calcular_u(), valor_objetivo):
-		idx_k = randi_range(0, CONSTANTES_K.size() - 1)
-		idx_v = randi_range(0, VOLTAJES.size() - 1)
-		intentos += 1
-
-	elevador_activo = false
 	_actualizar_estado()
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	var lbl_ref := Label.new()
-	lbl_ref.text = "C = κ · C₀ (C₀ = 2 F)   |   U = ½ · C · V²"
+	lbl_ref.text = "C = κ · C₀ (C₀ = %.0f F)   |   U = ½ · C · V²" % c0_base
 	lbl_ref.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_ref.add_theme_font_size_override("font_size", 12)
 	lbl_ref.add_theme_color_override("font_color", COLOR_CIAN)
@@ -189,14 +192,14 @@ func _ajustar_v(d: int) -> void:
 
 
 func _calcular_u() -> float:
-	var c := CONSTANTES_K[idx_k] * C0_BASE
+	var c := CONSTANTES_K[idx_k] * c0_base
 	var v := VOLTAJES[idx_v]
 	return 0.5 * c * v * v
 
 
 func _actualizar_estado() -> void:
 	var k := CONSTANTES_K[idx_k]
-	var c := k * C0_BASE
+	var c := k * c0_base
 	var v := VOLTAJES[idx_v]
 	var u := _calcular_u()
 	elevador_activo = is_equal_approx(u, valor_objetivo)
@@ -207,7 +210,7 @@ func _actualizar_estado() -> void:
 		lbl_hud_estado.add_theme_color_override("font_color", col)
 		actualizar_barra(barra_u, u, valor_objetivo * 1.5, col)
 		lbl_v_val.text = "V = %.0f V" % v
-		lbl_formula.text = "U = ½ × (%.0f × 2 F) × (%.0f V)² = %.1f J" % [k, v, u]
+		lbl_formula.text = "U = ½ × (%.0f × %.0f F) × (%.0f V)² = %.1f J" % [k, c0_base, v, u]
 		lbl_formula.add_theme_color_override("font_color", col)
 
 		for i in range(botones_k.size()):

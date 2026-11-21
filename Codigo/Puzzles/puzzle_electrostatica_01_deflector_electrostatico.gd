@@ -2,15 +2,14 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 
 # ==============================================================================
 # PUZZLE ELECTROSTÁTICA 01: DEFLECTOR ELECTROSTÁTICO (Física II/III Ingeniería)
-# Fórmula destacada: E = dV / d
-# Datos: d = 0.05 m, E = 2.4 x 10^4 V/m => dV = E * d = 1200 V.
-# Opciones: 120 V, 480 V, 1200 V, 2400 V.
+# Fórmula destacada: E = dV / d  =>  dV = E * d
+# Genera d y E aleatorios limpios en cada ejecución, calcula dV dinámicamente,
+# construye 3 distractores realistas y mezcla los 4 botones con opciones.shuffle().
 # Al resolver: desactiva la barrera de plasma hija en Capa 5 (Suelo).
 # ==============================================================================
 
-const DISTANCIA_M := 0.05
-const E_OBJETIVO_VM := 2.4e4
-const OPCIONES_DV: Array[int] = [120, 480, 1200, 2400]
+const DISTANCIAS_M: Array[float] = [0.02, 0.04, 0.05, 0.08, 0.10]
+const CAMPOS_10E4: Array[float] = [1.5, 2.0, 2.4, 2.5, 3.0, 4.0, 5.0]
 
 @export var respuesta_correcta_v: int = 1200
 
@@ -19,10 +18,16 @@ const OPCIONES_DV: Array[int] = [120, 480, 1200, 2400]
 @onready var barrera_sprite: Sprite2D = $BarreraPlasma/Sprite2D
 @onready var lbl_estado_barrera: Label = $BarreraPlasma/EstadoBarrera
 
+var distancia_m: float = 0.05
+var campo_10e4: float = 2.4
+var campo_objetivo_vm: float = 24000.0
+var opciones_dv: Array[int] = []
+
 var resuelto: bool = false
-var indice_sel: int = 1 # Inicia en 480 V (no resuelto)
+var indice_sel: int = 0
 var tiempo_fx: float = 0.0
 
+var lbl_enunciado: Label
 var botones_opcion: Array[Button] = []
 var lbl_lectura: Label
 var barra_campo: ProgressBar
@@ -36,12 +41,33 @@ func _init() -> void:
 	ancho_panel = 680.0
 
 
+func generar_problema() -> void:
+	distancia_m = DISTANCIAS_M[randi() % DISTANCIAS_M.size()]
+	campo_10e4 = CAMPOS_10E4[randi() % CAMPOS_10E4.size()]
+	campo_objetivo_vm = campo_10e4 * 1.0e4
+	respuesta_correcta_v = int(round(campo_objetivo_vm * distancia_m))
+
+	# 3 distractores realistas: error decimal (/10), factor doble (*2), factor erróneo (*0.4 o /2)
+	var d_decimal: int = maxi(10, int(round(float(respuesta_correcta_v) / 10.0)))
+	var d_doble: int = respuesta_correcta_v * 2
+	var d_mitad: int = maxi(20, int(round(float(respuesta_correcta_v) * 0.4)))
+	var d_extra: int = maxi(20, int(round(float(respuesta_correcta_v) * 0.5)))
+
+	opciones_dv = construir_opciones_int(
+		respuesta_correcta_v,
+		[d_mitad, d_doble, d_decimal, d_extra],
+		10,
+		50000,
+		maxi(50, int(round(float(respuesta_correcta_v) * 0.25)))
+	)
+	indice_sel = indice_inicial_no_correcto(opciones_dv, respuesta_correcta_v)
+
+
 func _inicializar_puzzle() -> void:
 	_aplicar_estado_barrera(true)
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
-	# Recuadro destacado de fórmula física
 	var caja_formula := PanelContainer.new()
 	caja_formula.add_theme_stylebox_override("panel", crear_caja(Color(0.08, 0.14, 0.24, 0.98), COLOR_AMARILLO, 2, 10))
 	vbox.add_child(caja_formula)
@@ -55,19 +81,18 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	lbl_formula.add_theme_constant_override("outline_size", 3)
 	caja_formula.add_child(lbl_formula)
 
-	# Enunciado con datos de ingeniería
 	var caja_enunciado := PanelContainer.new()
 	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.05, 0.09, 0.17, 0.96), COLOR_CIAN, 2, 12))
 	vbox.add_child(caja_enunciado)
 
-	var lbl_enunciado := Label.new()
+	lbl_enunciado = Label.new()
 	lbl_enunciado.text = (
 		"FÍSICA II/III — DEFLECTOR DE IONES:\n"
 		+ "Una placa deflectora electrostática separa haces de iones entre dos electrodos paralelos "
-		+ "separados d = 0.05 m. Para desviar el haz y apagar la barrera se requiere un campo uniforme "
-		+ "E = 2.4 x 10^4 V/m.\n"
+		+ "separados d = %.2f m. Para desviar el haz y apagar la barrera se requiere un campo uniforme "
+		+ "E = %.1f x 10^4 V/m.\n"
 		+ "Calcula la diferencia de potencial dV (en Voltios) que debe aplicarse."
-	)
+	) % [distancia_m, campo_10e4]
 	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_enunciado.add_theme_font_size_override("font_size", 14)
 	lbl_enunciado.add_theme_color_override("font_color", Color(0.92, 0.97, 1.0))
@@ -86,9 +111,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	vbox.add_child(fila_opc)
 
 	botones_opcion.clear()
-	for i in range(OPCIONES_DV.size()):
+	for i in range(opciones_dv.size()):
 		var btn := Button.new()
-		btn.text = "%d V" % OPCIONES_DV[i]
+		btn.text = "%d V" % opciones_dv[i]
 		btn.custom_minimum_size = Vector2(132, 40)
 		btn.focus_mode = Control.FOCUS_NONE
 		var idx_local := i
@@ -96,7 +121,6 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 		fila_opc.add_child(btn)
 		botones_opcion.append(btn)
 
-	# Telemetría del deflector
 	var caja_sim := PanelContainer.new()
 	caja_sim.add_theme_stylebox_override("panel", crear_caja(Color(0.04, 0.07, 0.13, 0.96), Color(0.24, 0.55, 0.78), 2, 10))
 	vbox.add_child(caja_sim)
@@ -117,7 +141,7 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	v_sim.add_child(barra_campo)
 
 	lbl_feedback = Label.new()
-	lbl_feedback.text = "Despeja dV = E * d y presiona COMPROBAR para verificar tu cálculo."
+	lbl_feedback.text = "Despeja dV = E * d con d = %.2f m y presiona COMPROBAR." % distancia_m
 	lbl_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_feedback.add_theme_font_size_override("font_size", 13)
@@ -148,7 +172,7 @@ func _procesar_tecla_panel(kc: int) -> bool:
 		_seleccionar_opcion(maxi(0, indice_sel - 1))
 		return true
 	if kc == KEY_RIGHT or kc == KEY_D:
-		_seleccionar_opcion(mini(OPCIONES_DV.size() - 1, indice_sel + 1))
+		_seleccionar_opcion(mini(opciones_dv.size() - 1, indice_sel + 1))
 		return true
 	if kc == KEY_ENTER or kc == KEY_KP_ENTER:
 		_comprobar_respuesta()
@@ -159,13 +183,13 @@ func _procesar_tecla_panel(kc: int) -> bool:
 func _seleccionar_opcion(idx: int) -> void:
 	if resuelto:
 		return
-	indice_sel = clampi(idx, 0, OPCIONES_DV.size() - 1)
+	indice_sel = clampi(idx, 0, opciones_dv.size() - 1)
 	_actualizar_ui()
 
 
 func _actualizar_ui() -> void:
-	var dv_sel: int = OPCIONES_DV[indice_sel]
-	var e_calc: float = float(dv_sel) / DISTANCIA_M
+	var dv_sel: int = opciones_dv[indice_sel]
+	var e_calc: float = float(dv_sel) / distancia_m
 	var e_10e4: float = e_calc / 1.0e4
 
 	for i in range(botones_opcion.size()):
@@ -175,11 +199,11 @@ func _actualizar_ui() -> void:
 		botones_opcion[i].disabled = resuelto
 
 	lbl_lectura.text = (
-		"dV = %d V  |  d = 0.05 m  =>  E = dV / d = %.2f x 10^4 V/m   (Meta: 2.40 x 10^4 V/m)"
-		% [dv_sel, e_10e4]
+		"Opción seleccionada: dV = %d V  |  d = %.2f m  |  Meta: E = %.1f x 10^4 V/m"
+		% [dv_sel, distancia_m, campo_10e4]
 	)
-	var col_barra := COLOR_VERDE if dv_sel == respuesta_correcta_v else (COLOR_ROJO if e_calc > E_OBJETIVO_VM else COLOR_AMARILLO)
-	actualizar_barra(barra_campo, e_10e4, 4.8, col_barra)
+	var col_barra := COLOR_VERDE if resuelto else COLOR_CIAN
+	actualizar_barra(barra_campo, e_10e4 if resuelto else clampf(e_10e4, 0.0, campo_10e4 * 2.0), campo_10e4 * 2.0, col_barra)
 
 	if resuelto:
 		btn_comprobar.text = "BARRERA DE PLASMA DESACTIVADA — CERRAR"
@@ -194,37 +218,32 @@ func _comprobar_respuesta() -> void:
 		cerrar_panel()
 		return
 
-	var dv_sel: int = OPCIONES_DV[indice_sel]
-	var e_calc: float = float(dv_sel) / DISTANCIA_M
+	var dv_sel: int = opciones_dv[indice_sel]
+	var e_calc: float = float(dv_sel) / distancia_m
 	var e_10e4: float = e_calc / 1.0e4
 
 	if dv_sel == respuesta_correcta_v:
 		resuelto = true
 		lbl_feedback.text = (
 			"¡CORRECTO! Paso 1: De E = dV / d despejamos dV = E * d.\n"
-			+ "Paso 2: dV = (2.4 x 10^4 V/m) * (0.05 m) = 24000 * 0.05 = 1200 V.\n"
+			+ "Paso 2: dV = (%.1f x 10^4 V/m) * (%.2f m) = %.0f * %.2f = %d V.\n"
 			+ "El haz de iones se desvía al punto nominal. Barrera de plasma desactivada."
-		)
+		) % [campo_10e4, distancia_m, campo_objetivo_vm, distancia_m, respuesta_correcta_v]
 		lbl_feedback.add_theme_color_override("font_color", COLOR_VERDE)
 		_aplicar_estado_barrera(false)
 		_actualizar_ui()
 		return
 
-	if dv_sel == 480:
+	if dv_sel < respuesta_correcta_v:
 		lbl_feedback.text = (
-			"INCORRECTO (480 V): Con dV = 480 V obtienes E = 480 / 0.05 = 0.96 x 10^4 V/m (insuficiente).\n"
-			+ "Paso a paso: No dividas 24000 / 50; multiplica E * d = 24000 * (5 / 100)."
-		)
-	elif dv_sel == 120:
-		lbl_feedback.text = (
-			"INCORRECTO (120 V): Con dV = 120 V obtienes E = 0.24 x 10^4 V/m (10 veces menor).\n"
-			+ "Paso a paso: Revisa la coma decimal: 2.4 x 10^4 = 24000, y 24000 * 0.05 = 240 * 5."
-		)
+			"INCORRECTO (%d V): Con dV = %d V obtienes E = %d / %.2f = %.2f x 10^4 V/m (insuficiente frente a %.1f x 10^4 V/m).\n"
+			+ "Paso a paso: Multiplica dV = (%.0f V/m) * (%.2f m)."
+		) % [dv_sel, dv_sel, dv_sel, distancia_m, e_10e4, campo_10e4, campo_objetivo_vm, distancia_m]
 	else:
 		lbl_feedback.text = (
-			"INCORRECTO (%d V): Genera E = %.2f x 10^4 V/m (excede el campo objetivo de 2.4 x 10^4 V/m).\n"
-			+ "Paso a paso: Aplica dV = E * d = (2.4 x 10^4) * (5 x 10^-2) = 12 x 10^2 V."
-		) % [dv_sel, e_10e4]
+			"INCORRECTO (%d V): Genera E = %d / %.2f = %.2f x 10^4 V/m (excede la meta de %.1f x 10^4 V/m).\n"
+			+ "Paso a paso: Revisa la multiplicación dV = (%.1f x 10^4) * (%.2f) = %d V."
+		) % [dv_sel, dv_sel, distancia_m, e_10e4, campo_10e4, campo_10e4, distancia_m, respuesta_correcta_v]
 	lbl_feedback.add_theme_color_override("font_color", COLOR_ROJO)
 
 

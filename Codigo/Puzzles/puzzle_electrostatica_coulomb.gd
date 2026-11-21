@@ -8,7 +8,7 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 # ==============================================================================
 
 const K_COULOMB: float = 9.0
-const DISTANCIA_R: float = 1.5
+const OPCIONES_R: Array[float] = [1.0, 1.5, 3.0] # 9 / r^2 = 9, 4, 1 (siempre entero exacto)
 const OPCIONES_Q1: Array[float] = [2.0, 3.0, 4.0, 5.0, 6.0, 8.0]
 const OPCIONES_Q2: Array[float] = [3.0, 4.0, 5.0, 6.0, 8.0]
 
@@ -17,6 +17,7 @@ const OPCIONES_Q2: Array[float] = [3.0, 4.0, 5.0, 6.0, 8.0]
 @export var objetivo_aleatorio: bool = true
 @export var altura_elevacion: float = 98.0
 
+var distancia_r: float = 1.5
 var polaridad_emisor: int = 1 # +1 repulsión, -1 atracción, 0 apagado
 var indice_q1: int = 0
 var despejado: bool = false
@@ -40,26 +41,28 @@ var btn_pol_off: Button
 var btn_aplicar: Button
 
 
+func generar_problema() -> void:
+	if objetivo_aleatorio:
+		distancia_r = OPCIONES_R[randi() % OPCIONES_R.size()]
+		q_esfera = OPCIONES_Q2[randi() % OPCIONES_Q2.size()]
+		var q1_win: float = OPCIONES_Q1[randi_range(1, OPCIONES_Q1.size() - 1)]
+		valor_objetivo = round(K_COULOMB * (q1_win * q_esfera) / (distancia_r * distancia_r))
+
+	# Garantizar estado inicial no resuelto
+	polaridad_emisor = 1
+	indice_q1 = randi() % OPCIONES_Q1.size()
+	var intentos := 0
+	while intentos < 20 and ((polaridad_emisor == -1 and is_equal_approx(_calcular_fuerza(), valor_objetivo))):
+		indice_q1 = (indice_q1 + 1) % OPCIONES_Q1.size()
+		intentos += 1
+
+
 func _inicializar_puzzle() -> void:
 	titulo_panel = "EMISOR ELECTROSTÁTICO — LEY DE COULOMB"
 	if lbl_titulo_ui != null:
 		lbl_titulo_ui.text = titulo_panel
 	if esfera_body != null:
 		_pos_esfera_inicial = esfera_body.position
-
-	if objetivo_aleatorio:
-		q_esfera = OPCIONES_Q2[randi_range(0, OPCIONES_Q2.size() - 1)]
-		var q1_win: float = OPCIONES_Q1[randi_range(1, OPCIONES_Q1.size() - 1)]
-		valor_objetivo = K_COULOMB * (q1_win * q_esfera) / (DISTANCIA_R * DISTANCIA_R)
-
-	# Garantizar estado inicial no resuelto
-	polaridad_emisor = 1
-	indice_q1 = 0
-	var intentos := 0
-	while intentos < 20 and ((polaridad_emisor == -1 and is_equal_approx(_calcular_fuerza(), valor_objetivo))):
-		indice_q1 = (indice_q1 + 1) % OPCIONES_Q1.size()
-		intentos += 1
-
 	_actualizar_estado(false)
 
 
@@ -192,7 +195,7 @@ func _calcular_fuerza() -> float:
 	if polaridad_emisor == 0:
 		return 0.0
 	var q1: float = OPCIONES_Q1[indice_q1]
-	return K_COULOMB * (q1 * q_esfera) / (DISTANCIA_R * DISTANCIA_R)
+	return round(K_COULOMB * (q1 * q_esfera) / (distancia_r * distancia_r))
 
 
 func _actualizar_estado(animar: bool) -> void:
@@ -211,7 +214,7 @@ func _actualizar_estado(animar: bool) -> void:
 
 		var signo_txt := "-" if polaridad_emisor == -1 else ("+" if polaridad_emisor == 1 else "0")
 		lbl_q1_val.text = "q₁ = %s%.0f µC" % [signo_txt, q1 if polaridad_emisor != 0 else 0.0]
-		lbl_formula.text = "F = 9 · |%.0f × +%.0f| / %.1f² = %.0f N" % [q1 if polaridad_emisor != 0 else 0.0, q_esfera, DISTANCIA_R, fuerza]
+		lbl_formula.text = "F = 9 · |%.0f × +%.0f| / %.1f² = %.0f N" % [q1 if polaridad_emisor != 0 else 0.0, q_esfera, distancia_r, fuerza]
 		lbl_formula.add_theme_color_override("font_color", col_estado)
 
 		estilizar_boton(btn_pol_pos, COLOR_ROJO if polaridad_emisor == 1 else Color(0.45, 0.5, 0.58))

@@ -2,15 +2,21 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 
 # ==============================================================================
 # PUZZLE ELECTROSTÁTICA 01: EQUILIBRIO DE COULOMB (Nivel Preuniversitario UNI)
-# Enunciado: q1 = +4 uC (x = 0 m), q2 = +16 uC (x = 6 m).
-# Condición de equilibrio: k*q1/x^2 = k*q2/(6-x)^2  =>  x = 2 m.
-# Al resolver: desactiva la barrera de plasma hija.
+# Fórmula destacada: k * q1 / x^2 = k * q2 / (L - x)^2
+# Genera q1, q2 (razón de cuadrados exactos) y separación L aleatorios para que
+# x sea siempre un entero exacto, con 3 distractores realistas y opciones.shuffle().
+# Al resolver: desactiva la barrera de plasma hija en Capa 5 (Suelo).
 # ==============================================================================
 
-const Q1_UC := 4.0
-const Q2_UC := 16.0
-const DISTANCIA_TOTAL := 6.0
-const OPCIONES_X: Array[float] = [1.0, 2.0, 3.0, 4.0, 5.0]
+# Razones [a, b] donde sqrt(q1):sqrt(q2) = a:b => x = a * paso, L = (a + b) * paso
+const RAZONES_RAIZ: Array = [
+	[1, 2],
+	[1, 3],
+	[2, 3],
+	[1, 4],
+]
+const ESCALAS_CARGA: Array[int] = [1, 2, 4]
+const PASOS_DIST: Array[int] = [2, 3]
 
 @export var respuesta_correcta_m: float = 2.0
 
@@ -19,10 +25,19 @@ const OPCIONES_X: Array[float] = [1.0, 2.0, 3.0, 4.0, 5.0]
 @onready var barrera_sprite: Sprite2D = $BarreraPlasma/Sprite2D
 @onready var lbl_estado_barrera: Label = $BarreraPlasma/EstadoBarrera
 
+var q1_uc: int = 4
+var q2_uc: int = 16
+var raiz_a: int = 1
+var raiz_b: int = 2
+var distancia_total_m: int = 6
+var respuesta_correcta_int: int = 2
+var opciones_x: Array[int] = []
+
 var resuelto: bool = false
-var indice_sel: int = 2 # Inicia en x = 3 m (no resuelto)
+var indice_sel: int = 0
 var tiempo_fx: float = 0.0
 
+var lbl_enunciado: Label
 var botones_opcion: Array[Button] = []
 var lbl_lectura: Label
 var barra_equilibrio: ProgressBar
@@ -33,7 +48,42 @@ var btn_comprobar: Button
 func _init() -> void:
 	titulo_panel = "ELECTROSTÁTICA 01 — EQUILIBRIO DE COULOMB"
 	texto_prompt = "[E] Resolver Puzzle"
-	ancho_panel = 660.0
+	ancho_panel = 680.0
+
+
+func generar_problema() -> void:
+	var par: Array = RAZONES_RAIZ[randi() % RAZONES_RAIZ.size()]
+	var escala: int = ESCALAS_CARGA[randi() % ESCALAS_CARGA.size()]
+	var paso: int = PASOS_DIST[randi() % PASOS_DIST.size()]
+
+	raiz_a = int(par[0])
+	raiz_b = int(par[1])
+	# Aleatoriamente decide si la carga menor está a la izquierda o a la derecha
+	if randi() % 2 == 1:
+		var tmp := raiz_a
+		raiz_a = raiz_b
+		raiz_b = tmp
+
+	q1_uc = raiz_a * raiz_a * escala
+	q2_uc = raiz_b * raiz_b * escala
+	distancia_total_m = (raiz_a + raiz_b) * paso
+	respuesta_correcta_int = raiz_a * paso
+	respuesta_correcta_m = float(respuesta_correcta_int)
+
+	# 3 distractores típicos dentro de (0, L): simétrico (L - x), punto medio (L / 2), desplazamiento +/- 1
+	var d_simetrico: int = distancia_total_m - respuesta_correcta_int
+	var d_medio: int = maxi(1, int(round(float(distancia_total_m) / 2.0)))
+	var d_mas: int = mini(distancia_total_m - 1, respuesta_correcta_int + 1)
+	var d_menos: int = maxi(1, respuesta_correcta_int - 1)
+
+	opciones_x = construir_opciones_int(
+		respuesta_correcta_int,
+		[d_simetrico, d_medio, d_mas, d_menos],
+		1,
+		distancia_total_m - 1,
+		1
+	)
+	indice_sel = indice_inicial_no_correcto(opciones_x, respuesta_correcta_int)
 
 
 func _inicializar_puzzle() -> void:
@@ -41,17 +91,30 @@ func _inicializar_puzzle() -> void:
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
+	var caja_formula := PanelContainer.new()
+	caja_formula.add_theme_stylebox_override("panel", crear_caja(Color(0.08, 0.14, 0.24, 0.98), COLOR_AMARILLO, 2, 10))
+	vbox.add_child(caja_formula)
+
+	var lbl_formula := Label.new()
+	lbl_formula.text = "FÓRMULA:   k * q1 / x^2 = k * q2 / (L - x)^2   =>   sqrt(q1) / x = sqrt(q2) / (L - x)"
+	lbl_formula.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_formula.add_theme_font_size_override("font_size", 15)
+	lbl_formula.add_theme_color_override("font_color", COLOR_AMARILLO)
+	lbl_formula.add_theme_color_override("font_outline_color", Color.BLACK)
+	lbl_formula.add_theme_constant_override("outline_size", 3)
+	caja_formula.add_child(lbl_formula)
+
 	var caja_enunciado := PanelContainer.new()
 	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.06, 0.11, 0.20, 0.96), COLOR_CIAN, 2, 12))
 	vbox.add_child(caja_enunciado)
 
-	var lbl_enunciado := Label.new()
+	lbl_enunciado = Label.new()
 	lbl_enunciado.text = (
 		"ENUNCIADO (Nivel Preuniversitario):\n"
-		+ "Dos cargas fijas q1 = +4 uC (x = 0 m) y q2 = +16 uC (x = 6 m) están separadas 6 m.\n"
+		+ "Dos cargas fijas q1 = +%d uC (x = 0 m) y q2 = +%d uC (x = %d m) están separadas L = %d m.\n"
 		+ "Ubica la carga de prueba q0 en la posición x entre ambas donde la fuerza eléctrica resultante "
-		+ "sea nula (k*q1/x^2 = k*q2/(6-x)^2)."
-	)
+		+ "sea nula (k*q1/x^2 = k*q2/(%d-x)^2)."
+	) % [q1_uc, q2_uc, distancia_total_m, distancia_total_m, distancia_total_m]
 	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_enunciado.add_theme_font_size_override("font_size", 14)
 	lbl_enunciado.add_theme_color_override("font_color", Color(0.92, 0.97, 1.0))
@@ -61,19 +124,19 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	lbl_sel_titulo.text = "SELECCIONA LA POSICIÓN x DE LA CARGA DE PRUEBA q0:"
 	lbl_sel_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_sel_titulo.add_theme_font_size_override("font_size", 13)
-	lbl_sel_titulo.add_theme_color_override("font_color", COLOR_AMARILLO)
+	lbl_sel_titulo.add_theme_color_override("font_color", COLOR_CIAN)
 	vbox.add_child(lbl_sel_titulo)
 
 	var fila_opc := HBoxContainer.new()
 	fila_opc.alignment = BoxContainer.ALIGNMENT_CENTER
-	fila_opc.add_theme_constant_override("separation", 10)
+	fila_opc.add_theme_constant_override("separation", 12)
 	vbox.add_child(fila_opc)
 
 	botones_opcion.clear()
-	for i in range(OPCIONES_X.size()):
+	for i in range(opciones_x.size()):
 		var btn := Button.new()
-		btn.text = "x = %d m" % int(OPCIONES_X[i])
-		btn.custom_minimum_size = Vector2(104, 38)
+		btn.text = "x = %d m" % opciones_x[i]
+		btn.custom_minimum_size = Vector2(132, 40)
 		btn.focus_mode = Control.FOCUS_NONE
 		var idx_local := i
 		btn.pressed.connect(func() -> void: _seleccionar_opcion(idx_local))
@@ -131,7 +194,7 @@ func _procesar_tecla_panel(kc: int) -> bool:
 		_seleccionar_opcion(maxi(0, indice_sel - 1))
 		return true
 	if kc == KEY_RIGHT or kc == KEY_D:
-		_seleccionar_opcion(mini(OPCIONES_X.size() - 1, indice_sel + 1))
+		_seleccionar_opcion(mini(opciones_x.size() - 1, indice_sel + 1))
 		return true
 	if kc == KEY_ENTER or kc == KEY_KP_ENTER:
 		_comprobar_respuesta()
@@ -142,15 +205,15 @@ func _procesar_tecla_panel(kc: int) -> bool:
 func _seleccionar_opcion(idx: int) -> void:
 	if resuelto:
 		return
-	indice_sel = clampi(idx, 0, OPCIONES_X.size() - 1)
+	indice_sel = clampi(idx, 0, opciones_x.size() - 1)
 	_actualizar_ui()
 
 
 func _actualizar_ui() -> void:
-	var x_val: float = OPCIONES_X[indice_sel]
-	var d2: float = DISTANCIA_TOTAL - x_val
-	var f1_rel: float = Q1_UC / (x_val * x_val)
-	var f2_rel: float = Q2_UC / (d2 * d2)
+	var x_val: int = opciones_x[indice_sel]
+	var d2: float = float(distancia_total_m - x_val)
+	var f1_rel: float = float(q1_uc) / (float(x_val) * float(x_val))
+	var f2_rel: float = float(q2_uc) / (d2 * d2)
 	var menor: float = minf(f1_rel, f2_rel)
 	var mayor: float = maxf(f1_rel, f2_rel)
 	var similitud: float = (menor / mayor) * 100.0 if mayor > 0.0 else 0.0
@@ -162,17 +225,16 @@ func _actualizar_ui() -> void:
 		botones_opcion[i].disabled = resuelto
 
 	lbl_lectura.text = (
-		"x = %d m  |  q1/x^2 = %.2f   vs   q2/(6-x)^2 = %.2f  (Simetría: %.0f%%)"
-		% [int(x_val), f1_rel, f2_rel, similitud]
+		"Opción: x = %d m  |  Distancias: d1 = %d m, d2 = %d m  (q1 = +%d uC, q2 = +%d uC)"
+		% [x_val, x_val, distancia_total_m - x_val, q1_uc, q2_uc]
 	)
-	var col_barra := COLOR_VERDE if absf(x_val - respuesta_correcta_m) < 0.01 else (COLOR_AMARILLO if similitud >= 55.0 else COLOR_ROJO)
-	actualizar_barra(barra_equilibrio, similitud, 100.0, col_barra)
+	actualizar_barra(barra_equilibrio, 100.0 if resuelto else similitud, 100.0, COLOR_VERDE if resuelto else COLOR_CIAN)
 
 	if resuelto:
 		btn_comprobar.text = "BARRERA DE PLASMA DESACTIVADA — CERRAR"
 		estilizar_boton(btn_comprobar, COLOR_VERDE)
 	else:
-		btn_comprobar.text = "COMPROBAR x = %d m (ENTER)" % int(x_val)
+		btn_comprobar.text = "COMPROBAR x = %d m (ENTER)" % x_val
 		estilizar_boton(btn_comprobar, COLOR_CIAN)
 
 
@@ -181,31 +243,32 @@ func _comprobar_respuesta() -> void:
 		cerrar_panel()
 		return
 
-	var x_val: float = OPCIONES_X[indice_sel]
-	if absf(x_val - respuesta_correcta_m) < 0.01:
+	var x_val: int = opciones_x[indice_sel]
+	var d2: int = distancia_total_m - x_val
+	var f1_rel: float = float(q1_uc) / float(x_val * x_val)
+	var f2_rel: float = float(q2_uc) / float(d2 * d2)
+
+	if x_val == respuesta_correcta_int:
 		resuelto = true
 		lbl_feedback.text = (
-			"¡CORRECTO! Raíz a ambos lados: sqrt(4)/x = sqrt(16)/(6-x) => 2/x = 4/(6-x) => 12 - 2x = 4x => x = 2 m.\n"
-			+ "En x = 2 m las fuerzas se equilibran (F1 = F2). Barrera de plasma desactivada."
-		)
+			"¡CORRECTO! Raíz a ambos lados: %d/x = %d/(%d - x) => %d*(%d - x) = %d*x => x = %d m.\n"
+			+ "En x = %d m, q1/x^2 = q2/(%d-x)^2 = %.2f y la fuerza resultante es nula. Barrera desactivada."
+		) % [raiz_a, raiz_b, distancia_total_m, raiz_a, distancia_total_m, raiz_b, respuesta_correcta_int, respuesta_correcta_int, distancia_total_m, f1_rel]
 		lbl_feedback.add_theme_color_override("font_color", COLOR_VERDE)
 		_aplicar_estado_barrera(false)
 		_actualizar_ui()
 		return
 
-	var d2: float = DISTANCIA_TOTAL - x_val
-	var f1_rel: float = Q1_UC / (x_val * x_val)
-	var f2_rel: float = Q2_UC / (d2 * d2)
 	if f1_rel > f2_rel:
 		lbl_feedback.text = (
-			"INCORRECTO (x = %d m): q1/x^2 = %.2f > q2/(6-x)^2 = %.2f (domina q1).\n"
-			+ "Pista: Aléjate un poco de q1. Extrae raíz cuadrada: 2/x = 4/(6 - x)."
-		) % [int(x_val), f1_rel, f2_rel]
+			"INCORRECTO (x = %d m): q1/x^2 = %.2f > q2/(%d-x)^2 = %.2f (domina q1).\n"
+			+ "Pista: Aléjate de q1 y plantea la proporción %d/x = %d/(%d - x)."
+		) % [x_val, f1_rel, distancia_total_m, f2_rel, raiz_a, raiz_b, distancia_total_m]
 	else:
 		lbl_feedback.text = (
-			"INCORRECTO (x = %d m): q1/x^2 = %.2f < q2/(6-x)^2 = %.2f (domina q2 = +16 uC).\n"
-			+ "Pista: El punto nulo siempre está más cerca de la carga de menor magnitud (q1). Plantea 2/x = 4/(6 - x)."
-		) % [int(x_val), f1_rel, f2_rel]
+			"INCORRECTO (x = %d m): q1/x^2 = %.2f < q2/(%d-x)^2 = %.2f (domina q2).\n"
+			+ "Pista: El punto de equilibrio está más cerca de la carga menor. Plantea %d/x = %d/(%d - x)."
+		) % [x_val, f1_rel, distancia_total_m, f2_rel, raiz_a, raiz_b, distancia_total_m]
 	lbl_feedback.add_theme_color_override("font_color", COLOR_ROJO)
 
 

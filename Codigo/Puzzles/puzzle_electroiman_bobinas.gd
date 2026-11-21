@@ -13,7 +13,8 @@ const OPCIONES_N: Array[int] = [100, 150, 200, 250, 300]
 const OPCIONES_I: Array[float] = [2.0, 4.0, 6.0, 8.0, 10.0]
 
 @export var valor_objetivo: float = 1.20
-@export var limite_sobrecarga: float = 1.25
+@export var limite_sobrecarga: float = 1.35
+@export var objetivo_aleatorio: bool = true
 @export var altura_elevacion: float = 60.0
 
 var idx_n: int = 1      # 150 esp
@@ -38,6 +39,23 @@ var lbl_n_val: Label
 var lbl_i_val: Label
 var btn_horario: Button
 var btn_antihorario: Button
+
+
+func generar_problema() -> void:
+	if objetivo_aleatorio:
+		var n_w: int = OPCIONES_N[randi_range(1, OPCIONES_N.size() - 1)]
+		var i_w: float = OPCIONES_I[randi_range(1, OPCIONES_I.size() - 1)]
+		valor_objetivo = snappedf(FACTOR_MU * float(n_w) * i_w, 0.01)
+		limite_sobrecarga = snappedf(valor_objetivo + 0.15, 0.01)
+
+	sentido = 1
+	idx_n = randi() % OPCIONES_N.size()
+	idx_i = randi() % OPCIONES_I.size()
+	var intentos := 0
+	while intentos < 30 and (is_equal_approx(_calcular_b(), valor_objetivo) or _calcular_b() > limite_sobrecarga):
+		idx_n = randi() % OPCIONES_N.size()
+		idx_i = randi() % OPCIONES_I.size()
+		intentos += 1
 
 
 func _inicializar_puzzle() -> void:

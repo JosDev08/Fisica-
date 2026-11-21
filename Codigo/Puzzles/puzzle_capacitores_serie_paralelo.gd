@@ -38,11 +38,7 @@ var btn_paralelo: Button
 var btn_activar: Button
 
 
-func _inicializar_puzzle() -> void:
-	titulo_panel = "BANCO DE CAPACITORES — SERIE / PARALELO"
-	if lbl_titulo_ui != null:
-		lbl_titulo_ui.text = titulo_panel
-
+func generar_problema() -> void:
 	if objetivo_aleatorio:
 		var par: Array = PARES_CAPACITORES[randi() % PARES_CAPACITORES.size()]
 		c1_uf = float(par[0])
@@ -52,6 +48,12 @@ func _inicializar_puzzle() -> void:
 
 	en_paralelo = not requiere_paralelo
 	puente_activo = false
+
+
+func _inicializar_puzzle() -> void:
+	titulo_panel = "BANCO DE CAPACITORES — SERIE / PARALELO"
+	if lbl_titulo_ui != null:
+		lbl_titulo_ui.text = titulo_panel
 	_actualizar_estado()
 
 

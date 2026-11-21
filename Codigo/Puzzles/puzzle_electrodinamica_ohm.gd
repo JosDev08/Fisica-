@@ -36,21 +36,17 @@ var lbl_r_val: Label
 var btn_fusible: Button
 
 
-func _inicializar_puzzle() -> void:
-	titulo_panel = "PUENTE DE OHM — CORRIENTE I = V / R"
-	if lbl_titulo_ui != null:
-		lbl_titulo_ui.text = titulo_panel
-	if puente_body != null:
-		_pos_puente_activo = puente_body.position
-
+func generar_problema() -> void:
 	if objetivo_aleatorio:
-		while true:
-			var v_c: float = VOLTAJES[randi_range(0, VOLTAJES.size() - 1)]
-			var r_c: float = RESISTENCIAS[randi_range(0, RESISTENCIAS.size() - 1)]
-			var i_c: float = v_c / r_c
-			if is_zero_approx(fmod(v_c * 2.0, r_c)) and i_c >= 2.0 and i_c <= 15.0:
-				valor_objetivo = i_c
-				break
+		var candidatas: Array[float] = []
+		for v_c in VOLTAJES:
+			for r_c in RESISTENCIAS:
+				var i_c: float = v_c / r_c
+				if is_zero_approx(fmod(v_c * 2.0, r_c)) and i_c >= 2.0 and i_c <= 15.0:
+					if not candidatas.has(i_c):
+						candidatas.append(i_c)
+		if not candidatas.is_empty():
+			valor_objetivo = candidatas[randi() % candidatas.size()]
 
 	var lim := _limite_fusible()
 	idx_v = randi_range(0, VOLTAJES.size() - 1)
@@ -63,6 +59,14 @@ func _inicializar_puzzle() -> void:
 
 	fusible_quemado = false
 	puente_activo = false
+
+
+func _inicializar_puzzle() -> void:
+	titulo_panel = "PUENTE DE OHM — CORRIENTE I = V / R"
+	if lbl_titulo_ui != null:
+		lbl_titulo_ui.text = titulo_panel
+	if puente_body != null:
+		_pos_puente_activo = puente_body.position
 	_actualizar_circuito(false)
 
 

@@ -35,6 +35,7 @@ var vbox_contenido: VBoxContainer
 func _ready() -> void:
 	randomize()
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	generar_problema()
 	_vincular_terminal()
 	_construir_ui_base()
 	_inicializar_puzzle()
@@ -214,6 +215,9 @@ func _on_terminal_body_exited(body: Node2D) -> void:
 
 
 # Métodos virtuales para sobrescribir en cada puzzle concreto
+func generar_problema() -> void:
+	pass
+
 func _inicializar_puzzle() -> void:
 	pass
 
@@ -278,3 +282,34 @@ func actualizar_barra(barra: ProgressBar, valor: float, maximo: float, color: Co
 	fill.set_corner_radius_all(0)
 	barra.add_theme_stylebox_override("background", bg)
 	barra.add_theme_stylebox_override("fill", fill)
+
+
+# Genera exactamente 4 opciones enteras únicas (1 correcta + 3 distractores) mezcladas.
+func construir_opciones_int(correcta: int, distractores_cand: Array[int], min_val: int = 1, max_val: int = 999999, paso_respaldo: int = 2) -> Array[int]:
+	var opciones: Array[int] = [correcta]
+	for cand in distractores_cand:
+		if opciones.size() >= 4:
+			break
+		if cand >= min_val and cand <= max_val and not opciones.has(cand):
+			opciones.append(cand)
+
+	var intento: int = 1
+	while opciones.size() < 4 and intento < 50:
+		var delta: int = intento * maxi(1, paso_respaldo)
+		var arriba: int = correcta + delta
+		var abajo: int = correcta - delta
+		if arriba >= min_val and arriba <= max_val and not opciones.has(arriba):
+			opciones.append(arriba)
+		elif abajo >= min_val and abajo <= max_val and not opciones.has(abajo):
+			opciones.append(abajo)
+		intento += 1
+
+	opciones.shuffle()
+	return opciones
+
+
+func indice_inicial_no_correcto(opciones: Array[int], correcta: int) -> int:
+	for i in range(opciones.size()):
+		if opciones[i] != correcta:
+			return i
+	return 0

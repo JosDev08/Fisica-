@@ -896,15 +896,14 @@ position = Vector2(2130, 73)
 [node name="Enemigo5" parent="." unique_id=1577215261 instance=ExtResource("30_hwlub")]
 position = Vector2(-285, -37)
 
-[node name="PuzzleElectrostaticaCoulomb" parent="." instance=ExtResource("31_puz_coulomb")]
+[node name="PuzzleElectrostaticaCoulomb" parent="." unique_id=2022036430 instance=ExtResource("31_puz_coulomb")]
 position = Vector2(130, 0)
 
-[node name="PuzzleElectrodinamicaOhm" parent="." instance=ExtResource("32_puz_ohm")]
+[node name="PuzzleElectrodinamicaOhm" parent="." unique_id=1707209594 instance=ExtResource("32_puz_ohm")]
 position = Vector2(525, 0)
 
-[node name="PuertaSalidaOhm" parent="." instance=ExtResource("33_puerta_ohm")]
+[node name="PuertaSalidaOhm" parent="." unique_id=1351303454 instance=ExtResource("33_puerta_ohm")]
 position = Vector2(2155, 112)
-ruta_siguiente_escena = "res://Escenas/escena_02.tscn"
 
 [node name="ZonasMuerte" type="Node2D" parent="." unique_id=1954573759]
 

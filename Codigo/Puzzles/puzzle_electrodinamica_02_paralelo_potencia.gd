@@ -2,16 +2,19 @@ extends "res://Codigo/Puzzles/puzzle_base.gd"
 
 # ==============================================================================
 # PUZZLE ELECTRODINÁMICA 02: PARALELO Y POTENCIA (Nivel Preuniversitario UNI)
-# Enunciado: V = 24 V, P = 144 W (I_total = 6 A), rama fija R1 = 6 Ohm.
-# En paralelo: I1 = V/R1 = 24/6 = 4 A => I2 = 6 - 4 = 2 A => R2 = 24/2 = 12 Ohm.
+# Fórmulas destacadas: P = V * I_total   |   I_total = V/R1 + V/R2
+# Genera V, R1 y R2 aleatorios divisores de V (I1, I2, I_total y P enteros exactos),
+# 3 distractores realistas y mezcla los 4 botones con opciones.shuffle().
 # Al resolver: hace subir la plataforma elevadora hija en Capa 5 (Suelo).
 # ==============================================================================
 
-const VOLTAJE_V := 24.0
-const R1_OHM := 6.0
-const POTENCIA_OBJETIVO_W := 144.0
-const I_OBJETIVO_A := 6.0
-const OPCIONES_R2: Array[int] = [3, 6, 8, 12, 18, 24]
+# Configuraciones [V, [divisores_limpios]] para garantizar I1, I2 y P enteros exactos
+const CONFIGS_PARALELO: Array = [
+	[24, [4, 6, 8, 12, 24]],
+	[36, [6, 9, 12, 18, 36]],
+	[48, [6, 8, 12, 16, 24]],
+	[60, [10, 12, 15, 20, 30]],
+]
 
 @export var respuesta_correcta_ohm: int = 12
 @export var altura_elevacion: float = 160.0
@@ -23,13 +26,22 @@ const OPCIONES_R2: Array[int] = [3, 6, 8, 12, 18, 24]
 @onready var elevador_sprite: Sprite2D = $PlataformaElevadora/Sprite2D
 @onready var lbl_estado_elevador: Label = $PlataformaElevadora/EstadoElevador
 
+var voltaje_v: int = 24
+var r1_ohm: int = 6
+var i1_a: int = 4
+var i2_a: int = 2
+var i_objetivo_a: int = 6
+var potencia_objetivo_w: int = 144
+var opciones_r2: Array[int] = []
+
 var resuelto: bool = false
 var pos_base: Vector2 = Vector2.ZERO
 var pos_cima: Vector2 = Vector2.ZERO
 var subiendo: bool = true
 var pausa_actual: float = 0.0
-var indice_sel: int = 1 # Inicia en R2 = 6 Ohm (no resuelto)
+var indice_sel: int = 0
 
+var lbl_enunciado: Label
 var botones_opcion: Array[Button] = []
 var lbl_lectura: Label
 var barra_potencia: ProgressBar
@@ -40,7 +52,40 @@ var btn_comprobar: Button
 func _init() -> void:
 	titulo_panel = "ELECTRODINÁMICA 02 — PARALELO Y POTENCIA"
 	texto_prompt = "[E] Resolver Puzzle"
-	ancho_panel = 660.0
+	ancho_panel = 680.0
+
+
+func generar_problema() -> void:
+	var cfg: Array = CONFIGS_PARALELO[randi() % CONFIGS_PARALELO.size()]
+	voltaje_v = int(cfg[0])
+	var divs: Array = cfg[1]
+
+	var idx1: int = randi() % divs.size()
+	var idx2: int = randi() % divs.size()
+	while idx2 == idx1:
+		idx2 = randi() % divs.size()
+
+	r1_ohm = int(divs[idx1])
+	respuesta_correcta_ohm = int(divs[idx2])
+	i1_a = int(voltaje_v / r1_ohm)
+	i2_a = int(voltaje_v / respuesta_correcta_ohm)
+	i_objetivo_a = i1_a + i2_a
+	potencia_objetivo_w = voltaje_v * i_objetivo_a
+
+	# 3 distractores típicos: R_eq (V/I_total), suma serie (R1 + R2), mitad o doble de R2
+	var d_req: int = maxi(2, int(round(float(voltaje_v) / float(i_objetivo_a))))
+	var d_mitad: int = maxi(2, int(round(float(respuesta_correcta_ohm) * 0.5)))
+	var d_doble: int = respuesta_correcta_ohm * 2
+	var d_serie: int = r1_ohm + respuesta_correcta_ohm
+
+	opciones_r2 = construir_opciones_int(
+		respuesta_correcta_ohm,
+		[d_req, d_mitad, d_doble, d_serie],
+		2,
+		120,
+		2
+	)
+	indice_sel = indice_inicial_no_correcto(opciones_r2, respuesta_correcta_ohm)
 
 
 func _inicializar_puzzle() -> void:
@@ -51,39 +96,52 @@ func _inicializar_puzzle() -> void:
 
 
 func _construir_contenido_panel(vbox: VBoxContainer) -> void:
+	var caja_formula := PanelContainer.new()
+	caja_formula.add_theme_stylebox_override("panel", crear_caja(Color(0.05, 0.13, 0.15, 0.98), COLOR_AMARILLO, 2, 10))
+	vbox.add_child(caja_formula)
+
+	var lbl_formula := Label.new()
+	lbl_formula.text = "FÓRMULAS:   P = V * I_total   |   I_total = V / R1 + V / R2"
+	lbl_formula.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_formula.add_theme_font_size_override("font_size", 16)
+	lbl_formula.add_theme_color_override("font_color", COLOR_AMARILLO)
+	lbl_formula.add_theme_color_override("font_outline_color", Color.BLACK)
+	lbl_formula.add_theme_constant_override("outline_size", 3)
+	caja_formula.add_child(lbl_formula)
+
 	var caja_enunciado := PanelContainer.new()
-	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.05, 0.11, 0.13, 0.96), COLOR_AMARILLO, 2, 12))
+	caja_enunciado.add_theme_stylebox_override("panel", crear_caja(Color(0.05, 0.11, 0.13, 0.96), COLOR_CIAN, 2, 12))
 	vbox.add_child(caja_enunciado)
 
-	var lbl_enunciado := Label.new()
+	lbl_enunciado = Label.new()
 	lbl_enunciado.text = (
 		"ENUNCIADO (Nivel Preuniversitario):\n"
-		+ "Un generador de V = 24 V debe entregar una potencia total P = 144 W (I_total = 6 A) "
+		+ "Un generador de V = %d V debe entregar una potencia total P = %d W (I_total = %d A) "
 		+ "a una plataforma elevadora.\n"
-		+ "Si ya existe una rama fija R1 = 6 Ohm, selecciona la resistencia R2 que debes conectar en paralelo."
-	)
+		+ "Si ya existe una rama fija R1 = %d Ohm, selecciona la resistencia R2 que debes conectar en paralelo."
+	) % [voltaje_v, potencia_objetivo_w, i_objetivo_a, r1_ohm]
 	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_enunciado.add_theme_font_size_override("font_size", 14)
 	lbl_enunciado.add_theme_color_override("font_color", Color(0.95, 0.98, 1.0))
 	caja_enunciado.add_child(lbl_enunciado)
 
 	var lbl_sel_titulo := Label.new()
-	lbl_sel_titulo.text = "SELECCIONA LA RESISTENCIA R2 EN PARALELO CON R1 = 6 Ohm:"
+	lbl_sel_titulo.text = "SELECCIONA LA RESISTENCIA R2 EN PARALELO CON R1 = %d Ohm:" % r1_ohm
 	lbl_sel_titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_sel_titulo.add_theme_font_size_override("font_size", 13)
-	lbl_sel_titulo.add_theme_color_override("font_color", COLOR_AMARILLO)
+	lbl_sel_titulo.add_theme_color_override("font_color", COLOR_CIAN)
 	vbox.add_child(lbl_sel_titulo)
 
 	var fila_opc := HBoxContainer.new()
 	fila_opc.alignment = BoxContainer.ALIGNMENT_CENTER
-	fila_opc.add_theme_constant_override("separation", 8)
+	fila_opc.add_theme_constant_override("separation", 12)
 	vbox.add_child(fila_opc)
 
 	botones_opcion.clear()
-	for i in range(OPCIONES_R2.size()):
+	for i in range(opciones_r2.size()):
 		var btn := Button.new()
-		btn.text = "%d Ohm" % OPCIONES_R2[i]
-		btn.custom_minimum_size = Vector2(92, 38)
+		btn.text = "%d Ohm" % opciones_r2[i]
+		btn.custom_minimum_size = Vector2(132, 40)
 		btn.focus_mode = Control.FOCUS_NONE
 		var idx_local := i
 		btn.pressed.connect(func() -> void: _seleccionar_opcion(idx_local))
@@ -110,7 +168,9 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	v_sim.add_child(barra_potencia)
 
 	lbl_feedback = Label.new()
-	lbl_feedback.text = "Usa P = V * I_total y recuerda que en paralelo I_total = V/R1 + V/R2."
+	lbl_feedback.text = "En paralelo V = %d V es igual en ambas ramas: calcula I1 = %d/%d, luego I2 y R2." % [
+		voltaje_v, voltaje_v, r1_ohm
+	]
 	lbl_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lbl_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_feedback.add_theme_font_size_override("font_size", 13)
@@ -141,7 +201,7 @@ func _procesar_tecla_panel(kc: int) -> bool:
 		_seleccionar_opcion(maxi(0, indice_sel - 1))
 		return true
 	if kc == KEY_RIGHT or kc == KEY_D:
-		_seleccionar_opcion(mini(OPCIONES_R2.size() - 1, indice_sel + 1))
+		_seleccionar_opcion(mini(opciones_r2.size() - 1, indice_sel + 1))
 		return true
 	if kc == KEY_ENTER or kc == KEY_KP_ENTER:
 		_comprobar_respuesta()
@@ -152,17 +212,15 @@ func _procesar_tecla_panel(kc: int) -> bool:
 func _seleccionar_opcion(idx: int) -> void:
 	if resuelto:
 		return
-	indice_sel = clampi(idx, 0, OPCIONES_R2.size() - 1)
+	indice_sel = clampi(idx, 0, opciones_r2.size() - 1)
 	_actualizar_ui()
 
 
 func _actualizar_ui() -> void:
-	var r2_sel: int = OPCIONES_R2[indice_sel]
-	var i1: float = VOLTAJE_V / R1_OHM
-	var i2: float = VOLTAJE_V / float(r2_sel)
-	var i_tot: float = i1 + i2
-	var r_eq: float = (R1_OHM * float(r2_sel)) / (R1_OHM + float(r2_sel))
-	var p_tot: float = VOLTAJE_V * i_tot
+	var r2_sel: int = opciones_r2[indice_sel]
+	var i2_calc: float = float(voltaje_v) / float(r2_sel)
+	var i_tot: float = float(i1_a) + i2_calc
+	var p_tot: float = float(voltaje_v) * i_tot
 
 	for i in range(botones_opcion.size()):
 		var activo := (i == indice_sel)
@@ -171,11 +229,10 @@ func _actualizar_ui() -> void:
 		botones_opcion[i].disabled = resuelto
 
 	lbl_lectura.text = (
-		"R2 = %d Ohm  |  R_eq = %.2f Ohm  |  I_total = %.2f A  =>  P = %.1f W  (Meta: 144 W)"
-		% [r2_sel, r_eq, i_tot, p_tot]
+		"Opción: R2 = %d Ohm  |  V = %d V, R1 = %d Ohm  |  Meta: P = %d W (%d A)"
+		% [r2_sel, voltaje_v, r1_ohm, potencia_objetivo_w, i_objetivo_a]
 	)
-	var col_barra := COLOR_VERDE if r2_sel == respuesta_correcta_ohm else (COLOR_ROJO if p_tot > POTENCIA_OBJETIVO_W else COLOR_AMARILLO)
-	actualizar_barra(barra_potencia, p_tot, 288.0, col_barra)
+	actualizar_barra(barra_potencia, p_tot, float(potencia_objetivo_w) * 2.0, COLOR_VERDE if resuelto else COLOR_CIAN)
 
 	if resuelto:
 		btn_comprobar.text = "PLATAFORMA ELEVADORA ENERGIZADA — CERRAR"
@@ -190,41 +247,41 @@ func _comprobar_respuesta() -> void:
 		cerrar_panel()
 		return
 
-	var r2_sel: int = OPCIONES_R2[indice_sel]
-	var i1: float = VOLTAJE_V / R1_OHM
-	var i2: float = VOLTAJE_V / float(r2_sel)
-	var i_tot: float = i1 + i2
-	var p_tot: float = VOLTAJE_V * i_tot
+	var r2_sel: int = opciones_r2[indice_sel]
+	var i2_calc: float = float(voltaje_v) / float(r2_sel)
+	var i_tot: float = float(i1_a) + i2_calc
+	var p_tot: float = float(voltaje_v) * i_tot
 
 	if r2_sel == respuesta_correcta_ohm:
 		resuelto = true
 		subiendo = true
 		pausa_actual = 0.0
 		lbl_feedback.text = (
-			"¡CORRECTO! I1 = 24/6 = 4 A => falta I2 = 6 - 4 = 2 A => R2 = 24/2 = 12 Ohm (R_eq = 4 Ohm).\n"
-			+ "Potencia exacta P = 24 * 6 = 144 W entregada. Elevando plataforma en Capa 5."
-		)
+			"¡CORRECTO! Paso 1: I1 = %d / %d = %d A => falta I2 = %d - %d = %d A.\n"
+			+ "Paso 2: R2 = V / I2 = %d / %d = %d Ohm => P = %d * %d = %d W.\n"
+			+ "Plataforma elevadora energizada en Capa 5."
+		) % [voltaje_v, r1_ohm, i1_a, i_objetivo_a, i1_a, i2_a, voltaje_v, i2_a, respuesta_correcta_ohm, voltaje_v, i_objetivo_a, potencia_objetivo_w]
 		lbl_feedback.add_theme_color_override("font_color", COLOR_VERDE)
 		_aplicar_estado_elevador()
 		_actualizar_ui()
 		return
 
-	if p_tot > POTENCIA_OBJETIVO_W:
+	if p_tot > float(potencia_objetivo_w):
 		lbl_feedback.text = (
-			"INCORRECTO (R2 = %d Ohm): I2 = %.2f A => I_total = %.2f A y P = %.1f W (excede 144 W).\n"
-			+ "Pista: Como I1 = 24/6 = 4 A, la segunda rama solo necesita I2 = 6 - 4 = 2 A. Aplica R2 = V / I2."
-		) % [r2_sel, i2, i_tot, p_tot]
+			"INCORRECTO (R2 = %d Ohm): I2 = %.2f A => I_total = %.2f A y P = %.1f W (excede %d W).\n"
+			+ "Pista: Como I1 = %d / %d = %d A, la segunda rama requiere I2 = %d - %d = %d A => R2 = %d / %d."
+		) % [r2_sel, i2_calc, i_tot, p_tot, potencia_objetivo_w, voltaje_v, r1_ohm, i1_a, i_objetivo_a, i1_a, i2_a, voltaje_v, i2_a]
 	else:
 		lbl_feedback.text = (
-			"INCORRECTO (R2 = %d Ohm): I2 = %.2f A => I_total = %.2f A y P = %.1f W (falta potencia para 144 W).\n"
-			+ "Pista: Con 1/R_eq = 1/6 + 1/R2 y R_eq = V/I_total = 4 Ohm, despeja R2 = 12 Ohm."
-		) % [r2_sel, i2, i_tot, p_tot]
+			"INCORRECTO (R2 = %d Ohm): I2 = %.2f A => I_total = %.2f A y P = %.1f W (falta potencia para %d W).\n"
+			+ "Pista: Halla I2 = I_total - I1 = %d - %d = %d A y aplica R2 = %d / %d."
+		) % [r2_sel, i2_calc, i_tot, p_tot, potencia_objetivo_w, i_objetivo_a, i1_a, i2_a, voltaje_v, i2_a]
 	lbl_feedback.add_theme_color_override("font_color", COLOR_ROJO)
 
 
 func _aplicar_estado_elevador() -> void:
 	if lbl_estado_elevador != null:
-		lbl_estado_elevador.text = "144 W ACTIVO" if resuelto else "SIN POTENCIA"
+		lbl_estado_elevador.text = "%d W ACTIVO" % potencia_objetivo_w if resuelto else "SIN POTENCIA"
 		lbl_estado_elevador.add_theme_color_override("font_color", COLOR_VERDE if resuelto else COLOR_AMARILLO)
 	if elevador_sprite != null:
 		elevador_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0) if resuelto else Color(0.68, 0.72, 0.78, 0.92)
