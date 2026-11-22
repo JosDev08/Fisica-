@@ -930,10 +930,10 @@ position = Vector2(-90, 0)
 [node name="MonedasRayo" type="Node2D" parent="." unique_id=2078268079]
 
 [node name="MonedaRayo2" parent="MonedasRayo" unique_id=666313696 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(65, -28)
+position = Vector2(-28, -26)
 
 [node name="MonedaRayo3" parent="MonedasRayo" unique_id=1741845185 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(185, -28)
+position = Vector2(50, -23)
 
 [node name="MonedaRayo4" parent="MonedasRayo" unique_id=59541443 instance=ExtResource("36_moneda_rayo")]
 position = Vector2(325, -28)
@@ -953,10 +953,10 @@ position = Vector2(1950, 96)
 [node name="MonedasTiempo" type="Node2D" parent="." unique_id=2020822367]
 
 [node name="MonedaTiempo1" parent="MonedasTiempo" unique_id=1555374228 instance=ExtResource("37_moneda_tiempo")]
-position = Vector2(280, -32)
+position = Vector2(-641, -59)
 
 [node name="MonedaTiempo2" parent="MonedasTiempo" unique_id=55886373 instance=ExtResource("37_moneda_tiempo")]
-position = Vector2(1020, 84)
+position = Vector2(1027, 96)
 
 [node name="MonedaTiempo3" parent="MonedasTiempo" unique_id=1463081294 instance=ExtResource("37_moneda_tiempo")]
 position = Vector2(1420, 84)
