@@ -548,12 +548,16 @@ func cargar_audio_seguro(ruta: String) -> AudioStream:
 		var recurso := ResourceLoader.load(ruta)
 		if recurso is AudioStream:
 			return recurso as AudioStream
-	if FileAccess.file_exists(ruta) and ruta.to_lower().ends_with(".mp3"):
-		var bytes := FileAccess.get_file_as_bytes(ruta)
-		if not bytes.is_empty():
-			var stream_mp3 := AudioStreamMP3.new()
-			stream_mp3.data = bytes
-			return stream_mp3
+	if FileAccess.file_exists(ruta):
+		var ruta_lower := ruta.to_lower()
+		if ruta_lower.ends_with(".wav"):
+			return AudioStreamWAV.load_from_file(ruta)
+		if ruta_lower.ends_with(".mp3"):
+			var bytes := FileAccess.get_file_as_bytes(ruta)
+			if not bytes.is_empty():
+				var stream_mp3 := AudioStreamMP3.new()
+				stream_mp3.data = bytes
+				return stream_mp3
 	return null
 
 

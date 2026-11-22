@@ -1376,6 +1376,6 @@ codigo_nivel = "NIVEL 03 — NÚCLEO ELECTROMAGNÉTICO (MISIÓN CRÍTICA)"
 titulo_tema = "ELECTROMAGNETISMO + MISIÓN CRÍTICA"
 subtitulo_mision = "Calibra electroimanes, generadores de Faraday y recupera los archivos clasificados."
 formulas_clave = PackedStringArray("Electroimán / Bobina:  B = μ₀ · (N / L) · I", "Inducción de Faraday:  ε = -N · (ΔΦ / Δt)")
-texto_explicacion = "Atención, soldado. Estás en el corazón electromagnético del laboratorio. Una corriente eléctrica I circulando por una bobina de N espiras crea un campo magnético B capaz de sostener puentes metálicos. Además, según la Ley de Inducción de Faraday, variar el flujo magnético ΔΦ a través de una bobina genera un voltaje inducido ε que alimenta nuestros generadores."
-alerta_mision = "⚠ ORDEN EXPRESA DE MISIÓN: Antes de cruzar la compuerta final hacia el exterior, DEBES localizar el Estante de Archivos Clasificados y presionar [E] para recuperar los documentos secretos. ¡La salida hacia el Nivel 4 permanecerá bloqueada sin ellos!"
+texto_explicacion = "Atención, soldado, llegaste al núcleo subterráneo. Aquí se guardan los archivos clasificados que vinimos a buscar. Todo este sector funciona con Electromagnetismo: al pasar corriente por las bobinas activas electroimanes capaces de mover puentes metálicos, y al mover imanes generas corriente inducida para encender los generadores."
+alerta_mision = "⚠ OBJETIVO PRINCIPAL: Busca el estante de archivos clasificados en este nivel y presiona [E] para recuperarlos. Sin esos documentos en tu poder, la compuerta de salida no se abrirá."
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_3.mp3"

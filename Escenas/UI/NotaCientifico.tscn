@@ -9,3 +9,4 @@ script = ExtResource("1_nota_script")
 
 [node name="AudioVoz" type="AudioStreamPlayer" parent="."]
 process_mode = 3
+pitch_scale = 1.0

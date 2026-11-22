@@ -1006,6 +1006,7 @@ position = Vector2(3102, 886)
 position = Vector2(-130, -24)
 
 [node name="enemigo_3" parent="." unique_id=247543696 instance=ExtResource("7_gdrao")]
+visible = false
 position = Vector2(485, -25)
 
 [node name="enemigo_4" parent="." unique_id=1991893267 instance=ExtResource("7_gdrao")]
@@ -1077,27 +1078,27 @@ position = Vector2(1600, -80)
 [node name="MonedaRayo8" parent="MonedasRayo" unique_id=545119944 instance=ExtResource("34_moneda_rayo")]
 position = Vector2(2400, 96)
 
-[node name="MonedasTiempo" type="Node2D" parent="."]
+[node name="MonedasTiempo" type="Node2D" parent="." unique_id=1887254944]
 
-[node name="MonedaTiempo1" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+[node name="MonedaTiempo1" parent="MonedasTiempo" unique_id=1074229651 instance=ExtResource("35_moneda_tiempo")]
 position = Vector2(-210, -30)
 
-[node name="MonedaTiempo2" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+[node name="MonedaTiempo2" parent="MonedasTiempo" unique_id=1387723184 instance=ExtResource("35_moneda_tiempo")]
 position = Vector2(650, -30)
 
-[node name="MonedaTiempo3" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+[node name="MonedaTiempo3" parent="MonedasTiempo" unique_id=1049232486 instance=ExtResource("35_moneda_tiempo")]
 position = Vector2(1180, -30)
 
-[node name="MonedaTiempo4" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+[node name="MonedaTiempo4" parent="MonedasTiempo" unique_id=335484357 instance=ExtResource("35_moneda_tiempo")]
 position = Vector2(2620, 886)
 
-[node name="MonedaTiempo5" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+[node name="MonedaTiempo5" parent="MonedasTiempo" unique_id=1077436818 instance=ExtResource("35_moneda_tiempo")]
 position = Vector2(3500, 886)
 
-[node name="NotaCientifico" parent="." instance=ExtResource("36_nota_cientifico")]
+[node name="NotaCientifico" parent="." unique_id=1788696188 instance=ExtResource("36_nota_cientifico")]
 codigo_nivel = "NIVEL 02 — BANCO DE ALMACENAMIENTO ELÉCTRICO"
 titulo_tema = "CAPACITORES Y ENERGÍA ELÉCTRICA"
 subtitulo_mision = "Configura capacitores en serie y paralelo para alimentar puentes y elevadores."
 formulas_clave = PackedStringArray("Carga eléctrica:  Q = C · V", "En paralelo (se suman):  C_eq = C₁ + C₂", "En serie (disminuyen):  1/C_eq = 1/C₁ + 1/C₂", "Energía almacenada:  U = ½ · C · V²")
-texto_explicacion = "Excelente avance, soldado. Has ingresado al Sector de Capacitores. Un capacitor almacena carga eléctrica Q según su capacitancia C y el voltaje aplicado V. Cuando conectas capacitores en PARALELO sus capacitancias se suman directamente; en cambio, en SERIE la capacitancia equivalente disminuye por debajo de la menor. Finalmente, recuerda que la energía almacenada U crece con el cuadrado del voltaje (½·C·V²): úsala para energizar los elevadores y desbloquear la salida."
+texto_explicacion = "Bien hecho, soldado, lograste entrar al sector interno. Estás cada vez más cerca de la bóveda, pero los pasillos están sellados con bancos de capacitores. Estos dispositivos almacenan energía eléctrica para alimentar compuertas y elevadores. Ten esto en mente para avanzar: si conectas capacitores en paralelo, sumas su capacidad para dar más potencia; si los pones en serie, la capacidad total baja. Además, a mayor voltaje, mucha más energía acumulada. Carga los sistemas y ábrete camino hacia el subsuelo."
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_2.mp3"

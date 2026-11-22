@@ -23,6 +23,9 @@ const TEX_RETRATO := "res://assets/ui/retrato_dr_vance.svg"
 const TEX_SELLO := "res://assets/ui/sello_clasificado.svg"
 const TEX_RADIO := "res://assets/ui/icono_radio_transmision.svg"
 const TEX_FONDO_DOSSIER := "res://assets/ui/fondo_dossier_terminal.svg"
+const BUS_RADIO := "RadioCientifico"
+const RUTA_RADIO_BEEP := "res://assets/audio/voces/radio_beep.wav"
+const PITCH_RADIO := 1.0
 
 @export var codigo_nivel: String = "NIVEL 01 — LABORATORIO CENTRAL"
 @export var titulo_tema: String = "INFORME DE FÍSICA"
@@ -39,11 +42,14 @@ const TEX_FONDO_DOSSIER := "res://assets/ui/fondo_dossier_terminal.svg"
 var _abierta: bool = false
 var _modal_registrado: bool = false
 var _stream_voz: AudioStream = null
+var _stream_beep: AudioStream = null
+var _secuencia_audio_id: int = 0
 var _caracteres_mostrados: float = 0.0
 var _escritura_terminada: bool = false
 var _tiempo_pulso: float = 0.0
 
 var _audio_voz: AudioStreamPlayer
+var _audio_beep: AudioStreamPlayer
 var _panel_dossier: PanelContainer
 var _ico_radio: TextureRect
 var _lbl_estado_audio: Label
@@ -57,12 +63,27 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("nota_cientifico")
 
+	_asegurar_bus_radio_cientifico()
+
 	_audio_voz = get_node_or_null("AudioVoz") as AudioStreamPlayer
 	if _audio_voz == null:
 		_audio_voz = AudioStreamPlayer.new()
 		_audio_voz.name = "AudioVoz"
 		add_child(_audio_voz)
 	_audio_voz.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_voz.bus = BUS_RADIO
+	_audio_voz.pitch_scale = PITCH_RADIO
+
+	_audio_beep = get_node_or_null("AudioRadioBeep") as AudioStreamPlayer
+	if _audio_beep == null:
+		_audio_beep = AudioStreamPlayer.new()
+		_audio_beep.name = "AudioRadioBeep"
+		add_child(_audio_beep)
+	_audio_beep.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_beep.bus = BUS_RADIO
+	_audio_beep.pitch_scale = 1.0
+	if ResourceLoader.exists(RUTA_RADIO_BEEP) or FileAccess.file_exists(RUTA_RADIO_BEEP):
+		_stream_beep = GameManager.cargar_audio_seguro(RUTA_RADIO_BEEP)
 
 	_construir_ui()
 	_cargar_audio_voz()
@@ -111,6 +132,9 @@ func cerrar_transmision() -> void:
 	_abierta = false
 	visible = false
 
+	_secuencia_audio_id += 1
+	if _audio_beep != null and _audio_beep.playing:
+		_audio_beep.stop()
 	if _audio_voz != null and _audio_voz.playing:
 		_audio_voz.stop()
 
@@ -192,15 +216,52 @@ func _cargar_audio_voz() -> void:
 		_actualizar_estado_audio("MODO TEXTO — Voz pendiente (%s)" % ruta_audio_voz.get_file(), COLOR_ORO)
 
 
+func _asegurar_bus_radio_cientifico() -> void:
+	if AudioServer.get_bus_index(BUS_RADIO) != -1:
+		return
+	var idx: int = AudioServer.bus_count
+	AudioServer.add_bus(idx)
+	AudioServer.set_bus_name(idx, BUS_RADIO)
+	AudioServer.set_bus_send(idx, "Master")
+
+	var filtro_hp := AudioEffectHighPassFilter.new()
+	filtro_hp.cutoff_hz = 220.0
+	AudioServer.add_bus_effect(idx, filtro_hp)
+
+	var filtro_lp := AudioEffectLowPassFilter.new()
+	filtro_lp.cutoff_hz = 4500.0
+	AudioServer.add_bus_effect(idx, filtro_lp)
+
+
 func _reproducir_audio_voz(desde_boton: bool) -> void:
 	if _stream_voz == null and not ruta_audio_voz.is_empty():
 		_cargar_audio_voz()
 
 	if _stream_voz != null and _audio_voz != null:
+		_asegurar_bus_radio_cientifico()
+		_secuencia_audio_id += 1
+		var mi_secuencia: int = _secuencia_audio_id
+
+		if _audio_beep != null:
+			_audio_beep.stop()
 		_audio_voz.stop()
+		_audio_voz.bus = BUS_RADIO
+		_audio_voz.pitch_scale = PITCH_RADIO
 		_audio_voz.stream = _stream_voz
-		_audio_voz.play()
 		_actualizar_estado_audio("REPRODUCIENDO TRANSMISIÓN DE RADIO...", COLOR_VERDE)
+
+		# Pitido táctico de apertura de comunicador antes de hablar
+		if _stream_beep == null and (ResourceLoader.exists(RUTA_RADIO_BEEP) or FileAccess.file_exists(RUTA_RADIO_BEEP)):
+			_stream_beep = GameManager.cargar_audio_seguro(RUTA_RADIO_BEEP)
+		if _stream_beep != null and _audio_beep != null and is_inside_tree():
+			_audio_beep.bus = BUS_RADIO
+			_audio_beep.stream = _stream_beep
+			_audio_beep.play(0.0)
+			await get_tree().create_timer(0.26, true).timeout
+			if not is_inside_tree() or not _abierta or mi_secuencia != _secuencia_audio_id:
+				return
+
+		_audio_voz.play(0.0)
 	elif desde_boton:
 		_actualizar_estado_audio("Coloca %s en res://assets/audio/voces/" % ruta_audio_voz.get_file(), COLOR_ORO)
 
