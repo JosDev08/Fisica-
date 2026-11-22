@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="72" viewBox="0 0 32 36" shape-rendering="crispEdges">
+  <!-- Sombra en el suelo -->
+  <rect x="3" y="34" width="26" height="2" fill="#080c14" fill-opacity="0.72"/>
+
+  <!-- Parte superior vacía (archivos ya recuperados) -->
+  <!-- Sutil marca de polvo donde estaba la carpeta -->
+  <rect x="10" y="10" width="12" height="1" fill="#3a4c66" fill-opacity="0.5"/>
+
+  <!-- Chasis metálico del archivador / estante de laboratorio -->
+  <rect x="4" y="10" width="24" height="24" fill="#0c111a"/>
+  <rect x="5" y="11" width="22" height="22" fill="#253245"/>
+  <!-- Brillo superior y bisel metálico -->
+  <rect x="5" y="11" width="22" height="2" fill="#465b78"/>
+  <rect x="5" y="11" width="2" height="22" fill="#354863"/>
+  <rect x="25" y="11" width="2" height="22" fill="#161f2e"/>
+
+  <!-- Compartimento superior con espacio vacío y LED verde de recuperado -->
+  <rect x="7" y="14" width="18" height="6" fill="#0e1520"/>
+  <!-- Algunas carpetas secundarias restantes -->
+  <rect x="8" y="16" width="2" height="4" fill="#305070"/>
+  <rect x="11" y="16" width="2" height="4" fill="#3c628a"/>
+  <!-- LED indicador verde (RECUPERADO) -->
+  <rect x="22" y="15" width="2" height="2" fill="#2ee884"/>
+
+  <!-- Separador metálico -->
+  <rect x="6" y="20" width="20" height="1" fill="#425773"/>
+
+  <!-- Cajón inferior 1 (abierto ligeramente tras inspección) -->
+  <rect x="7" y="22" width="18" height="5" fill="#1c2738"/>
+  <rect x="7" y="22" width="18" height="1" fill="#364966"/>
+  <rect x="13" y="23" width="6" height="1" fill="#7793b8"/>
+  <rect x="14" y="25" width="4" height="1" fill="#2ee884"/>
+
+  <!-- Cajón inferior 2 -->
+  <rect x="7" y="28" width="18" height="4" fill="#182230"/>
+  <rect x="7" y="28" width="18" height="1" fill="#30415c"/>
+  <rect x="13" y="29" width="6" height="1" fill="#6b83a3"/>
+  <rect x="14" y="31" width="4" height="1" fill="#7793b8"/>
+
+  <!-- Patas metálicas -->
+  <rect x="6" y="33" width="3" height="2" fill="#121926"/>
+  <rect x="23" y="33" width="3" height="2" fill="#121926"/>
+</svg>

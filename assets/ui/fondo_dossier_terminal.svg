@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="320" viewBox="0 0 512 320">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#07111e"/>
+      <stop offset="50%" stop-color="#0a1627"/>
+      <stop offset="100%" stop-color="#060d18"/>
+    </linearGradient>
+    <pattern id="techGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#183959" stroke-width="1" stroke-opacity="0.35"/>
+      <rect x="0" y="0" width="2" height="2" fill="#2cc8ff" fill-opacity="0.22"/>
+    </pattern>
+  </defs>
+  <!-- Fondo principal -->
+  <rect width="512" height="320" fill="url(#bgGrad)"/>
+  <rect width="512" height="320" fill="url(#techGrid)"/>
+  <!-- Franja superior sutil de cabecera -->
+  <rect x="0" y="0" width="512" height="58" fill="#0d2238" fill-opacity="0.65"/>
+  <rect x="0" y="58" width="512" height="2" fill="#28c7fa" fill-opacity="0.45"/>
+  <!-- Líneas decorativas tipo dossier -->
+  <rect x="14" y="14" width="28" height="3" fill="#3be4ff"/>
+  <rect x="14" y="14" width="3" height="28" fill="#3be4ff"/>
+  <rect x="470" y="14" width="28" height="3" fill="#3be4ff"/>
+  <rect x="495" y="14" width="3" height="28" fill="#3be4ff"/>
+  <rect x="14" y="303" width="28" height="3" fill="#ffd84d" fill-opacity="0.8"/>
+  <rect x="14" y="278" width="3" height="28" fill="#ffd84d" fill-opacity="0.8"/>
+  <rect x="470" y="303" width="28" height="3" fill="#ffd84d" fill-opacity="0.8"/>
+  <rect x="495" y="278" width="3" height="28" fill="#ffd84d" fill-opacity="0.8"/>
+  <!-- Sello de agua geométrico central muy sutil -->
+  <circle cx="430" cy="215" r="56" fill="none" stroke="#3be4ff" stroke-width="1.5" stroke-opacity="0.09"/>
+  <circle cx="430" cy="215" r="42" fill="none" stroke="#ffd84d" stroke-width="1" stroke-dasharray="6 4" stroke-opacity="0.1"/>
+</svg>

@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="12_maquina_perks"]
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="13_moneda_rayo"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="14_moneda_tiempo"]
+[ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="15_nota_cientifico"]
+[ext_resource type="PackedScene" path="res://Escenas/Objetos/EstanteArchivos.tscn" id="16_estante_archivos"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_0j3rl")
@@ -1365,3 +1367,15 @@ position = Vector2(2490, -30)
 
 [node name="MonedaTiempo5" parent="MonedasTiempo" instance=ExtResource("14_moneda_tiempo")]
 position = Vector2(3180, -30)
+
+[node name="EstanteArchivos" parent="." instance=ExtResource("16_estante_archivos")]
+position = Vector2(3300, 0)
+
+[node name="NotaCientifico" parent="." instance=ExtResource("15_nota_cientifico")]
+codigo_nivel = "NIVEL 03 — NÚCLEO ELECTROMAGNÉTICO (MISIÓN CRÍTICA)"
+titulo_tema = "ELECTROMAGNETISMO + MISIÓN CRÍTICA"
+subtitulo_mision = "Calibra electroimanes, generadores de Faraday y recupera los archivos clasificados."
+formulas_clave = PackedStringArray("Electroimán / Bobina:  B = μ₀ · (N / L) · I", "Inducción de Faraday:  ε = -N · (ΔΦ / Δt)")
+texto_explicacion = "Atención, soldado. Estás en el corazón electromagnético del laboratorio. Una corriente eléctrica I circulando por una bobina de N espiras crea un campo magnético B capaz de sostener puentes metálicos. Además, según la Ley de Inducción de Faraday, variar el flujo magnético ΔΦ a través de una bobina genera un voltaje inducido ε que alimenta nuestros generadores."
+alerta_mision = "⚠ ORDEN EXPRESA DE MISIÓN: Antes de cruzar la compuerta final hacia el exterior, DEBES localizar el Estante de Archivos Clasificados y presionar [E] para recuperar los documentos secretos. ¡La salida hacia el Nivel 4 permanecerá bloqueada sin ellos!"
+ruta_audio_voz = "res://assets/audio/voces/voz_nivel_3.mp3"

@@ -1,0 +1,31 @@
+==============================================================================
+ELECTRIC RUNNER — CARPETA DE VOCES Y TRANSMISIONES DEL CIENTÍFICO (DR. VANCE)
+==============================================================================
+
+Coloca en esta carpeta (res://assets/audio/voces/) los archivos de audio .mp3
+con exactamente los siguientes nombres:
+
+  1. voz_nivel_1.mp3
+     -> Transmisión obligatoria al iniciar escena_01.tscn
+        (Tema: Electrostática y Electrodinámica - Ley de Coulomb y Ley de Ohm)
+
+  2. voz_nivel_2.mp3
+     -> Transmisión obligatoria al iniciar escena_02.tscn
+        (Tema: Capacitores - Q = C·V, serie/paralelo y energía U = 1/2·C·V²)
+
+  3. voz_nivel_3.mp3
+     -> Transmisión obligatoria al iniciar escena_03.tscn
+        (Tema: Electromagnetismo + orden crítica de recuperar los archivos)
+
+  4. voz_nivel_3_archivos.mp3
+     -> Audio de confirmación al interactuar [E] con el Estante de Archivos
+        Clasificados en escena_03.tscn.
+
+  5. voz_nivel_4.mp3
+     -> Transmisión final de Extracción al iniciar Escena_4.tscn
+        (Felicitación al soldado por recuperar los archivos clasificados).
+
+NOTA TÉCNICA:
+El juego verifica automáticamente con ResourceLoader.exists() y
+FileAccess.file_exists() antes de cargar cada archivo. Si alguno de estos .mp3
+aún no ha sido colocado aquí, el juego funcionará con 0 errores en modo texto.

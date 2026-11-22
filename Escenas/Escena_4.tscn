@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3]
+[gd_scene load_steps=39 format=3]
 
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="1_jugador"]
 [ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="2_puerta_ohm"]
@@ -31,6 +31,7 @@
 [ext_resource type="Texture2D" path="res://assets/escena_4/cesped_detalle.svg" id="29_cesped_svg"]
 [ext_resource type="Texture2D" path="res://assets/escena_4/portal_meta.svg" id="30_portal_svg"]
 [ext_resource type="Texture2D" path="res://assets/escena_4/luz_radial.svg" id="31_luz_svg"]
+[ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="32_nota_cientifico"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_768"]
 size = Vector2(768, 64)
@@ -480,3 +481,14 @@ color = Color(1, 0.78, 0.48, 1)
 energy = 0.95
 texture = ExtResource("31_luz_svg")
 texture_scale = 2.8
+
+[node name="NotaCientifico" parent="." instance=ExtResource("32_nota_cientifico")]
+codigo_nivel = "NIVEL 04 — EXTRACCIÓN FINAL EN SUPERFICIE"
+titulo_tema = "EXTRACCIÓN FINAL COMPLETADA"
+subtitulo_mision = "Has escapado del Laboratorio Central con los archivos clasificados a salvo."
+formulas_clave = PackedStringArray("EXPEDIENTE CLASIFICADO:  RECUPERADO Y ASEGURADO ✓", "OBJETIVO FINAL:  CRUZA EL BOSQUE HASTA EL PORTAL DE EXTRACCIÓN")
+texto_explicacion = "¡Magnífico trabajo, soldado! Recibo confirmación en la central: has recuperado con éxito los archivos clasificados del estante y has superado todas las pruebas de física del complejo. Ya estás en el bosque exterior. Ábrete paso con cuidado hasta el Portal de Extracción para completar la misión."
+alerta_mision = "✓ TRANSMISIÓN FINAL DEL DR. VANCE: ¡Felicidades, soldado! La investigación está a salvo gracias a ti. Dirígete al Portal de Extracción."
+alerta_es_victoria = true
+ruta_audio_voz = "res://assets/audio/voces/voz_nivel_4.mp3"
+texto_boton_iniciar = "ENTENDIDO / COMPLETAR EXTRACCIÓN"

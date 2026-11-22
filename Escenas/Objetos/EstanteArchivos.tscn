@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Codigo/estante_archivos.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/objetos/estante_archivos.svg" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_estante"]
+size = Vector2(120, 96)
+
+[node name="EstanteArchivos" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+monitorable = true
+script = ExtResource("1_script")
+
+[node name="BrilloCarpeta" type="Polygon2D" parent="."]
+position = Vector2(0, -62)
+color = Color(1, 0.88, 0.35, 0.35)
+polygon = PackedVector2Array(-20, -10, 20, -10, 24, 6, -24, 6)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -36)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -40)
+shape = SubResource("RectangleShape2D_estante")
+
+[node name="LblEstadoEstante" type="Label" parent="."]
+z_index = 20
+offset_left = -120.0
+offset_top = -94.0
+offset_right = 120.0
+offset_bottom = -74.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.99, 0.86, 0.32, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 11
+text = "★ ARCHIVOS CLASIFICADOS"
+horizontal_alignment = 1
+
+[node name="PromptInteractuar" type="Label" parent="."]
+visible = false
+z_index = 25
+offset_left = -150.0
+offset_top = -118.0
+offset_right = 150.0
+offset_bottom = -94.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "[E] Recuperar Archivos Clasificados"
+horizontal_alignment = 1
+
+[node name="AudioConfirmacion" type="AudioStreamPlayer" parent="."]
+process_mode = 3

@@ -15,6 +15,7 @@ signal mejoras_cambiadas(mejoras: Dictionary)
 signal checkpoint_guardado(escena: String, posicion: Vector2)
 signal jugador_murio(motivo: String)
 signal pausa_cambiada(en_pausa: bool)
+signal archivos_recuperados_cambiados(recuperados: bool)
 
 const SAVE_PATH: String = "user://savegame.save"
 const ESCENA_NIVEL_1: String = "res://Escenas/escena_01.tscn"
@@ -63,6 +64,7 @@ var tiempo_restante: float = 65.0
 var temporizador_activo: bool = false
 var jugador_muerto: bool = false
 var en_pausa: bool = false
+var archivos_recuperados: bool = false
 
 var _usar_posicion_pendiente: bool = false
 var _posicion_pendiente_respawn: Vector2 = Vector2.ZERO
@@ -200,11 +202,13 @@ func nueva_partida(cambiar_escena: bool = true) -> String:
 	temporizador_activo = false
 	jugador_muerto = false
 	en_pausa = false
+	archivos_recuperados = false
 	_modales_abiertos = 0
 	_usar_posicion_pendiente = false
 	_posicion_pendiente_respawn = Vector2.ZERO
 
 	guardar_partida()
+	archivos_recuperados_cambiados.emit(false)
 	monedas_cambiadas.emit(monedas_rayo)
 	mejoras_cambiadas.emit(mejoras.duplicate())
 	vida_cambiada.emit(vida_actual, obtener_vida_maxima())
@@ -514,6 +518,45 @@ func hay_modal_interactivo_abierto() -> bool:
 	return _modales_abiertos > 0
 
 
+func marcar_archivos_recuperados(estado: bool) -> void:
+	archivos_recuperados = estado
+	var escena := get_tree().current_scene if get_tree() != null else null
+	if escena != null:
+		escena.set_meta("archivos_recuperados", estado)
+	archivos_recuperados_cambiados.emit(estado)
+
+
+func tiene_archivos_recuperados() -> bool:
+	if archivos_recuperados:
+		return true
+	var escena := get_tree().current_scene if get_tree() != null else null
+	if escena != null and escena.has_meta("archivos_recuperados"):
+		return bool(escena.get_meta("archivos_recuperados"))
+	return false
+
+
+func existe_audio_seguro(ruta: String) -> bool:
+	if ruta.is_empty():
+		return false
+	return ResourceLoader.exists(ruta) or FileAccess.file_exists(ruta)
+
+
+func cargar_audio_seguro(ruta: String) -> AudioStream:
+	if ruta.is_empty():
+		return null
+	if ResourceLoader.exists(ruta):
+		var recurso := ResourceLoader.load(ruta)
+		if recurso is AudioStream:
+			return recurso as AudioStream
+	if FileAccess.file_exists(ruta) and ruta.to_lower().ends_with(".mp3"):
+		var bytes := FileAccess.get_file_as_bytes(ruta)
+		if not bytes.is_empty():
+			var stream_mp3 := AudioStreamMP3.new()
+			stream_mp3.data = bytes
+			return stream_mp3
+	return null
+
+
 func establecer_pausa(pausar: bool) -> void:
 	if jugador_muerto:
 		return
@@ -577,6 +620,10 @@ func _configurar_escena_juego(escena: Node) -> void:
 	get_tree().paused = false
 	_recalcular_derivados()
 
+	# En Nivel 3 los archivos clasificados deben recuperarse del estante antes de salir
+	if ruta.get_file().to_lower() == "escena_03.tscn":
+		marcar_archivos_recuperados(false)
+
 	# 1. Posicionar jugador en checkpoint y aplicar mejoras activas automáticamente
 	var jugador := obtener_jugador_actual()
 	if jugador != null:
@@ -603,6 +650,13 @@ func _configurar_escena_juego(escena: Node) -> void:
 	monedas_cambiadas.emit(monedas_rayo)
 	mejoras_cambiadas.emit(mejoras.duplicate())
 	vida_cambiada.emit(vida_actual, obtener_vida_maxima())
+
+	# 4. Respetar cualquier NotaCientifico obligatoria que se haya abierto al iniciar el nivel
+	for nota in get_tree().get_nodes_in_group("nota_cientifico"):
+		if is_instance_valid(nota) and nota.has_method("esta_abierta") and nota.esta_abierta():
+			_modales_abiertos = maxi(_modales_abiertos, 1)
+			get_tree().paused = true
+			break
 
 
 func _asegurar_ui_de_nivel(escena: Node) -> void:

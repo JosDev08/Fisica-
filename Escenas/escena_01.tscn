@@ -36,6 +36,7 @@
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="35_maquina_perks"]
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="36_moneda_rayo"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="37_moneda_tiempo"]
+[ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="38_nota_cientifico"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -963,3 +964,11 @@ position = Vector2(1420, 84)
 
 [node name="MonedaTiempo4" parent="MonedasTiempo" unique_id=157382940 instance=ExtResource("37_moneda_tiempo")]
 position = Vector2(1760, 84)
+
+[node name="NotaCientifico" parent="." instance=ExtResource("38_nota_cientifico")]
+codigo_nivel = "NIVEL 01 — SECTOR DE ELECTROSTÁTICA Y CIRCUITOS"
+titulo_tema = "ELECTROSTÁTICA Y ELECTRODINÁMICA"
+subtitulo_mision = "Domina la interacción de cargas y la Ley de Ohm para abrir paso por el laboratorio."
+formulas_clave = PackedStringArray("Ley de Coulomb:  F = k · |q₁ · q₂| / d²", "Polaridad:  Iguales (+/+ o -/-) repelen  |  Opuestas (+/-) atraen", "Ley de Ohm:  V = I · R   (I = V / R)")
+texto_explicacion = "Soldado, bienvenido al Sector 1 del Laboratorio Central. En la electrostática, dos cargas eléctricas ejercen entre sí una fuerza proporcional al producto de sus magnitudes e inversamente proporcional al cuadrado de la distancia (Ley de Coulomb): cargas del mismo signo se repelen y cargas opuestas se atraen. Más adelante, en los paneles de electrodinámica, recuerda la Ley de Ohm: el voltaje V impulsa una corriente I que disminuye cuando aumenta la resistencia R. ¡Usa las terminales con [E] y avanza con precisión!"
+ruta_audio_voz = "res://assets/audio/voces/voz_nivel_1.mp3"

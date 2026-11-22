@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Codigo/UI/nota_cientifico.gd" id="1_nota_script"]
+
+[node name="NotaCientifico" type="CanvasLayer"]
+process_mode = 3
+layer = 90
+script = ExtResource("1_nota_script")
+
+[node name="AudioVoz" type="AudioStreamPlayer" parent="."]
+process_mode = 3

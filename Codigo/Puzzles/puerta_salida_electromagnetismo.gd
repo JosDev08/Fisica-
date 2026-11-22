@@ -18,9 +18,13 @@ const F2_FRECUENCIAS: Array[float] = [1.0, 2.0, 3.0, 4.0, 5.0]
 @export var valor_objetivo_fase1: float = 1.50
 @export var valor_objetivo_fase2: float = 180.0
 @export var objetivo_aleatorio: bool = true
+@export var requiere_archivos_clasificados: bool = true
+
+const MSG_ACCESO_DENEGADO := "¡ACCESO DENEGADO! Debes recuperar los archivos del estante antes de avanzar"
 
 var fase_actual: int = 1
 var fase_1_ok: bool = false
+var fase_2_ok: bool = false
 var puerta_abierta: bool = false
 var idx_a: int = 1
 var idx_b: int = 1
@@ -40,7 +44,12 @@ var barra_reactor: ProgressBar
 var lbl_formula: Label
 var lbl_a_val: Label
 var lbl_b_val: Label
+var lbl_alerta_archivos_ui: Label
 var btn_accion: Button
+
+var _canvas_alerta: CanvasLayer = null
+var _panel_alerta: PanelContainer = null
+var _tween_alerta: Tween = null
 
 
 func generar_problema() -> void:
@@ -61,6 +70,7 @@ func generar_problema() -> void:
 
 	fase_actual = 1
 	fase_1_ok = false
+	fase_2_ok = false
 	puerta_abierta = false
 	idx_a = randi() % F1_ESPIRAS.size()
 	idx_b = randi() % F1_CORRIENTES.size()
@@ -84,6 +94,10 @@ func _inicializar_puzzle() -> void:
 		portal_area.monitoring = true
 		if not portal_area.body_entered.is_connected(_on_portal_entered):
 			portal_area.body_entered.connect(_on_portal_entered)
+
+	_construir_banner_alerta()
+	if not GameManager.archivos_recuperados_cambiados.is_connected(_on_archivos_cambiados):
+		GameManager.archivos_recuperados_cambiados.connect(_on_archivos_cambiados)
 
 	_actualizar_estado()
 
@@ -166,6 +180,12 @@ func _construir_contenido_panel(vbox: VBoxContainer) -> void:
 	btn_bp.pressed.connect(func(): _ajustar_b(1))
 	hb_b.add_child(btn_bp)
 
+	lbl_alerta_archivos_ui = Label.new()
+	lbl_alerta_archivos_ui.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_alerta_archivos_ui.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl_alerta_archivos_ui.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(lbl_alerta_archivos_ui)
+
 	btn_accion = Button.new()
 	btn_accion.text = "SINCRONIZAR FASE  [Enter]"
 	btn_accion.custom_minimum_size = Vector2(0, 42)
@@ -221,13 +241,23 @@ func _evaluar() -> void:
 	var val := _valor_actual()
 	if fase_actual == 1 and is_equal_approx(val, valor_objetivo_fase1):
 		fase_1_ok = true
-	elif fase_actual == 2 and is_equal_approx(val, valor_objetivo_fase2) and not puerta_abierta:
-		_abrir_compuerta()
+	elif fase_actual == 2 and is_equal_approx(val, valor_objetivo_fase2):
+		fase_2_ok = true
+		if _tiene_archivos_requeridos() and not puerta_abierta:
+			_abrir_compuerta()
+		elif not _tiene_archivos_requeridos():
+			_mostrar_aviso_acceso_denegado()
 	_actualizar_estado()
 
 
 func _ejecutar_accion() -> void:
-	if puerta_abierta:
+	if puerta_abierta or fase_2_ok:
+		if not _tiene_archivos_requeridos():
+			_mostrar_aviso_acceso_denegado()
+			_actualizar_estado()
+			return
+		if not puerta_abierta:
+			_abrir_compuerta()
 		_cargar_siguiente_nivel()
 		return
 	var val := _valor_actual()
@@ -245,10 +275,17 @@ func _ejecutar_accion() -> void:
 			_actualizar_estado()
 	else:
 		if is_equal_approx(val, valor_objetivo_fase2):
-			_abrir_compuerta()
+			fase_2_ok = true
+			if _tiene_archivos_requeridos():
+				_abrir_compuerta()
+			else:
+				_mostrar_aviso_acceso_denegado()
+			_actualizar_estado()
 
 
 func _abrir_compuerta() -> void:
+	if puerta_abierta:
+		return
 	puerta_abierta = true
 	if puerta_col != null:
 		puerta_col.set_deferred("disabled", true)
@@ -261,8 +298,30 @@ func _abrir_compuerta() -> void:
 	_actualizar_estado()
 
 
+func _tiene_archivos_requeridos() -> bool:
+	if not requiere_archivos_clasificados:
+		return true
+	return GameManager.tiene_archivos_recuperados()
+
+
+func _on_archivos_cambiados(recuperados: bool) -> void:
+	if recuperados and fase_2_ok and not puerta_abierta:
+		_abrir_compuerta()
+	_actualizar_estado()
+
+
 func _actualizar_estado() -> void:
 	var val := _valor_actual()
+	var archivos_ok := _tiene_archivos_requeridos()
+
+	if lbl_alerta_archivos_ui != null:
+		if archivos_ok:
+			lbl_alerta_archivos_ui.text = "📁 ARCHIVOS CLASIFICADOS: RECUPERADOS ✓ (Acceso autorizado)"
+			lbl_alerta_archivos_ui.add_theme_color_override("font_color", COLOR_VERDE)
+		else:
+			lbl_alerta_archivos_ui.text = "⚠ ACCESO DENEGADO SIN ARCHIVOS — Recupéralos del estante [E] antes de cruzar"
+			lbl_alerta_archivos_ui.add_theme_color_override("font_color", COLOR_ROJO)
+
 	if fase_actual == 1:
 		var en_meta := is_equal_approx(val, valor_objetivo_fase1)
 		var col: Color = COLOR_VERDE if en_meta else (COLOR_ROJO if val > valor_objetivo_fase1 + 0.02 else COLOR_AMARILLO)
@@ -277,7 +336,7 @@ func _actualizar_estado() -> void:
 			lbl_formula.add_theme_color_override("font_color", col)
 			btn_accion.text = "AVANZAR A FASE 2/2  [Enter]" if en_meta else "CALIBRA %.2f T PARA CONTINUAR" % valor_objetivo_fase1
 	else:
-		var en_meta := is_equal_approx(val, valor_objetivo_fase2) or puerta_abierta
+		var en_meta := is_equal_approx(val, valor_objetivo_fase2) or fase_2_ok or puerta_abierta
 		var col: Color = COLOR_VERDE if en_meta else (COLOR_ROJO if val > valor_objetivo_fase2 + 2.0 else COLOR_AMARILLO)
 		if lbl_fase != null:
 			lbl_fase.text = "FASE 2 / 2: RESONANCIA (P = %.2f T × N₂ × f)" % valor_objetivo_fase1
@@ -288,27 +347,46 @@ func _actualizar_estado() -> void:
 			lbl_b_val.text = "f = %.1f Hz" % F2_FRECUENCIAS[idx_b]
 			lbl_formula.text = "P = %.2f × %d × %.1f Hz = %.1f kW" % [valor_objetivo_fase1, F2_ESPIRAS[idx_a], F2_FRECUENCIAS[idx_b], val]
 			lbl_formula.add_theme_color_override("font_color", col)
-			btn_accion.text = "ENTRAR AL SIGUIENTE NIVEL ▶  [Enter]" if puerta_abierta else "CALIBRA %.1f kW PARA ABRIR" % valor_objetivo_fase2
+			if puerta_abierta and archivos_ok:
+				btn_accion.text = "ENTRAR AL SIGUIENTE NIVEL ▶  [Enter]"
+			elif fase_2_ok and not archivos_ok:
+				btn_accion.text = "🔒 FALTAN LOS ARCHIVOS DEL ESTANTE"
+			else:
+				btn_accion.text = "CALIBRA %.1f kW PARA ABRIR" % valor_objetivo_fase2
 
 	if lbl_estado_puerta != null:
-		if puerta_abierta:
+		if puerta_abierta and archivos_ok:
 			lbl_estado_puerta.text = "COMPUERTA MAESTRA ABIERTA — AVANZA"
 			lbl_estado_puerta.add_theme_color_override("font_color", COLOR_VERDE)
+		elif fase_2_ok and not archivos_ok:
+			lbl_estado_puerta.text = "🔒 ACCESO DENEGADO: RECUPERA LOS ARCHIVOS DEL ESTANTE"
+			lbl_estado_puerta.add_theme_color_override("font_color", COLOR_ROJO)
 		elif fase_1_ok:
 			lbl_estado_puerta.text = "FASE 1 LISTA — CALIBRA FASE 2"
 			lbl_estado_puerta.add_theme_color_override("font_color", COLOR_CIAN)
-		else:
-			lbl_estado_puerta.text = "COMPUERTA MAESTRA BLOQUEADA (2 FASES)"
+		elif not archivos_ok:
+			lbl_estado_puerta.text = "COMPUERTA BLOQUEADA (2 FASES + ARCHIVOS DEL ESTANTE)"
 			lbl_estado_puerta.add_theme_color_override("font_color", COLOR_AMARILLO)
+		else:
+			lbl_estado_puerta.text = "ARCHIVOS OK ✓ — CALIBRA COMPUERTA (2 FASES)"
+			lbl_estado_puerta.add_theme_color_override("font_color", COLOR_CIAN)
 
 
 func _on_portal_entered(body: Node2D) -> void:
-	if puerta_abierta and not _transicion_lanzada and es_jugador(body):
+	if not es_jugador(body) or _transicion_lanzada:
+		return
+	if not _tiene_archivos_requeridos():
+		_mostrar_aviso_acceso_denegado()
+		return
+	if puerta_abierta:
 		_cargar_siguiente_nivel()
 
 
 func _cargar_siguiente_nivel() -> void:
 	if _transicion_lanzada:
+		return
+	if not _tiene_archivos_requeridos():
+		_mostrar_aviso_acceso_denegado()
 		return
 	_transicion_lanzada = true
 	if panel_abierto:
@@ -317,3 +395,67 @@ func _cargar_siguiente_nivel() -> void:
 	GameManager.completar_meta_nivel(ruta_siguiente_escena, global_position)
 	if not ruta_siguiente_escena.is_empty() and ResourceLoader.exists(ruta_siguiente_escena):
 		get_tree().change_scene_to_file(ruta_siguiente_escena)
+
+
+func _construir_banner_alerta() -> void:
+	_canvas_alerta = CanvasLayer.new()
+	_canvas_alerta.name = "CanvasAlertaArchivos"
+	_canvas_alerta.layer = 85
+	_canvas_alerta.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_canvas_alerta)
+
+	var cont_top := MarginContainer.new()
+	cont_top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	cont_top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cont_top.add_theme_constant_override("margin_top", 78)
+	_canvas_alerta.add_child(cont_top)
+
+	var centro := CenterContainer.new()
+	centro.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cont_top.add_child(centro)
+
+	_panel_alerta = PanelContainer.new()
+	_panel_alerta.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_panel_alerta.visible = false
+	_panel_alerta.modulate.a = 0.0
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.24, 0.04, 0.07, 0.96)
+	sb.border_color = COLOR_ROJO
+	sb.set_border_width_all(3)
+	sb.set_corner_radius_all(0)
+	sb.content_margin_left = 22
+	sb.content_margin_right = 22
+	sb.content_margin_top = 10
+	sb.content_margin_bottom = 10
+	_panel_alerta.add_theme_stylebox_override("panel", sb)
+	centro.add_child(_panel_alerta)
+
+	var lbl := Label.new()
+	lbl.name = "LblAlerta"
+	lbl.text = "⚠  " + MSG_ACCESO_DENEGADO
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lbl.add_theme_font_size_override("font_size", 15)
+	lbl.add_theme_color_override("font_color", Color(1.0, 0.80, 0.82))
+	lbl.add_theme_color_override("font_outline_color", Color.BLACK)
+	lbl.add_theme_constant_override("outline_size", 4)
+	_panel_alerta.add_child(lbl)
+
+
+func _mostrar_aviso_acceso_denegado() -> void:
+	if _panel_alerta == null:
+		return
+	var lbl := _panel_alerta.get_node_or_null("LblAlerta") as Label
+	if lbl != null:
+		lbl.text = "⚠  " + MSG_ACCESO_DENEGADO
+	_panel_alerta.visible = true
+	_panel_alerta.modulate.a = 1.0
+
+	if _tween_alerta != null:
+		_tween_alerta.kill()
+	_tween_alerta = create_tween()
+	_tween_alerta.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween_alerta.tween_interval(3.2)
+	_tween_alerta.tween_property(_panel_alerta, "modulate:a", 0.0, 0.7)
+	_tween_alerta.tween_callback(func(): _panel_alerta.visible = false)
