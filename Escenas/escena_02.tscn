@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="32_zona_muerte"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MaquinaPerks.tscn" id="33_maquina_perks"]
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="34_moneda_rayo"]
+[ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="35_moneda_tiempo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_nvj0p")
@@ -1074,3 +1075,20 @@ position = Vector2(1600, -80)
 
 [node name="MonedaRayo8" parent="MonedasRayo" unique_id=545119944 instance=ExtResource("34_moneda_rayo")]
 position = Vector2(2400, 96)
+
+[node name="MonedasTiempo" type="Node2D" parent="."]
+
+[node name="MonedaTiempo1" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+position = Vector2(-210, -30)
+
+[node name="MonedaTiempo2" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+position = Vector2(650, -30)
+
+[node name="MonedaTiempo3" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+position = Vector2(1180, -30)
+
+[node name="MonedaTiempo4" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+position = Vector2(2620, 886)
+
+[node name="MonedaTiempo5" parent="MonedasTiempo" instance=ExtResource("35_moneda_tiempo")]
+position = Vector2(3500, 886)

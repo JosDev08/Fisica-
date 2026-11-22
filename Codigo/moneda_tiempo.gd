@@ -3,11 +3,11 @@ extends Area2D
 # ==============================================================================
 # MONEDA DE TIEMPO REUTILIZABLE (res://Escenas/Objetos/MonedaTiempo.tscn)
 # Area2D con monitoring = true, monitorable = false y collision_mask = 1 (Jugador).
-# Suma segundos_extra al reloj activo de GameManager, muestra texto flotante
-# rápido ("+12s" en color cian/verde) y se elimina con queue_free().
+# Suma segundos_extra al reloj activo de GameManager, actualiza el HUD al instante,
+# muestra texto flotante rápido ("+10s" en color cian/verde) y se elimina con queue_free().
 # ==============================================================================
 
-@export var segundos_extra: float = 12.0
+@export var segundos_extra: float = 10.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var colision: CollisionShape2D = $CollisionShape2D

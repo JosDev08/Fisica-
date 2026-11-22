@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" shape-rendering="crispEdges">
+  <!-- Destellos cian perifericos -->
+  <rect x="5" y="4" width="2" height="2" fill="#00f0ff" opacity="0.85"/>
+  <rect x="18" y="17" width="2" height="2" fill="#00f0ff" opacity="0.85"/>
+  <rect x="18" y="5" width="1" height="1" fill="#00f0ff" opacity="0.7"/>
+  <rect x="5" y="18" width="1" height="1" fill="#00f0ff" opacity="0.7"/>
+
+  <!-- Contorno oscuro pixel art -->
+  <rect x="11" y="1" width="6" height="2" fill="#060b18"/>
+  <rect x="9" y="3" width="8" height="2" fill="#060b18"/>
+  <rect x="7" y="5" width="9" height="2" fill="#060b18"/>
+  <rect x="5" y="7" width="10" height="2" fill="#060b18"/>
+  <rect x="4" y="9" width="16" height="4" fill="#060b18"/>
+  <rect x="9" y="13" width="10" height="2" fill="#060b18"/>
+  <rect x="8" y="15" width="9" height="2" fill="#060b18"/>
+  <rect x="7" y="17" width="8" height="2" fill="#060b18"/>
+  <rect x="6" y="19" width="7" height="2" fill="#060b18"/>
+  <rect x="6" y="21" width="5" height="2" fill="#060b18"/>
+
+  <!-- Cuerpo del rayo en amarillo voltaje #FFD600 -->
+  <rect x="12" y="2" width="4" height="2" fill="#ffd600"/>
+  <rect x="10" y="4" width="5" height="2" fill="#ffd600"/>
+  <rect x="8" y="6" width="6" height="2" fill="#ffd600"/>
+  <rect x="6" y="8" width="7" height="2" fill="#ffd600"/>
+  <rect x="5" y="10" width="14" height="2" fill="#ffd600"/>
+  <rect x="11" y="12" width="7" height="2" fill="#f5b800"/>
+  <rect x="10" y="14" width="6" height="2" fill="#f5b800"/>
+  <rect x="9" y="16" width="5" height="2" fill="#ffd600"/>
+  <rect x="8" y="18" width="4" height="2" fill="#ffd600"/>
+  <rect x="7" y="20" width="3" height="2" fill="#00f0ff"/>
+
+  <!-- Nucleo brillante blanco-amarillo -->
+  <rect x="12" y="3" width="2" height="2" fill="#fff8b0"/>
+  <rect x="10" y="5" width="3" height="2" fill="#fff8b0"/>
+  <rect x="8" y="7" width="3" height="2" fill="#ffffff"/>
+  <rect x="7" y="10" width="9" height="1" fill="#ffffff"/>
+  <rect x="12" y="13" width="3" height="2" fill="#fff8b0"/>
+  <rect x="10" y="16" width="2" height="2" fill="#fff8b0"/>
+</svg>

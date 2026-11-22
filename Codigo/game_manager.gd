@@ -185,7 +185,7 @@ func _leer_datos_disco() -> Dictionary:
 	return {}
 
 
-func nueva_partida() -> void:
+func nueva_partida(cambiar_escena: bool = true) -> String:
 	monedas_rayo = 0
 	nivel_vida = 0
 	nivel_velocidad = 0
@@ -210,16 +210,17 @@ func nueva_partida() -> void:
 	vida_cambiada.emit(vida_actual, obtener_vida_maxima())
 
 	get_tree().paused = false
-	if ResourceLoader.exists(ESCENA_NIVEL_1):
-		get_tree().change_scene_to_file(ESCENA_NIVEL_1)
-	else:
-		push_error("GameManager: No se encontró Nivel 1 en " + ESCENA_NIVEL_1)
+	if cambiar_escena:
+		if ResourceLoader.exists(ESCENA_NIVEL_1):
+			get_tree().change_scene_to_file(ESCENA_NIVEL_1)
+		else:
+			push_error("GameManager: No se encontró Nivel 1 en " + ESCENA_NIVEL_1)
+	return ESCENA_NIVEL_1
 
 
-func continuar_partida() -> void:
+func continuar_partida(cambiar_escena: bool = true) -> String:
 	if not cargar_partida() or not tiene_checkpoint or not ResourceLoader.exists(checkpoint_escena):
-		nueva_partida()
-		return
+		return nueva_partida(cambiar_escena)
 
 	jugador_muerto = false
 	en_pausa = false
@@ -234,7 +235,9 @@ func continuar_partida() -> void:
 	vida_cambiada.emit(vida_actual, obtener_vida_maxima())
 
 	get_tree().paused = false
-	get_tree().change_scene_to_file(checkpoint_escena)
+	if cambiar_escena:
+		get_tree().change_scene_to_file(checkpoint_escena)
+	return checkpoint_escena
 
 
 func reaparecer_en_checkpoint() -> void:

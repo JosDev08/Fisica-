@@ -1,11 +1,28 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://Codigo/UI/menu_principal.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/objetos/moneda_rayo.svg" id="2_rayo"]
-[ext_resource type="Texture2D" path="res://assets/objetos/moneda_tiempo.svg" id="3_tiempo"]
-[ext_resource type="Texture2D" path="res://assets/objetos/icono_jugger_nog.svg" id="4_jugger"]
-[ext_resource type="Texture2D" path="res://assets/objetos/icono_stamin_up.svg" id="5_stamin"]
-[ext_resource type="Texture2D" path="res://assets/objetos/icono_double_tap.svg" id="6_double"]
+[ext_resource type="Texture2D" path="res://assets/ui/fondo_laboratorio_cibernetico.svg" id="2_fondo"]
+[ext_resource type="Texture2D" path="res://assets/ui/bobina_tesla.svg" id="3_bobina"]
+[ext_resource type="Texture2D" path="res://assets/ui/rayo_neon.svg" id="4_rayo_neon"]
+[ext_resource type="Texture2D" path="res://assets/ui/chispa_pixel.svg" id="5_chispa"]
+[ext_resource type="Texture2D" path="res://assets/ui/circuito_esquina.svg" id="6_esquina"]
+[ext_resource type="Texture2D" path="res://assets/objetos/moneda_rayo.svg" id="7_rayo"]
+[ext_resource type="Texture2D" path="res://assets/objetos/moneda_tiempo.svg" id="8_tiempo"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_jugger_nog.svg" id="9_jugger"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_stamin_up.svg" id="10_stamin"]
+[ext_resource type="Texture2D" path="res://assets/objetos/icono_double_tap.svg" id="11_double"]
+
+[sub_resource type="Gradient" id="Gradient_chispas_cian"]
+offsets = PackedFloat32Array(0, 0.2, 0.75, 1)
+colors = PackedColorArray(0, 0.941176, 1, 0, 0, 0.941176, 1, 0.92, 0.65, 0.98, 1, 0.78, 0, 0.941176, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_chispas_oro"]
+offsets = PackedFloat32Array(0, 0.22, 0.78, 1)
+colors = PackedColorArray(1, 0.839216, 0, 0, 1, 0.839216, 0, 0.95, 1, 0.96, 0.65, 0.8, 1, 0.839216, 0, 0)
+
+[sub_resource type="Gradient" id="Gradient_chispas_carga"]
+offsets = PackedFloat32Array(0, 0.35, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.839216, 0, 0.95, 0, 0.941176, 1, 0)
 
 [node name="MenuPrincipal" type="Control"]
 layout_mode = 3
@@ -16,6 +33,193 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
+[node name="FondoCyberLab" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_fondo")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CapaCircuitosAnimados" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DecoracionLaboratorio" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BobinaIzquierda" type="TextureRect" parent="DecoracionLaboratorio"]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = -310.0
+offset_right = 172.0
+offset_bottom = -38.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("3_bobina")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BobinaDerecha" type="TextureRect" parent="DecoracionLaboratorio"]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -172.0
+offset_top = -310.0
+offset_right = -36.0
+offset_bottom = -38.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("3_bobina")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="EsquinaSupIzq" type="TextureRect" parent="DecoracionLaboratorio"]
+texture_filter = 1
+layout_mode = 1
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 74.0
+offset_bottom = 74.0
+mouse_filter = 2
+texture = ExtResource("6_esquina")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EsquinaSupDer" type="TextureRect" parent="DecoracionLaboratorio"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -74.0
+offset_top = 18.0
+offset_right = -18.0
+offset_bottom = 74.0
+grow_horizontal = 0
+mouse_filter = 2
+texture = ExtResource("6_esquina")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="EsquinaInfIzq" type="TextureRect" parent="DecoracionLaboratorio"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -74.0
+offset_right = 74.0
+offset_bottom = -18.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("6_esquina")
+expand_mode = 1
+stretch_mode = 5
+flip_v = true
+
+[node name="EsquinaInfDer" type="TextureRect" parent="DecoracionLaboratorio"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -74.0
+offset_top = -74.0
+offset_right = -18.0
+offset_bottom = -18.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("6_esquina")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+flip_v = true
+
+[node name="CapaParticulas" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ParticulasChispasCian" type="CPUParticles2D" parent="CapaParticulas"]
+unique_name_in_owner = true
+texture_filter = 1
+position = Vector2(576, 324)
+amount = 42
+lifetime = 4.2
+preprocess = 2.0
+texture = ExtResource("5_chispa")
+emission_shape = 3
+emission_rect_extents = Vector2(576, 324)
+direction = Vector2(0, -1)
+spread = 38.0
+gravity = Vector2(0, -14)
+initial_velocity_min = 14.0
+initial_velocity_max = 42.0
+angular_velocity_min = -45.0
+angular_velocity_max = 45.0
+scale_amount_min = 0.45
+scale_amount_max = 1.15
+color_ramp = SubResource("Gradient_chispas_cian")
+
+[node name="ParticulasChispasOro" type="CPUParticles2D" parent="CapaParticulas"]
+unique_name_in_owner = true
+texture_filter = 1
+position = Vector2(576, 324)
+amount = 24
+lifetime = 3.6
+preprocess = 1.8
+texture = ExtResource("5_chispa")
+emission_shape = 3
+emission_rect_extents = Vector2(576, 324)
+direction = Vector2(0, -1)
+spread = 45.0
+gravity = Vector2(0, -18)
+initial_velocity_min = 18.0
+initial_velocity_max = 52.0
+angular_velocity_min = -70.0
+angular_velocity_max = 70.0
+scale_amount_min = 0.4
+scale_amount_max = 0.95
+color_ramp = SubResource("Gradient_chispas_oro")
+
 [node name="Centro" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -24,91 +228,160 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelPrincipal" type="PanelContainer" parent="Centro"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(560, 0)
-layout_mode = 2
-
-[node name="VBox" type="VBoxContainer" parent="Centro/PanelPrincipal"]
-layout_mode = 2
-theme_override_constants/separation = 18
-
-[node name="CajaTitulo" type="PanelContainer" parent="Centro/PanelPrincipal/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="VBoxTitulo" type="VBoxContainer" parent="Centro/PanelPrincipal/VBox/CajaTitulo"]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="Titulo" type="Label" parent="Centro/PanelPrincipal/VBox/CajaTitulo/VBoxTitulo"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.98, 0.85, 0.3, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 38
-text = "EC3: FÍSICA ELÉCTRICA"
-horizontal_alignment = 1
-
-[node name="Subtitulo" type="Label" parent="Centro/PanelPrincipal/VBox/CajaTitulo/VBoxTitulo"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 0.9, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 13
-text = "ELECTROSTÁTICA  •  CAPACITORES  •  ELECTROMAGNETISMO"
-horizontal_alignment = 1
-
-[node name="IconosDecorativos" type="HBoxContainer" parent="Centro/PanelPrincipal/VBox"]
+[node name="VBoxPantalla" type="VBoxContainer" parent="Centro"]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="IconoRayo" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+[node name="ContenedorTituloFlotante" type="Control" parent="Centro/VBoxPantalla"]
+custom_minimum_size = Vector2(680, 122)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BloqueTitulo" type="VBoxContainer" parent="Centro/VBoxPantalla/ContenedorTituloFlotante"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="FilaLogo" type="HBoxContainer" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="RayoIzq" type="TextureRect" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo/FilaLogo"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = ExtResource("4_rayo_neon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblElectric" type="Label" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo/FilaLogo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941176, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.0235294, 0.0431373, 0.0941176, 0.95)
+theme_override_colors/font_outline_color = Color(0.0235294, 0.0431373, 0.0941176, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 9
+theme_override_font_sizes/font_size = 50
+text = "ELECTRIC"
+horizontal_alignment = 1
+
+[node name="LblRunner" type="Label" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo/FilaLogo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.839216, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.0235294, 0.0431373, 0.0941176, 0.95)
+theme_override_colors/font_outline_color = Color(0.0235294, 0.0431373, 0.0941176, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 9
+theme_override_font_sizes/font_size = 50
+text = "RUNNER"
+horizontal_alignment = 1
+
+[node name="RayoDer" type="TextureRect" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo/FilaLogo"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+texture = ExtResource("4_rayo_neon")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="LblSubtitulo" type="Label" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.97, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.02, 0.05, 0.12, 0.9)
+theme_override_colors/font_outline_color = Color(0.0235294, 0.0431373, 0.0941176, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
+text = "Laboratorio de Física Aplicada"
+horizontal_alignment = 1
+
+[node name="LblEtiquetaLab" type="Label" parent="Centro/VBoxPantalla/ContenedorTituloFlotante/BloqueTitulo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.85, 0.98, 0.88)
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.09, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "ELECTROSTÁTICA   •   CAPACITORES   •   ELECTROMAGNETISMO"
+horizontal_alignment = 1
+
+[node name="PanelPrincipal" type="PanelContainer" parent="Centro/VBoxPantalla"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="VBox" type="VBoxContainer" parent="Centro/VBoxPantalla/PanelPrincipal"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="IconosDecorativos" type="HBoxContainer" parent="Centro/VBoxPantalla/PanelPrincipal/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="IconoRayo" type="TextureRect" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/IconosDecorativos"]
 texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
-texture = ExtResource("2_rayo")
+texture = ExtResource("7_rayo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="IconoTiempo" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+[node name="IconoTiempo" type="TextureRect" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/IconosDecorativos"]
 texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
-texture = ExtResource("3_tiempo")
+texture = ExtResource("8_tiempo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="IconoJugger" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+[node name="IconoJugger" type="TextureRect" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/IconosDecorativos"]
 texture_filter = 1
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
-texture = ExtResource("4_jugger")
+texture = ExtResource("9_jugger")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="IconoStamin" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+[node name="IconoStamin" type="TextureRect" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/IconosDecorativos"]
 texture_filter = 1
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
-texture = ExtResource("5_stamin")
+texture = ExtResource("10_stamin")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="IconoDouble" type="TextureRect" parent="Centro/PanelPrincipal/VBox/IconosDecorativos"]
+[node name="IconoDouble" type="TextureRect" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/IconosDecorativos"]
 texture_filter = 1
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
-texture = ExtResource("6_double")
+texture = ExtResource("11_double")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Botones" type="VBoxContainer" parent="Centro/PanelPrincipal/VBox"]
+[node name="Botones" type="VBoxContainer" parent="Centro/VBoxPantalla/PanelPrincipal/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BtnJugar" type="Button" parent="Centro/PanelPrincipal/VBox/Botones"]
+[node name="BtnJugar" type="Button" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/Botones"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
@@ -116,7 +389,7 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "JUGAR"
 
-[node name="BtnContinuar" type="Button" parent="Centro/PanelPrincipal/VBox/Botones"]
+[node name="BtnContinuar" type="Button" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/Botones"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
@@ -124,24 +397,209 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "CONTINUAR"
 
-[node name="LblEstadoGuardado" type="Label" parent="Centro/PanelPrincipal/VBox"]
+[node name="BtnSalir" type="Button" parent="Centro/VBoxPantalla/PanelPrincipal/VBox/Botones"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+text = "SALIR"
+
+[node name="LblEstadoGuardado" type="Label" parent="Centro/VBoxPantalla/PanelPrincipal/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.78, 0.9, 1)
+theme_override_colors/font_color = Color(0.65, 0.82, 0.94, 1)
 theme_override_font_sizes/font_size = 12
 text = "Verificando checkpoint guardado..."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Separador" type="ColorRect" parent="Centro/PanelPrincipal/VBox"]
+[node name="Separador" type="ColorRect" parent="Centro/VBoxPantalla/PanelPrincipal/VBox"]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-color = Color(0.18, 0.36, 0.54, 0.75)
+color = Color(0, 0.941176, 1, 0.35)
 
-[node name="LblControles" type="Label" parent="Centro/PanelPrincipal/VBox"]
+[node name="LblControles" type="Label" parent="Centro/VBoxPantalla/PanelPrincipal/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.82, 0.94, 0.9)
+theme_override_colors/font_color = Color(0.72, 0.85, 0.96, 0.9)
 theme_override_font_sizes/font_size = 11
 text = "[A / D / ◄ ►] Mover   •   [Espacio] Saltar   •   [Clic / J / Z] Disparar
-[E] Interactuar   •   [ESC] Pausa"
+[E] Interactuar   •   [ESC] Pausa   •   [W/S / ▲▼] Navegar Menú"
 horizontal_alignment = 1
+
+[node name="OverlayCarga" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FondoCarga" type="ColorRect" parent="OverlayCarga"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0156863, 0.0352941, 0.0784314, 0.96)
+
+[node name="CapaEfectosCarga" type="Control" parent="OverlayCarga"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CentroCarga" type="CenterContainer" parent="OverlayCarga"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelCarga" type="PanelContainer" parent="OverlayCarga/CentroCarga"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="VBoxCarga" type="VBoxContainer" parent="OverlayCarga/CentroCarga/PanelCarga"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="FilaLogoCarga" type="HBoxContainer" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="RayoCargaIzq" type="TextureRect" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/FilaLogoCarga"]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("4_rayo_neon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblCargaElectric" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/FilaLogoCarga"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941176, 1, 1)
+theme_override_colors/font_outline_color = Color(0.0235294, 0.0431373, 0.0941176, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 34
+text = "ELECTRIC"
+
+[node name="LblCargaRunner" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/FilaLogoCarga"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.839216, 0, 1)
+theme_override_colors/font_outline_color = Color(0.0235294, 0.0431373, 0.0941176, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 34
+text = "RUNNER"
+
+[node name="RayoCargaDer" type="TextureRect" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/FilaLogoCarga"]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("4_rayo_neon")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+
+[node name="LblDestinoCarga" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "CARGANDO SECTOR DEL LABORATORIO..."
+horizontal_alignment = 1
+
+[node name="ContenedorBarraVoltaje" type="Control" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="BarraVoltaje" type="ProgressBar" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/ContenedorBarraVoltaje"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 100.0
+show_percentage = false
+
+[node name="ChispasBarraCarga" type="CPUParticles2D" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/ContenedorBarraVoltaje"]
+unique_name_in_owner = true
+texture_filter = 1
+position = Vector2(0, 17)
+emitting = false
+amount = 34
+lifetime = 0.45
+texture = ExtResource("5_chispa")
+direction = Vector2(0, -1)
+spread = 150.0
+gravity = Vector2(0, 95)
+initial_velocity_min = 45.0
+initial_velocity_max = 125.0
+scale_amount_min = 0.45
+scale_amount_max = 1.0
+color_ramp = SubResource("Gradient_chispas_carga")
+
+[node name="FilaPorcentaje" type="HBoxContainer" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="LblPorcentaje" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/FilaPorcentaje"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.839216, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "VOLTAJE: 0%"
+
+[node name="LblVoltajeKV" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/FilaPorcentaje"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.941176, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "0.0 kV / 12.0 kV"
+
+[node name="SeparadorCarga" type="ColorRect" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0, 0.941176, 1, 0.4)
+
+[node name="CajaConsejo" type="PanelContainer" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxConsejo" type="VBoxContainer" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/CajaConsejo"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LblTituloConsejo" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/CajaConsejo/VBoxConsejo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.839216, 0, 1)
+theme_override_font_sizes/font_size = 13
+text = "⚡ CONSEJO DE FÍSICA"
+horizontal_alignment = 1
+
+[node name="LblConsejoFisica" type="Label" parent="OverlayCarga/CentroCarga/PanelCarga/VBoxCarga/CajaConsejo/VBoxConsejo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "Según la Ley de Ohm (V = I · R), a mayor resistencia eléctrica, menor será la corriente para un mismo voltaje."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="MusicaFondo" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+volume_db = -6.0
