@@ -997,10 +997,10 @@ stretch_mode = 6
 metadata/_edit_use_anchors_ = true
 
 [node name="Enemigo2" parent="." unique_id=286772130 instance=ExtResource("6_njjb1")]
-position = Vector2(2342, 234)
+position = Vector2(2484, -133)
 
 [node name="Enemigo3" parent="." unique_id=1720677761 instance=ExtResource("6_njjb1")]
-position = Vector2(3100, 233)
+position = Vector2(3054, -247)
 
 [node name="enemigo_2" parent="." unique_id=987428596 instance=ExtResource("7_gdrao")]
 position = Vector2(493, -31)
@@ -1022,10 +1022,10 @@ position = Vector2(1916, 249)
 position = Vector2(2776, 246)
 
 [node name="enemigo_8" parent="." unique_id=487478358 instance=ExtResource("7_gdrao")]
-position = Vector2(3423, 245)
+position = Vector2(3258, 240)
 
 [node name="enemigo_9" parent="." unique_id=196072870 instance=ExtResource("7_gdrao")]
-position = Vector2(3723, 249)
+position = Vector2(4352, 105)
 
 [node name="ZonasMuerte" type="Node2D" parent="." unique_id=2045285220]
 
@@ -1055,45 +1055,45 @@ position = Vector2(-590, 0)
 [node name="MonedasRayo" type="Node2D" parent="." unique_id=1693628962]
 
 [node name="MonedaRayo1" parent="MonedasRayo" unique_id=854058237 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(176, -126)
+position = Vector2(429, -19)
 
 [node name="MonedaRayo2" parent="MonedasRayo" unique_id=1097936294 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(-370, -28)
+position = Vector2(-381, -23)
 
 [node name="MonedaRayo3" parent="MonedasRayo" unique_id=1607454191 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(-160, -28)
+position = Vector2(186, -25)
 
 [node name="MonedaRayo4" parent="MonedasRayo" unique_id=2025517302 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(-90, 479)
+position = Vector2(2542, -126)
 
 [node name="MonedaRayo5" parent="MonedasRayo" unique_id=1536902848 instance=ExtResource("34_moneda_rayo")]
 position = Vector2(760, -28)
 
 [node name="MonedaRayo6" parent="MonedasRayo" unique_id=562495350 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(1050, -28)
+position = Vector2(2095, 248)
 
 [node name="MonedaRayo7" parent="MonedasRayo" unique_id=1630324125 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(1651, -174)
+position = Vector2(1803, -46)
 
 [node name="MonedaRayo8" parent="MonedasRayo" unique_id=545119944 instance=ExtResource("34_moneda_rayo")]
-position = Vector2(2361, -184)
+position = Vector2(2226, -48)
 
 [node name="MonedasTiempo" type="Node2D" parent="." unique_id=1887254944]
 
 [node name="MonedaTiempo1" parent="MonedasTiempo" unique_id=1074229651 instance=ExtResource("35_moneda_tiempo")]
-position = Vector2(-210, -30)
+position = Vector2(-196, -18)
 
 [node name="MonedaTiempo2" parent="MonedasTiempo" unique_id=1387723184 instance=ExtResource("35_moneda_tiempo")]
-position = Vector2(2119, 115)
+position = Vector2(3531, -139)
 
 [node name="MonedaTiempo3" parent="MonedasTiempo" unique_id=1049232486 instance=ExtResource("35_moneda_tiempo")]
-position = Vector2(1180, -30)
+position = Vector2(4251, 80)
 
 [node name="MonedaTiempo4" parent="MonedasTiempo" unique_id=335484357 instance=ExtResource("35_moneda_tiempo")]
-position = Vector2(2580, 115)
+position = Vector2(3259, -1)
 
 [node name="MonedaTiempo5" parent="MonedasTiempo" unique_id=1077436818 instance=ExtResource("35_moneda_tiempo")]
-position = Vector2(2803, -330)
+position = Vector2(2559, 250)
 
 [node name="NotaCientifico" parent="." unique_id=1788696188 instance=ExtResource("36_nota_cientifico")]
 codigo_nivel = "NIVEL 02 — BANCO DE ALMACENAMIENTO ELÉCTRICO"
