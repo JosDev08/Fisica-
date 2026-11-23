@@ -20,7 +20,8 @@ const F2_FRECUENCIAS: Array[float] = [1.0, 2.0, 3.0, 4.0, 5.0]
 @export var objetivo_aleatorio: bool = true
 @export var requiere_archivos_clasificados: bool = true
 
-const MSG_ACCESO_DENEGADO := "¡ACCESO DENEGADO! Debes recuperar los archivos del estante antes de avanzar"
+const MSG_ACCESO_DENEGADO := "¡SALIDA BLOQUEADA! Debes recuperar los archivos del estante antes de avanzar"
+const RUTA_SFX_ALARMA := "res://assets/audio/sfx_alarma.wav"
 
 var fase_actual: int = 1
 var fase_1_ok: bool = false
@@ -50,6 +51,8 @@ var btn_accion: Button
 var _canvas_alerta: CanvasLayer = null
 var _panel_alerta: PanelContainer = null
 var _tween_alerta: Tween = null
+var _audio_alarma: AudioStreamPlayer = null
+var _ultimo_tiempo_alarma_ms: int = -2000
 
 
 func generar_problema() -> void:
@@ -96,6 +99,7 @@ func _inicializar_puzzle() -> void:
 			portal_area.body_entered.connect(_on_portal_entered)
 
 	_construir_banner_alerta()
+	_configurar_audio_alarma()
 	if not GameManager.archivos_recuperados_cambiados.is_connected(_on_archivos_cambiados):
 		GameManager.archivos_recuperados_cambiados.connect(_on_archivos_cambiados)
 
@@ -443,7 +447,34 @@ func _construir_banner_alerta() -> void:
 	_panel_alerta.add_child(lbl)
 
 
+func _configurar_audio_alarma() -> void:
+	GameManager.configurar_buses_audio()
+	_audio_alarma = AudioStreamPlayer.new()
+	_audio_alarma.name = "AudioAlarmaBloqueo"
+	_audio_alarma.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_alarma.bus = &"SFX"
+	if GameManager.existe_audio_seguro(RUTA_SFX_ALARMA):
+		_audio_alarma.stream = GameManager.cargar_audio_seguro(RUTA_SFX_ALARMA)
+	add_child(_audio_alarma)
+
+
+func _reproducir_alarma_bloqueo() -> void:
+	if _audio_alarma == null:
+		return
+	var ahora_ms: int = Time.get_ticks_msec()
+	if ahora_ms - _ultimo_tiempo_alarma_ms < 700:
+		return
+	_ultimo_tiempo_alarma_ms = ahora_ms
+	if _audio_alarma.stream == null and GameManager.existe_audio_seguro(RUTA_SFX_ALARMA):
+		_audio_alarma.stream = GameManager.cargar_audio_seguro(RUTA_SFX_ALARMA)
+	if _audio_alarma.stream != null:
+		GameManager.configurar_buses_audio()
+		_audio_alarma.bus = &"SFX"
+		_audio_alarma.play(0.0)
+
+
 func _mostrar_aviso_acceso_denegado() -> void:
+	_reproducir_alarma_bloqueo()
 	if _panel_alerta == null:
 		return
 	var lbl := _panel_alerta.get_node_or_null("LblAlerta") as Label

@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3]
+[gd_scene format=3 uid="uid://c21wqoaru3frn"]
 
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="1_jugador"]
 [ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="2_puerta_ohm"]
@@ -20,20 +20,23 @@
 [ext_resource type="Texture2D" uid="uid://bge667ol5umgr" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Benches/1.png" id="18_bench1"]
 [ext_resource type="Texture2D" uid="uid://qml5w7qpsr41" path="res://Recursos/craftpix-net-846754-free-green-zone-tileset-pixel-art/3 Objects/Fence/1.png" id="19_fence1"]
 [ext_resource type="Texture2D" uid="uid://b6bdf7gcmw5jf" path="res://Recursos/a2/2. NEW CLOUDS/1.png" id="20_clouds_png"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/cielo_atardecer.svg" id="21_cielo_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/nubes_doradas.svg" id="22_nubes_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/montanas_lejanas.svg" id="23_montanas_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/bosque_fondo.svg" id="24_bosque_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/plataforma_tierra_pasto.svg" id="25_plat_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/puente_elevado.svg" id="26_puente_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/arbol_frondoso.svg" id="27_arbol_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/arbusto_frondoso.svg" id="28_arbusto_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/cesped_detalle.svg" id="29_cesped_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/luz_radial.svg" id="31_luz_svg"]
+[ext_resource type="Texture2D" uid="uid://bhe4hocj4ynyb" path="res://assets/escena_4/cielo_atardecer.svg" id="21_cielo_svg"]
+[ext_resource type="Texture2D" uid="uid://cj82fbtfeqsun" path="res://assets/escena_4/nubes_doradas.svg" id="22_nubes_svg"]
+[ext_resource type="Texture2D" uid="uid://b3rfbgrtog05c" path="res://assets/escena_4/montanas_lejanas.svg" id="23_montanas_svg"]
+[ext_resource type="Texture2D" uid="uid://dwcn5yemgm2p7" path="res://assets/escena_4/bosque_fondo.svg" id="24_bosque_svg"]
+[ext_resource type="Texture2D" uid="uid://cxxdvcgp2o3bt" path="res://assets/escena_4/plataforma_tierra_pasto.svg" id="25_plat_svg"]
+[ext_resource type="Texture2D" uid="uid://baqwf3evd8v3h" path="res://assets/escena_4/puente_elevado.svg" id="26_puente_svg"]
+[ext_resource type="Texture2D" uid="uid://dc5txr0h6v35x" path="res://assets/escena_4/arbol_frondoso.svg" id="27_arbol_svg"]
+[ext_resource type="Texture2D" uid="uid://y648sfqaa55a" path="res://assets/escena_4/arbusto_frondoso.svg" id="28_arbusto_svg"]
+[ext_resource type="Texture2D" uid="uid://cfuu84qm44puf" path="res://assets/escena_4/cesped_detalle.svg" id="29_cesped_svg"]
+[ext_resource type="Texture2D" uid="uid://dseqmehk56dih" path="res://assets/escena_4/luz_radial.svg" id="31_luz_svg"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="32_nota_cientifico"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/PantallaVictoria.tscn" id="33_pantalla_victoria"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/helicoptero_extraccion.svg" id="34_helicoptero_svg"]
-[ext_resource type="Script" path="res://Codigo/extraccion_final.gd" id="35_script_extraccion"]
+[ext_resource type="Texture2D" uid="uid://bjcypkoro4lhv" path="res://assets/escena_4/helicoptero_extraccion.svg" id="34_helicoptero_svg"]
+[ext_resource type="Script" uid="uid://bqt7entd6dkdh" path="res://Codigo/extraccion_final.gd" id="35_script_extraccion"]
+[ext_resource type="Script" uid="uid://4if7gxkusr38" path="res://Codigo/musica_escena.gd" id="36_musica_script"]
+[ext_resource type="AudioStream" uid="uid://jbqx65fxtbyt" path="res://assets/Musica/nivel_4.wav" id="37_musica_n4"]
+[ext_resource type="PackedScene" path="res://Escenas/ZonaMuerte.tscn" id="37_pggwo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_768"]
 size = Vector2(768, 64)
@@ -50,295 +53,291 @@ size = Vector2(32, 500)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_meta"]
 size = Vector2(132, 144)
 
-[node name="Escena_4" type="Node2D"]
+[node name="Escena_4" type="Node2D" unique_id=307122522]
 
-[node name="LuzAmbientalCalida" type="CanvasModulate" parent="."]
+[node name="LuzAmbientalCalida" type="CanvasModulate" parent="." unique_id=678598950]
 color = Color(0.98, 0.91, 0.82, 1)
 
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=239150728]
 
-[node name="CapaCielo" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="CapaCielo" type="ParallaxLayer" parent="ParallaxBackground" unique_id=28482305]
 motion_scale = Vector2(0.05, 0.05)
 motion_mirroring = Vector2(1280, 0)
 
-[node name="CieloAtardecer" type="Sprite2D" parent="ParallaxBackground/CapaCielo"]
+[node name="CieloAtardecer" type="Sprite2D" parent="ParallaxBackground/CapaCielo" unique_id=2054382539]
 position = Vector2(640, 120)
 scale = Vector2(1.2, 1.2)
 texture = ExtResource("21_cielo_svg")
 
-[node name="CapaNubes" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="CapaNubes" type="ParallaxLayer" parent="ParallaxBackground" unique_id=1316841924]
 motion_scale = Vector2(0.15, 0.08)
 motion_mirroring = Vector2(1280, 0)
 
-[node name="NubesPixel" type="Sprite2D" parent="ParallaxBackground/CapaNubes"]
+[node name="NubesPixel" type="Sprite2D" parent="ParallaxBackground/CapaNubes" unique_id=1642612953]
 modulate = Color(1, 0.88, 0.78, 0.65)
 position = Vector2(640, 40)
 scale = Vector2(2.25, 2)
 texture = ExtResource("20_clouds_png")
 
-[node name="NubesDoradas" type="Sprite2D" parent="ParallaxBackground/CapaNubes"]
+[node name="NubesDoradas" type="Sprite2D" parent="ParallaxBackground/CapaNubes" unique_id=425846486]
 position = Vector2(640, 20)
 texture = ExtResource("22_nubes_svg")
 
-[node name="CapaMontanas" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="CapaMontanas" type="ParallaxLayer" parent="ParallaxBackground" unique_id=510761765]
 motion_scale = Vector2(0.3, 0.12)
 motion_mirroring = Vector2(1280, 0)
 
-[node name="MontanasLejanas" type="Sprite2D" parent="ParallaxBackground/CapaMontanas"]
+[node name="MontanasLejanas" type="Sprite2D" parent="ParallaxBackground/CapaMontanas" unique_id=480005997]
 position = Vector2(640, 190)
 texture = ExtResource("23_montanas_svg")
 
-[node name="CapaArbolesFondo" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="CapaArbolesFondo" type="ParallaxLayer" parent="ParallaxBackground" unique_id=740985828]
 motion_scale = Vector2(0.55, 0.2)
 motion_mirroring = Vector2(1280, 0)
 
-[node name="BosqueSilueta" type="Sprite2D" parent="ParallaxBackground/CapaArbolesFondo"]
+[node name="BosqueSilueta" type="Sprite2D" parent="ParallaxBackground/CapaArbolesFondo" unique_id=1553924963]
 position = Vector2(640, 240)
 texture = ExtResource("24_bosque_svg")
 
-[node name="DecoracionFondo" type="Node2D" parent="."]
+[node name="DecoracionFondo" type="Node2D" parent="." unique_id=368145623]
 z_index = -2
 
-[node name="ArbolFrondoso1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbolFrondoso1" type="Sprite2D" parent="DecoracionFondo" unique_id=788966228]
 position = Vector2(40, 172)
 scale = Vector2(1.3, 1.3)
 texture = ExtResource("27_arbol_svg")
 
-[node name="TreePixel1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="TreePixel1" type="Sprite2D" parent="DecoracionFondo" unique_id=2050269749]
 position = Vector2(210, 212)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("6_tree1")
 
-[node name="TreePixel2" type="Sprite2D" parent="DecoracionFondo"]
+[node name="TreePixel2" type="Sprite2D" parent="DecoracionFondo" unique_id=968760239]
 position = Vector2(520, 210)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("7_tree2")
 
-[node name="BancaDescanso" type="Sprite2D" parent="DecoracionFondo"]
+[node name="BancaDescanso" type="Sprite2D" parent="DecoracionFondo" unique_id=1073778734]
 position = Vector2(140, 254)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("18_bench1")
 
-[node name="CercaMadera1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="CercaMadera1" type="Sprite2D" parent="DecoracionFondo" unique_id=139211722]
 position = Vector2(330, 252)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("19_fence1")
 
-[node name="Arbusto1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="Arbusto1" type="Sprite2D" parent="DecoracionFondo" unique_id=77416632]
 position = Vector2(-20, 246)
 texture = ExtResource("28_arbusto_svg")
 
-[node name="BushPixel1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="BushPixel1" type="Sprite2D" parent="DecoracionFondo" unique_id=1547737088]
 position = Vector2(410, 252)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("10_bush1")
 
-[node name="Piedra1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="Piedra1" type="Sprite2D" parent="DecoracionFondo" unique_id=1393877918]
 position = Vector2(590, 256)
 scale = Vector2(1.3, 1.3)
 texture = ExtResource("16_stone1")
 
-[node name="ArbolEscalon1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbolEscalon1" type="Sprite2D" parent="DecoracionFondo" unique_id=1820665159]
 position = Vector2(830, 120)
 scale = Vector2(1.15, 1.15)
 texture = ExtResource("27_arbol_svg")
 
-[node name="BushEscalon1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="BushEscalon1" type="Sprite2D" parent="DecoracionFondo" unique_id=1908634387]
 position = Vector2(760, 186)
 scale = Vector2(1.3, 1.3)
 texture = ExtResource("11_bush2")
 
-[node name="TreeEscalon2" type="Sprite2D" parent="DecoracionFondo"]
+[node name="TreeEscalon2" type="Sprite2D" parent="DecoracionFondo" unique_id=276117970]
 position = Vector2(1150, 82)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("8_tree3")
 
-[node name="ArbustoEscalon2" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbustoEscalon2" type="Sprite2D" parent="DecoracionFondo" unique_id=774668478]
 position = Vector2(1090, 118)
 texture = ExtResource("28_arbusto_svg")
 
-[node name="ArbolEscalon3" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbolEscalon3" type="Sprite2D" parent="DecoracionFondo" unique_id=1158172463]
 position = Vector2(1470, -18)
 scale = Vector2(1.25, 1.25)
 texture = ExtResource("27_arbol_svg")
 
-[node name="PiedraEscalon3" type="Sprite2D" parent="DecoracionFondo"]
+[node name="PiedraEscalon3" type="Sprite2D" parent="DecoracionFondo" unique_id=623391352]
 position = Vector2(1410, 64)
 scale = Vector2(1.3, 1.3)
 texture = ExtResource("17_stone2")
 
-[node name="ArbolMeta1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbolMeta1" type="Sprite2D" parent="DecoracionFondo" unique_id=584555341]
 position = Vector2(2230, -20)
 scale = Vector2(1.35, 1.35)
 texture = ExtResource("27_arbol_svg")
 
-[node name="TreeMeta2" type="Sprite2D" parent="DecoracionFondo"]
+[node name="TreeMeta2" type="Sprite2D" parent="DecoracionFondo" unique_id=1120493293]
 position = Vector2(2510, 16)
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("9_tree4")
 
-[node name="ArbolMeta3" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbolMeta3" type="Sprite2D" parent="DecoracionFondo" unique_id=1585376666]
 position = Vector2(2810, -26)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("27_arbol_svg")
 
-[node name="ArbustoMeta1" type="Sprite2D" parent="DecoracionFondo"]
+[node name="ArbustoMeta1" type="Sprite2D" parent="DecoracionFondo" unique_id=1597485236]
 position = Vector2(2430, 54)
 texture = ExtResource("28_arbusto_svg")
 
-[node name="BushMeta2" type="Sprite2D" parent="DecoracionFondo"]
+[node name="BushMeta2" type="Sprite2D" parent="DecoracionFondo" unique_id=1404020758]
 position = Vector2(2580, 58)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("12_bush3")
 
-[node name="BushMeta3" type="Sprite2D" parent="DecoracionFondo"]
+[node name="BushMeta3" type="Sprite2D" parent="DecoracionFondo" unique_id=1266372059]
 position = Vector2(2760, 58)
 scale = Vector2(1.4, 1.4)
 texture = ExtResource("13_bush4")
 
-[node name="TerrenoPlataformas" type="Node2D" parent="."]
+[node name="TerrenoPlataformas" type="Node2D" parent="." unique_id=1830053063]
 
-[node name="PlataformaInicio" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="PlataformaInicio" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=904817775]
 position = Vector2(256, 300)
 collision_layer = 16
 collision_mask = 3
 
-[node name="SueloSprite1" type="Sprite2D" parent="TerrenoPlataformas/PlataformaInicio"]
+[node name="SueloSprite1" type="Sprite2D" parent="TerrenoPlataformas/PlataformaInicio" unique_id=1646550105]
 position = Vector2(-256, 0)
 texture = ExtResource("25_plat_svg")
 
-[node name="SueloSprite2" type="Sprite2D" parent="TerrenoPlataformas/PlataformaInicio"]
+[node name="SueloSprite2" type="Sprite2D" parent="TerrenoPlataformas/PlataformaInicio" unique_id=1481989616]
 texture = ExtResource("25_plat_svg")
 
-[node name="SueloSprite3" type="Sprite2D" parent="TerrenoPlataformas/PlataformaInicio"]
+[node name="SueloSprite3" type="Sprite2D" parent="TerrenoPlataformas/PlataformaInicio" unique_id=1922616121]
 position = Vector2(256, 0)
 texture = ExtResource("25_plat_svg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaInicio"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaInicio" unique_id=196931558]
 shape = SubResource("RectangleShape2D_plat_768")
 
-[node name="PlataformaEscalon1" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="PlataformaEscalon1" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=1783110500]
 position = Vector2(830, 236)
 collision_layer = 16
 collision_mask = 3
 
-[node name="SueloSprite" type="Sprite2D" parent="TerrenoPlataformas/PlataformaEscalon1"]
+[node name="SueloSprite" type="Sprite2D" parent="TerrenoPlataformas/PlataformaEscalon1" unique_id=2058825307]
 texture = ExtResource("25_plat_svg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaEscalon1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaEscalon1" unique_id=1092007839]
 shape = SubResource("RectangleShape2D_plat_256")
 
-[node name="PlataformaEscalon2" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="PlataformaEscalon2" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=1163256922]
 position = Vector2(1150, 172)
 collision_layer = 16
 collision_mask = 3
 
-[node name="SueloSprite" type="Sprite2D" parent="TerrenoPlataformas/PlataformaEscalon2"]
+[node name="SueloSprite" type="Sprite2D" parent="TerrenoPlataformas/PlataformaEscalon2" unique_id=1158374580]
 texture = ExtResource("25_plat_svg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaEscalon2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaEscalon2" unique_id=1621217250]
 shape = SubResource("RectangleShape2D_plat_256")
 
-[node name="PlataformaEscalon3" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="PlataformaEscalon3" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=917460920]
 position = Vector2(1470, 108)
 collision_layer = 16
 collision_mask = 3
 
-[node name="SueloSprite" type="Sprite2D" parent="TerrenoPlataformas/PlataformaEscalon3"]
+[node name="SueloSprite" type="Sprite2D" parent="TerrenoPlataformas/PlataformaEscalon3" unique_id=713447125]
 texture = ExtResource("25_plat_svg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaEscalon3"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaEscalon3" unique_id=2109663760]
 shape = SubResource("RectangleShape2D_plat_256")
 
-[node name="PuenteElevado" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="PuenteElevado" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=283232347]
 position = Vector2(1840, 92)
 collision_layer = 16
 collision_mask = 3
 
-[node name="PuenteSprite" type="Sprite2D" parent="TerrenoPlataformas/PuenteElevado"]
+[node name="PuenteSprite" type="Sprite2D" parent="TerrenoPlataformas/PuenteElevado" unique_id=960762163]
 texture = ExtResource("26_puente_svg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PuenteElevado"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PuenteElevado" unique_id=1493499455]
 shape = SubResource("RectangleShape2D_puente_384")
 
-[node name="PlataformaMeta" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="PlataformaMeta" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=2014774736]
 position = Vector2(2520, 108)
 collision_layer = 16
 collision_mask = 3
 
-[node name="SueloSprite1" type="Sprite2D" parent="TerrenoPlataformas/PlataformaMeta"]
+[node name="SueloSprite1" type="Sprite2D" parent="TerrenoPlataformas/PlataformaMeta" unique_id=1986270518]
 position = Vector2(-256, 0)
 texture = ExtResource("25_plat_svg")
 
-[node name="SueloSprite2" type="Sprite2D" parent="TerrenoPlataformas/PlataformaMeta"]
+[node name="SueloSprite2" type="Sprite2D" parent="TerrenoPlataformas/PlataformaMeta" unique_id=988018333]
 texture = ExtResource("25_plat_svg")
 
-[node name="SueloSprite3" type="Sprite2D" parent="TerrenoPlataformas/PlataformaMeta"]
+[node name="SueloSprite3" type="Sprite2D" parent="TerrenoPlataformas/PlataformaMeta" unique_id=485206110]
 position = Vector2(256, 0)
 texture = ExtResource("25_plat_svg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaMeta"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/PlataformaMeta" unique_id=1266520623]
 shape = SubResource("RectangleShape2D_plat_768")
 
-[node name="MuroIzquierdo" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="MuroIzquierdo" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=836221427]
 position = Vector2(-144, 80)
 collision_layer = 16
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/MuroIzquierdo"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/MuroIzquierdo" unique_id=522510064]
 shape = SubResource("RectangleShape2D_muro")
 
-[node name="MuroDerecho" type="StaticBody2D" parent="TerrenoPlataformas"]
+[node name="MuroDerecho" type="StaticBody2D" parent="TerrenoPlataformas" unique_id=1162423292]
 position = Vector2(2920, -100)
 collision_layer = 16
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/MuroDerecho"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrenoPlataformas/MuroDerecho" unique_id=1235780438]
 shape = SubResource("RectangleShape2D_muro")
 
-[node name="PuertaOhm" parent="." instance=ExtResource("2_puerta_ohm")]
+[node name="PuertaOhm" parent="." unique_id=303718774 instance=ExtResource("2_puerta_ohm")]
 position = Vector2(2320, 76)
 collision_layer = 16
-collision_mask = 1
 
-[node name="MetaFinal" type="Area2D" parent="."]
+[node name="MetaFinal" type="Area2D" parent="." unique_id=1262017059]
 position = Vector2(2680, -4)
-monitoring = true
-monitorable = true
 collision_layer = 0
-collision_mask = 1
 script = ExtResource("35_script_extraccion")
 
-[node name="HelicopteroExtraccion" type="Node2D" parent="MetaFinal"]
+[node name="HelicopteroExtraccion" type="Node2D" parent="MetaFinal" unique_id=794668873]
 z_index = 2
 position = Vector2(18, 34)
 
-[node name="SpriteHelicoptero" type="Sprite2D" parent="MetaFinal/HelicopteroExtraccion"]
+[node name="SpriteHelicoptero" type="Sprite2D" parent="MetaFinal/HelicopteroExtraccion" unique_id=431667961]
 texture_filter = 1
 texture = ExtResource("34_helicoptero_svg")
 
-[node name="HelicePrincipal" type="Polygon2D" parent="MetaFinal/HelicopteroExtraccion"]
+[node name="HelicePrincipal" type="Polygon2D" parent="MetaFinal/HelicopteroExtraccion" unique_id=1220549575]
 position = Vector2(4, -38)
 color = Color(0.75, 0.85, 0.95, 0.9)
 polygon = PackedVector2Array(-68, -2, 68, -2, 68, 2, -68, 2)
 
-[node name="HeliceCola" type="Polygon2D" parent="MetaFinal/HelicopteroExtraccion"]
+[node name="HeliceCola" type="Polygon2D" parent="MetaFinal/HelicopteroExtraccion" unique_id=709226930]
 position = Vector2(-80, -14)
 color = Color(0.85, 0.92, 1, 0.88)
 polygon = PackedVector2Array(-2, -13, 2, -13, 2, 13, -2, 13)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MetaFinal"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MetaFinal" unique_id=613638153]
 position = Vector2(18, 10)
 shape = SubResource("RectangleShape2D_meta")
 
-[node name="LuzPortalMeta" type="PointLight2D" parent="MetaFinal"]
+[node name="LuzPortalMeta" type="PointLight2D" parent="MetaFinal" unique_id=808572108]
 position = Vector2(18, 20)
 color = Color(0.45, 0.92, 1, 1)
 energy = 1.35
 texture = ExtResource("31_luz_svg")
 texture_scale = 2.2
 
-[node name="AvisoMeta" type="Label" parent="MetaFinal"]
+[node name="AvisoMeta" type="Label" parent="MetaFinal" unique_id=1045306132]
 offset_left = -110.0
 offset_top = -90.0
 offset_right = 150.0
@@ -349,92 +348,92 @@ theme_override_constants/outline_size = 4
 text = "HELICÓPTERO DE EXTRACCIÓN"
 horizontal_alignment = 1
 
-[node name="Jugador" parent="." instance=ExtResource("1_jugador")]
+[node name="Jugador" parent="." unique_id=279813567 instance=ExtResource("1_jugador")]
 position = Vector2(80, 200)
 
-[node name="Camera2D" type="Camera2D" parent="Jugador"]
+[node name="Camera2D" type="Camera2D" parent="Jugador" unique_id=2064164480]
 position = Vector2(0, -16)
 zoom = Vector2(1.8, 1.8)
 
-[node name="Enemigos" type="Node2D" parent="."]
+[node name="Enemigos" type="Node2D" parent="." unique_id=923045506]
 
-[node name="Enemigo1" parent="Enemigos" instance=ExtResource("3_enemigo1")]
+[node name="Enemigo1" parent="Enemigos" unique_id=1483265252 instance=ExtResource("3_enemigo1")]
 position = Vector2(460, 220)
 
-[node name="Enemigo2" parent="Enemigos" instance=ExtResource("4_enemigo2")]
+[node name="Enemigo2" parent="Enemigos" unique_id=744310765 instance=ExtResource("4_enemigo2")]
 position = Vector2(1150, 100)
 
-[node name="Enemigo3" parent="Enemigos" instance=ExtResource("5_enemigo3")]
+[node name="Enemigo3" parent="Enemigos" unique_id=1201282090 instance=ExtResource("5_enemigo3")]
 position = Vector2(1900, 30)
 
-[node name="DecoracionFrente" type="Node2D" parent="."]
+[node name="DecoracionFrente" type="Node2D" parent="." unique_id=1547316559]
 z_index = 5
 
-[node name="ArbolPrimerPlano1" type="Sprite2D" parent="DecoracionFrente"]
+[node name="ArbolPrimerPlano1" type="Sprite2D" parent="DecoracionFrente" unique_id=217921063]
 modulate = Color(0.88, 0.85, 0.82, 0.92)
 position = Vector2(-70, 184)
 scale = Vector2(0.95, 0.95)
 texture = ExtResource("27_arbol_svg")
 
-[node name="Cesped1" type="Sprite2D" parent="DecoracionFrente"]
+[node name="Cesped1" type="Sprite2D" parent="DecoracionFrente" unique_id=454383230]
 position = Vector2(120, 258)
 texture = ExtResource("29_cesped_svg")
 
-[node name="CespedPixel1" type="Sprite2D" parent="DecoracionFrente"]
+[node name="CespedPixel1" type="Sprite2D" parent="DecoracionFrente" unique_id=1316258576]
 position = Vector2(280, 262)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("14_grass1")
 
-[node name="ArbustoFrente1" type="Sprite2D" parent="DecoracionFrente"]
+[node name="ArbustoFrente1" type="Sprite2D" parent="DecoracionFrente" unique_id=491343554]
 position = Vector2(490, 252)
 scale = Vector2(0.85, 0.85)
 texture = ExtResource("28_arbusto_svg")
 
-[node name="CespedEscalon1" type="Sprite2D" parent="DecoracionFrente"]
+[node name="CespedEscalon1" type="Sprite2D" parent="DecoracionFrente" unique_id=815891432]
 position = Vector2(860, 194)
 texture = ExtResource("29_cesped_svg")
 
-[node name="CespedEscalon2" type="Sprite2D" parent="DecoracionFrente"]
+[node name="CespedEscalon2" type="Sprite2D" parent="DecoracionFrente" unique_id=2072043268]
 position = Vector2(1180, 130)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("15_grass2")
 
-[node name="ArbustoFrenteEscalon3" type="Sprite2D" parent="DecoracionFrente"]
+[node name="ArbustoFrenteEscalon3" type="Sprite2D" parent="DecoracionFrente" unique_id=1895720137]
 position = Vector2(1530, 60)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("28_arbusto_svg")
 
-[node name="CespedMeta1" type="Sprite2D" parent="DecoracionFrente"]
+[node name="CespedMeta1" type="Sprite2D" parent="DecoracionFrente" unique_id=809336026]
 position = Vector2(2260, 66)
 texture = ExtResource("29_cesped_svg")
 
-[node name="CespedMeta2" type="Sprite2D" parent="DecoracionFrente"]
+[node name="CespedMeta2" type="Sprite2D" parent="DecoracionFrente" unique_id=709592293]
 position = Vector2(2600, 66)
 texture = ExtResource("29_cesped_svg")
 
-[node name="ArbolPrimerPlanoMeta" type="Sprite2D" parent="DecoracionFrente"]
+[node name="ArbolPrimerPlanoMeta" type="Sprite2D" parent="DecoracionFrente" unique_id=1042000454]
 modulate = Color(0.88, 0.85, 0.82, 0.9)
 position = Vector2(2860, -8)
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("27_arbol_svg")
 
-[node name="IluminacionEscena" type="Node2D" parent="."]
+[node name="IluminacionEscena" type="Node2D" parent="." unique_id=993381112]
 
-[node name="LuzSolInicio" type="PointLight2D" parent="IluminacionEscena"]
+[node name="LuzSolInicio" type="PointLight2D" parent="IluminacionEscena" unique_id=231761989]
 position = Vector2(300, 120)
 color = Color(1, 0.82, 0.55, 1)
 energy = 0.85
 texture = ExtResource("31_luz_svg")
 texture_scale = 3.5
 
-[node name="LuzPuente" type="PointLight2D" parent="IluminacionEscena"]
+[node name="LuzPuente" type="PointLight2D" parent="IluminacionEscena" unique_id=89426173]
 position = Vector2(1840, 20)
 color = Color(1, 0.78, 0.48, 1)
 energy = 0.95
 texture = ExtResource("31_luz_svg")
 texture_scale = 2.8
 
-[node name="NotaCientifico" parent="." instance=ExtResource("32_nota_cientifico")]
+[node name="NotaCientifico" parent="." unique_id=858897781 instance=ExtResource("32_nota_cientifico")]
 codigo_nivel = "NIVEL 04 — EXTRACCIÓN FINAL EN SUPERFICIE"
 titulo_tema = "EXTRACCIÓN FINAL COMPLETADA"
 subtitulo_mision = "Has escapado del Laboratorio Central con los archivos clasificados a salvo."
@@ -445,4 +444,15 @@ alerta_es_victoria = true
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_4.mp3"
 texto_boton_iniciar = "ENTENDIDO / COMPLETAR EXTRACCIÓN"
 
-[node name="PantallaVictoria" parent="." instance=ExtResource("33_pantalla_victoria")]
+[node name="PantallaVictoria" parent="." unique_id=1000339512 instance=ExtResource("33_pantalla_victoria")]
+
+[node name="MusicaFondo" type="AudioStreamPlayer" parent="." unique_id=1271528503]
+process_mode = 3
+stream = ExtResource("37_musica_n4")
+volume_db = -8.0
+autoplay = true
+script = ExtResource("36_musica_script")
+ruta_pista_respaldo = "res://assets/Musica/nivel_4.wav"
+
+[node name="ZonaMuerte" parent="." unique_id=1080428340 instance=ExtResource("37_pggwo")]
+position = Vector2(753, 396)

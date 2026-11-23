@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://boojkjtniycyg"
+path="res://.godot/imported/Pantalla menu.mp3-ed7117447f4e3a919ede496102b33943.mp3str"
+
+[deps]
+
+source_file="res://assets/Musica/Pantalla menu.mp3"
+dest_files=["res://.godot/imported/Pantalla menu.mp3-ed7117447f4e3a919ede496102b33943.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

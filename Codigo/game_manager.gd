@@ -73,10 +73,29 @@ var _escena_actual_id: int = -1
 var _modales_abiertos: int = 0
 var _hud_escena_cache: PackedScene = null
 var _muerte_escena_cache: PackedScene = null
+var _volumen_ducking_actual_db: float = 0.0
+var indice_muerte_actual: int = 0
+var _audio_muerte_jugador: AudioStreamPlayer = null
+
+const BUS_MUSICA := "Musica"
+const BUS_VOCES := "Voces"
+const BUS_SFX := "SFX"
+const DUCKING_MUSICA_ACTIVO_DB: float = -18.0
+const DUCKING_MUSICA_NORMAL_DB: float = 0.0
+const RUTAS_AUDIO_MUERTE: Array[String] = [
+	"res://assets/audio/muerte_soldado_1.mp3",
+	"res://assets/audio/muerte_soldado_2.mp3",
+]
+const RUTAS_AUDIO_MUERTE_WAV: Array[String] = [
+	"res://assets/audio/muerte_soldado_1.wav",
+	"res://assets/audio/muerte_soldado_2.wav",
+]
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	configurar_buses_audio()
+	_configurar_audio_muerte_jugador()
 	cargar_partida()
 
 
@@ -90,11 +109,87 @@ func _process(delta: float) -> void:
 		_escena_actual_id = escena.get_instance_id()
 		_al_cambiar_escena(escena)
 
+	_actualizar_audio_ducking(delta)
+
 	if temporizador_activo and not tree.paused and not jugador_muerto and _modales_abiertos <= 0:
 		tiempo_restante = maxf(0.0, tiempo_restante - delta)
 		tiempo_cambiado.emit(tiempo_restante)
 		if tiempo_restante <= 0.0:
 			activar_muerte_jugador("¡SE ACABÓ EL TIEMPO!")
+
+
+# ==============================================================================
+# BUSES DE AUDIO, ECUALIZACIÓN Y ATENUACIÓN AUTOMÁTICA (AUDIO DUCKING)
+# ==============================================================================
+func configurar_buses_audio() -> void:
+	# 1. Bus "Musica": EQ6 cálido (recorta estridentes y da espacio en 1-2 kHz a voces) + LowPass 9000 Hz
+	var idx_musica: int = AudioServer.get_bus_index(BUS_MUSICA)
+	if idx_musica == -1:
+		idx_musica = AudioServer.bus_count
+		AudioServer.add_bus(idx_musica)
+		AudioServer.set_bus_name(idx_musica, BUS_MUSICA)
+		AudioServer.set_bus_send(idx_musica, "Master")
+		AudioServer.set_bus_volume_db(idx_musica, DUCKING_MUSICA_NORMAL_DB)
+
+		var eq := AudioEffectEQ6.new()
+		eq.set_band_gain_db(0, -1.0) # 32 Hz
+		eq.set_band_gain_db(1, 0.8)  # 100 Hz (calidez)
+		eq.set_band_gain_db(2, 0.0)  # 320 Hz
+		eq.set_band_gain_db(3, -2.5) # 1000 Hz (espacio limpio para las voces)
+		eq.set_band_gain_db(4, -1.5) # 3200 Hz
+		eq.set_band_gain_db(5, -5.5) # 10000 Hz (suavizar agudos estridentes)
+		AudioServer.add_bus_effect(idx_musica, eq)
+
+		var lp := AudioEffectLowPassFilter.new()
+		lp.cutoff_hz = 9000.0
+		lp.resonance = 0.5
+		AudioServer.add_bus_effect(idx_musica, lp)
+
+	# 2. Bus "Voces": Compresor suave (-14 dB, ratio 3.0) para claridad y presencia del científico
+	var idx_voces: int = AudioServer.get_bus_index(BUS_VOCES)
+	if idx_voces == -1:
+		idx_voces = AudioServer.bus_count
+		AudioServer.add_bus(idx_voces)
+		AudioServer.set_bus_name(idx_voces, BUS_VOCES)
+		AudioServer.set_bus_send(idx_voces, "Master")
+		AudioServer.set_bus_volume_db(idx_voces, 0.0)
+
+		var comp := AudioEffectCompressor.new()
+		comp.threshold = -14.0
+		comp.ratio = 3.0
+		comp.attack_us = 200.0
+		comp.release_ms = 180.0
+		comp.gain = 1.5
+		AudioServer.add_bus_effect(idx_voces, comp)
+
+	# 3. Bus "SFX": Canal limpio para disparos y alarmas (-2.0 dB)
+	var idx_sfx: int = AudioServer.get_bus_index(BUS_SFX)
+	if idx_sfx == -1:
+		idx_sfx = AudioServer.bus_count
+		AudioServer.add_bus(idx_sfx)
+		AudioServer.set_bus_name(idx_sfx, BUS_SFX)
+		AudioServer.set_bus_send(idx_sfx, "Master")
+		AudioServer.set_bus_volume_db(idx_sfx, -2.0)
+
+
+func _actualizar_audio_ducking(delta: float) -> void:
+	var idx_musica: int = AudioServer.get_bus_index(BUS_MUSICA)
+	if idx_musica == -1:
+		return
+
+	var voz_activa: bool = false
+	for nodo in get_tree().get_nodes_in_group("voces_cientifico"):
+		if is_instance_valid(nodo) and nodo is AudioStreamPlayer:
+			if (nodo as AudioStreamPlayer).is_playing():
+				voz_activa = true
+				break
+
+	var objetivo_db: float = DUCKING_MUSICA_ACTIVO_DB if voz_activa else DUCKING_MUSICA_NORMAL_DB
+	var velocidad: float = 8.5 if voz_activa else 3.5
+	_volumen_ducking_actual_db = lerpf(_volumen_ducking_actual_db, objetivo_db, clampf(delta * velocidad, 0.0, 1.0))
+	if absf(_volumen_ducking_actual_db - objetivo_db) < 0.05:
+		_volumen_ducking_actual_db = objetivo_db
+	AudioServer.set_bus_volume_db(idx_musica, _volumen_ducking_actual_db)
 
 
 # ==============================================================================
@@ -501,12 +596,60 @@ func activar_muerte_jugador(motivo: String = "HAS CAÍDO") -> void:
 	temporizador_activo = false
 	en_pausa = false
 
+	_reproducir_sonido_muerte_alternado()
+
 	var jugador := obtener_jugador_actual()
 	if jugador != null and jugador.has_method("forzar_estado_muerto"):
 		jugador.forzar_estado_muerto()
 
 	vida_cambiada.emit(0, obtener_vida_maxima())
 	jugador_murio.emit(motivo)
+
+
+func _configurar_audio_muerte_jugador() -> void:
+	if _audio_muerte_jugador != null and is_instance_valid(_audio_muerte_jugador):
+		return
+	_audio_muerte_jugador = AudioStreamPlayer.new()
+	_audio_muerte_jugador.name = "AudioMuerteJugador"
+	_audio_muerte_jugador.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_muerte_jugador.bus = BUS_SFX if AudioServer.get_bus_index(BUS_SFX) != -1 else "Master"
+	add_child(_audio_muerte_jugador)
+
+
+func _reproducir_sonido_muerte_alternado() -> void:
+	_configurar_audio_muerte_jugador()
+	if _audio_muerte_jugador == null:
+		return
+
+	var idx: int = indice_muerte_actual % 2
+	indice_muerte_actual = (indice_muerte_actual + 1) % 2
+
+	var ruta_elegida: String = ""
+	if existe_audio_seguro(RUTAS_AUDIO_MUERTE[idx]):
+		ruta_elegida = RUTAS_AUDIO_MUERTE[idx]
+	elif existe_audio_seguro(RUTAS_AUDIO_MUERTE_WAV[idx]):
+		ruta_elegida = RUTAS_AUDIO_MUERTE_WAV[idx]
+
+	if ruta_elegida.is_empty():
+		return
+
+	var stream := cargar_audio_seguro(ruta_elegida)
+	if stream == null:
+		return
+
+	# Efecto de un solo disparo: asegurar que el bucle esté desactivado
+	if stream is AudioStreamMP3:
+		(stream as AudioStreamMP3).loop = false
+	elif stream is AudioStreamOggVorbis:
+		(stream as AudioStreamOggVorbis).loop = false
+	elif stream is AudioStreamWAV:
+		(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_DISABLED
+
+	_audio_muerte_jugador.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_muerte_jugador.bus = BUS_SFX if AudioServer.get_bus_index(BUS_SFX) != -1 else "Master"
+	_audio_muerte_jugador.stop()
+	_audio_muerte_jugador.stream = stream
+	_audio_muerte_jugador.play(0.0)
 
 
 func registrar_modal_abierto(abierto: bool) -> void:

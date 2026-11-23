@@ -11,6 +11,7 @@ const JUMP_VELOCITY: float = -450.0
 const VIDA_MAXIMA_BASE: int = 100
 const CADENCIA_DISPARO: float = 0.25
 const ESCENA_PROYECTIL: PackedScene = preload("res://Escenas/ProyectilJugador.tscn")
+const SFX_DISPARO: AudioStream = preload("res://assets/audio/sfx_disparo.wav")
 
 var vida_maxima: int = VIDA_MAXIMA_BASE
 var vida_actual: int = VIDA_MAXIMA_BASE
@@ -21,6 +22,7 @@ var _tiempo_flash_danio: float = 0.0
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var punto_disparo: Marker2D = get_node_or_null("PuntoDisparo")
+@onready var audio_disparo: AudioStreamPlayer = get_node_or_null("AudioDisparo") as AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -47,6 +49,16 @@ func _ready() -> void:
 		punto_disparo.name = "PuntoDisparo"
 		punto_disparo.position = Vector2(26, 24)
 		add_child(punto_disparo)
+
+	GameManager.configurar_buses_audio()
+	if audio_disparo == null:
+		audio_disparo = AudioStreamPlayer.new()
+		audio_disparo.name = "AudioDisparo"
+		add_child(audio_disparo)
+	if audio_disparo.stream == null:
+		audio_disparo.stream = SFX_DISPARO
+	audio_disparo.bus = &"SFX"
+	audio_disparo.max_polyphony = 4
 
 	sincronizar_con_game_manager(true)
 
@@ -142,6 +154,17 @@ func intentar_disparar() -> void:
 		proyectil.configurar(Vector2(float(direccion_mirada), 0.0), danio_actual)
 
 	_mostrar_destello_canon(origen_global)
+	_reproducir_sonido_disparo()
+
+
+func _reproducir_sonido_disparo() -> void:
+	if audio_disparo == null:
+		return
+	if audio_disparo.stream == null:
+		audio_disparo.stream = SFX_DISPARO
+	audio_disparo.bus = &"SFX"
+	audio_disparo.pitch_scale = randf_range(0.95, 1.05)
+	audio_disparo.play()
 
 
 func _mostrar_destello_canon(pos_global: Vector2) -> void:

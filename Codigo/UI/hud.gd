@@ -13,6 +13,7 @@ const COLOR_CIAN := Color(0.24, 0.88, 1.0)
 const COLOR_ORO := Color(0.98, 0.82, 0.28)
 const COLOR_ROJO := Color(1.0, 0.26, 0.30)
 const COLOR_VERDE := Color(0.24, 0.94, 0.52)
+const RUTA_SFX_ALARMA := "res://assets/audio/sfx_alarma.wav"
 
 @onready var barra_vida: ProgressBar = %BarraVida
 @onready var lbl_vida: Label = %LblVida
@@ -38,6 +39,8 @@ const COLOR_VERDE := Color(0.24, 0.94, 0.52)
 var _pausa_abierta: bool = false
 var _tiempo_alerta_fase: float = 0.0
 var _en_alerta_tiempo: bool = false
+var _alarma_tiempo_sonada: bool = false
+var _audio_alarma: AudioStreamPlayer = null
 var _tween_bonus: Tween = null
 var _tween_toast: Tween = null
 
@@ -47,6 +50,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("hud_juego")
 
+	_configurar_audio_alarma()
 	_estilizar_hud()
 	overlay_pausa.visible = false
 	lbl_bonus_tiempo.modulate.a = 0.0
@@ -173,10 +177,36 @@ func _on_tiempo_cambiado(segundos: float) -> void:
 	_en_alerta_tiempo = segundos < 15.0 and segundos > 0.0
 	if segundos < 15.0:
 		lbl_tiempo.add_theme_color_override("font_color", COLOR_ROJO)
+		if _en_alerta_tiempo and not _alarma_tiempo_sonada and GameManager.temporizador_activo and not GameManager.jugador_muerto:
+			_alarma_tiempo_sonada = true
+			_reproducir_alarma_tiempo()
 	else:
+		_alarma_tiempo_sonada = false
 		_tiempo_alerta_fase = 0.0
 		lbl_tiempo.add_theme_color_override("font_color", Color(0.82, 0.96, 1.0))
 		lbl_tiempo.modulate = Color.WHITE
+
+
+func _configurar_audio_alarma() -> void:
+	GameManager.configurar_buses_audio()
+	_audio_alarma = AudioStreamPlayer.new()
+	_audio_alarma.name = "AudioAlarmaTiempo"
+	_audio_alarma.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_alarma.bus = &"SFX"
+	if GameManager.existe_audio_seguro(RUTA_SFX_ALARMA):
+		_audio_alarma.stream = GameManager.cargar_audio_seguro(RUTA_SFX_ALARMA)
+	add_child(_audio_alarma)
+
+
+func _reproducir_alarma_tiempo() -> void:
+	if _audio_alarma == null:
+		return
+	if _audio_alarma.stream == null and GameManager.existe_audio_seguro(RUTA_SFX_ALARMA):
+		_audio_alarma.stream = GameManager.cargar_audio_seguro(RUTA_SFX_ALARMA)
+	if _audio_alarma.stream != null:
+		GameManager.configurar_buses_audio()
+		_audio_alarma.bus = &"SFX"
+		_audio_alarma.play(0.0)
 
 
 func _on_tiempo_agregado(segundos: float) -> void:

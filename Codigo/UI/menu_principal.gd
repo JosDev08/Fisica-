@@ -24,6 +24,7 @@ const VOLUMEN_MUSICA_DB: float = -6.0
 const DURACION_CARGA_SEG: float = 1.45
 
 const RUTAS_MUSICA_CANDIDATAS: Array[String] = [
+	"res://assets/Musica/Pantalla menu.mp3",
 	"res://assets/musica/musica_carga.mp3",
 	"res://assets/musica/musica_carga.wav",
 	"res://assets/musica/musica_carga.ogg",
@@ -603,11 +604,16 @@ func _configurar_audio_chill() -> void:
 	if musica_fondo == null:
 		return
 
-	var ruta_musica := _buscar_archivo_musica()
-	if ruta_musica.is_empty():
-		return
+	GameManager.configurar_buses_audio()
+	musica_fondo.bus = &"Musica"
+	musica_fondo.process_mode = Node.PROCESS_MODE_ALWAYS
+	musica_fondo.autoplay = true
 
-	var stream := load(ruta_musica) as AudioStream
+	var stream: AudioStream = musica_fondo.stream
+	if stream == null:
+		var ruta_musica := _buscar_archivo_musica()
+		if not ruta_musica.is_empty():
+			stream = GameManager.cargar_audio_seguro(ruta_musica)
 	if stream == null:
 		return
 
@@ -620,14 +626,11 @@ func _configurar_audio_chill() -> void:
 		(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_FORWARD
 
 	musica_fondo.stream = stream
-	musica_fondo.volume_db = -24.0
+	musica_fondo.volume_db = VOLUMEN_MUSICA_DB
 	if not musica_fondo.finished.is_connected(_on_musica_finished):
 		musica_fondo.finished.connect(_on_musica_finished)
-	musica_fondo.play()
-
-	var tw_audio := create_tween()
-	tw_audio.tween_property(musica_fondo, "volume_db", VOLUMEN_MUSICA_DB, 0.85) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	if not musica_fondo.playing:
+		musica_fondo.play()
 
 
 func _on_musica_finished() -> void:

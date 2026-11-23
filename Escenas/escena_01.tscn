@@ -38,6 +38,8 @@
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="37_moneda_tiempo"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="38_nota_cientifico"]
 [ext_resource type="Script" path="res://Codigo/cinematica_insercion_nivel1.gd" id="39_cinematica_insercion"]
+[ext_resource type="Script" path="res://Codigo/musica_escena.gd" id="40_musica_script"]
+[ext_resource type="AudioStream" path="res://assets/Musica/nivel 1.mp3" id="41_musica_n1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -977,3 +979,12 @@ abrir_al_iniciar = false
 
 [node name="CinematicaInsercion" type="Node2D" parent="."]
 script = ExtResource("39_cinematica_insercion")
+
+[node name="MusicaFondo" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("41_musica_n1")
+volume_db = -9.0
+autoplay = true
+bus = &"Musica"
+script = ExtResource("40_musica_script")
+ruta_pista_respaldo = "res://assets/Musica/nivel 1.mp3"

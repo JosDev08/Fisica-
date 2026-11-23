@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="34_moneda_rayo"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="35_moneda_tiempo"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="36_nota_cientifico"]
+[ext_resource type="Script" path="res://Codigo/musica_escena.gd" id="37_musica_script"]
+[ext_resource type="AudioStream" path="res://assets/Musica/nivel 2.mp3" id="38_musica_n2"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_nvj0p")
@@ -1102,3 +1104,12 @@ subtitulo_mision = "Configura capacitores en serie y paralelo para alimentar pue
 formulas_clave = PackedStringArray("Carga eléctrica:  Q = C · V", "En paralelo (se suman):  C_eq = C₁ + C₂", "En serie (disminuyen):  1/C_eq = 1/C₁ + 1/C₂", "Energía almacenada:  U = ½ · C · V²")
 texto_explicacion = "Bien hecho, soldado, lograste entrar al sector interno. Estás cada vez más cerca de la bóveda, pero los pasillos están sellados con bancos de capacitores. Estos dispositivos almacenan energía eléctrica para alimentar compuertas y elevadores. Ten esto en mente para avanzar: si conectas capacitores en paralelo, sumas su capacidad para dar más potencia; si los pones en serie, la capacidad total baja. Además, a mayor voltaje, mucha más energía acumulada. Carga los sistemas y ábrete camino hacia el subsuelo."
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_2.mp3"
+
+[node name="MusicaFondo" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("38_musica_n2")
+volume_db = -9.0
+autoplay = true
+bus = &"Musica"
+script = ExtResource("37_musica_script")
+ruta_pista_respaldo = "res://assets/Musica/nivel 2.mp3"

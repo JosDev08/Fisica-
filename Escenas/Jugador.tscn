@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://by1ytbmewrs5b" path="res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Run.png" id="2_8g85c"]
 [ext_resource type="Texture2D" uid="uid://4xb26mui6301" path="res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Attack.png" id="4_muoba"]
 [ext_resource type="Texture2D" uid="uid://xjtdfwkj6x8r" path="res://Personajes/Soldado/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Dead.png" id="5_muoba"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx_disparo.wav" id="6_sfx_disparo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_srl76"]
 atlas = ExtResource("2_8g85c")
@@ -203,3 +204,8 @@ shape = SubResource("RectangleShape2D_83bx5")
 
 [node name="PuntoDisparo" type="Marker2D" parent="." unique_id=1540223846]
 position = Vector2(26, 24)
+
+[node name="AudioDisparo" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_sfx_disparo")
+max_polyphony = 4
+bus = &"SFX"

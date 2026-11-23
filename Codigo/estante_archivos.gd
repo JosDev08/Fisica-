@@ -19,7 +19,7 @@ const TEX_CON_ARCHIVOS := "res://assets/objetos/estante_archivos.svg"
 const TEX_VACIO := "res://assets/objetos/estante_archivos_vacio.svg"
 const COLOR_VERDE := Color(0.24, 0.95, 0.54)
 const COLOR_ORO := Color(0.99, 0.86, 0.32)
-const BUS_RADIO := "RadioCientifico"
+const BUS_VOCES := "Voces"
 const RUTA_RADIO_BEEP := "res://assets/audio/voces/radio_beep.wav"
 const PITCH_RADIO := 1.0
 
@@ -67,20 +67,24 @@ func _ready() -> void:
 	if not body_exited.is_connected(_on_body_exited):
 		body_exited.connect(_on_body_exited)
 
-	_asegurar_bus_radio_cientifico()
+	_asegurar_bus_voces()
 
 	if audio_player == null:
 		audio_player = AudioStreamPlayer.new()
 		audio_player.name = "AudioConfirmacion"
 		add_child(audio_player)
 	audio_player.process_mode = Node.PROCESS_MODE_ALWAYS
-	audio_player.bus = BUS_RADIO
+	audio_player.bus = BUS_VOCES
 	audio_player.pitch_scale = PITCH_RADIO
+	if not audio_player.is_in_group("voces_cientifico"):
+		audio_player.add_to_group("voces_cientifico")
 
 	_audio_beep = AudioStreamPlayer.new()
 	_audio_beep.name = "AudioRadioBeep"
 	_audio_beep.process_mode = Node.PROCESS_MODE_ALWAYS
-	_audio_beep.bus = BUS_RADIO
+	_audio_beep.bus = BUS_VOCES
+	if not _audio_beep.is_in_group("voces_cientifico"):
+		_audio_beep.add_to_group("voces_cientifico")
 	add_child(_audio_beep)
 	if ResourceLoader.exists(RUTA_RADIO_BEEP) or FileAccess.file_exists(RUTA_RADIO_BEEP):
 		_stream_beep = GameManager.cargar_audio_seguro(RUTA_RADIO_BEEP)
@@ -193,21 +197,8 @@ func _aplicar_estado_visual() -> void:
 			lbl_estado.add_theme_color_override("font_color", COLOR_ORO)
 
 
-func _asegurar_bus_radio_cientifico() -> void:
-	if AudioServer.get_bus_index(BUS_RADIO) != -1:
-		return
-	var idx: int = AudioServer.bus_count
-	AudioServer.add_bus(idx)
-	AudioServer.set_bus_name(idx, BUS_RADIO)
-	AudioServer.set_bus_send(idx, "Master")
-
-	var filtro_hp := AudioEffectHighPassFilter.new()
-	filtro_hp.cutoff_hz = 220.0
-	AudioServer.add_bus_effect(idx, filtro_hp)
-
-	var filtro_lp := AudioEffectLowPassFilter.new()
-	filtro_lp.cutoff_hz = 4500.0
-	AudioServer.add_bus_effect(idx, filtro_lp)
+func _asegurar_bus_voces() -> void:
+	GameManager.configurar_buses_audio()
 
 
 func _reproducir_audio_confirmacion() -> void:
@@ -217,9 +208,9 @@ func _reproducir_audio_confirmacion() -> void:
 	if ResourceLoader.exists(ruta_audio_confirmacion) or FileAccess.file_exists(ruta_audio_confirmacion):
 		var stream := GameManager.cargar_audio_seguro(ruta_audio_confirmacion)
 		if stream != null:
-			_asegurar_bus_radio_cientifico()
+			_asegurar_bus_voces()
 			audio_player.stop()
-			audio_player.bus = BUS_RADIO
+			audio_player.bus = BUS_VOCES
 			audio_player.pitch_scale = PITCH_RADIO
 			audio_player.stream = stream
 
@@ -228,7 +219,7 @@ func _reproducir_audio_confirmacion() -> void:
 				_stream_beep = GameManager.cargar_audio_seguro(RUTA_RADIO_BEEP)
 			if _stream_beep != null and _audio_beep != null and is_inside_tree():
 				_audio_beep.stop()
-				_audio_beep.bus = BUS_RADIO
+				_audio_beep.bus = BUS_VOCES
 				_audio_beep.stream = _stream_beep
 				_audio_beep.play(0.0)
 				await get_tree().create_timer(0.26, true).timeout

@@ -17,6 +17,8 @@
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="14_moneda_tiempo"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="15_nota_cientifico"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/EstanteArchivos.tscn" id="16_estante_archivos"]
+[ext_resource type="Script" path="res://Codigo/musica_escena.gd" id="17_musica_script"]
+[ext_resource type="AudioStream" path="res://assets/Musica/nivel 3.mp3" id="18_musica_n3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q5i0w"]
 texture = ExtResource("1_0j3rl")
@@ -1393,3 +1395,12 @@ formulas_clave = PackedStringArray("Electroimán / Bobina:  B = μ₀ · (N / L)
 texto_explicacion = "Atención, soldado, llegaste al núcleo subterráneo. Aquí se guardan los archivos clasificados que vinimos a buscar. Todo este sector funciona con Electromagnetismo: al pasar corriente por las bobinas activas electroimanes capaces de mover puentes metálicos, y al mover imanes generas corriente inducida para encender los generadores."
 alerta_mision = "⚠ OBJETIVO PRINCIPAL: Busca el estante de archivos clasificados en este nivel y presiona [E] para recuperarlos. Sin esos documentos en tu poder, la compuerta de salida no se abrirá."
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_3.mp3"
+
+[node name="MusicaFondo" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("18_musica_n3")
+volume_db = -9.0
+autoplay = true
+bus = &"Musica"
+script = ExtResource("17_musica_script")
+ruta_pista_respaldo = "res://assets/Musica/nivel 3.mp3"
