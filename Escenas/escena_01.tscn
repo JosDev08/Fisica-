@@ -37,9 +37,9 @@
 [ext_resource type="PackedScene" path="res://Escenas/MonedaRayo.tscn" id="36_moneda_rayo"]
 [ext_resource type="PackedScene" path="res://Escenas/Objetos/MonedaTiempo.tscn" id="37_moneda_tiempo"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="38_nota_cientifico"]
-[ext_resource type="Script" path="res://Codigo/cinematica_insercion_nivel1.gd" id="39_cinematica_insercion"]
-[ext_resource type="Script" path="res://Codigo/musica_escena.gd" id="40_musica_script"]
-[ext_resource type="AudioStream" path="res://assets/Musica/nivel 1.mp3" id="41_musica_n1"]
+[ext_resource type="Script" uid="uid://mvvxju632vrk" path="res://Codigo/cinematica_insercion_nivel1.gd" id="39_cinematica_insercion"]
+[ext_resource type="Script" uid="uid://4if7gxkusr38" path="res://Codigo/musica_escena.gd" id="40_musica_script"]
+[ext_resource type="AudioStream" uid="uid://diy4et3w7a4td" path="res://assets/Musica/nivel 1.mp3" id="41_musica_n1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lmrt2"]
 texture = ExtResource("1_v3ka8")
@@ -887,22 +887,22 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Enemigo" parent="." unique_id=1720677761 instance=ExtResource("30_hwlub")]
-position = Vector2(395, -45)
+position = Vector2(405, -38)
 
 [node name="Enemigo2" parent="." unique_id=2067488558 instance=ExtResource("30_hwlub")]
 position = Vector2(887, 91)
 
 [node name="Enemigo3" parent="." unique_id=684913637 instance=ExtResource("30_hwlub")]
-position = Vector2(1543, 92)
+position = Vector2(1598, 89)
 
 [node name="Enemigo4" parent="." unique_id=1795654949 instance=ExtResource("30_hwlub")]
-position = Vector2(2027, 89)
+position = Vector2(1967, 92)
 
 [node name="Enemigo5" parent="." unique_id=1577215261 instance=ExtResource("30_hwlub")]
 position = Vector2(-285, -37)
 
 [node name="PuzzleElectrostaticaCoulomb" parent="." unique_id=2022036430 instance=ExtResource("31_puz_coulomb")]
-position = Vector2(130, 0)
+position = Vector2(136, 1)
 
 [node name="PuzzleElectrodinamicaOhm" parent="." unique_id=1707209594 instance=ExtResource("32_puz_ohm")]
 position = Vector2(525, 0)
@@ -929,30 +929,39 @@ position = Vector2(800, 656)
 tamano_zona = Vector2(16000, 300)
 
 [node name="MaquinaPerks" parent="." unique_id=64920379 instance=ExtResource("35_maquina_perks")]
-position = Vector2(-90, 0)
+position = Vector2(1331, 15)
 
 [node name="MonedasRayo" type="Node2D" parent="." unique_id=2078268079]
 
 [node name="MonedaRayo2" parent="MonedasRayo" unique_id=666313696 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(-28, -26)
+position = Vector2(740, -145)
 
 [node name="MonedaRayo3" parent="MonedasRayo" unique_id=1741845185 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(452, -53)
+position = Vector2(671, -142)
 
 [node name="MonedaRayo4" parent="MonedasRayo" unique_id=59541443 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(325, -28)
+position = Vector2(394, -39)
 
 [node name="MonedaRayo5" parent="MonedasRayo" unique_id=1167611065 instance=ExtResource("36_moneda_rayo")]
 position = Vector2(-436, -18)
 
 [node name="MonedaRayo6" parent="MonedasRayo" unique_id=1734819043 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(800, 96)
+position = Vector2(785, 104)
 
 [node name="MonedaRayo7" parent="MonedasRayo" unique_id=1749505714 instance=ExtResource("36_moneda_rayo")]
 position = Vector2(1300, -16)
 
 [node name="MonedaRayo8" parent="MonedasRayo" unique_id=1637638484 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(1236, 101)
+position = Vector2(1487, 472)
+
+[node name="Enemigo" parent="MonedasRayo" unique_id=968855834 instance=ExtResource("30_hwlub")]
+position = Vector2(1033, 88)
+
+[node name="Enemigo2" parent="MonedasRayo" unique_id=955060391 instance=ExtResource("30_hwlub")]
+position = Vector2(1248, -21)
+
+[node name="Enemigo3" parent="MonedasRayo" unique_id=1081971507 instance=ExtResource("30_hwlub")]
+position = Vector2(1188, 89)
 
 [node name="MonedasTiempo" type="Node2D" parent="." unique_id=2020822367]
 
@@ -960,13 +969,13 @@ position = Vector2(1236, 101)
 position = Vector2(-641, -59)
 
 [node name="MonedaTiempo2" parent="MonedasTiempo" unique_id=55886373 instance=ExtResource("37_moneda_tiempo")]
-position = Vector2(1027, 96)
+position = Vector2(950, 10)
 
 [node name="MonedaTiempo3" parent="MonedasTiempo" unique_id=1463081294 instance=ExtResource("37_moneda_tiempo")]
-position = Vector2(1420, 84)
+position = Vector2(1406, 83)
 
 [node name="MonedaTiempo4" parent="MonedasTiempo" unique_id=157382940 instance=ExtResource("37_moneda_tiempo")]
-position = Vector2(1774, 114)
+position = Vector2(1856, 80)
 
 [node name="NotaCientifico" parent="." unique_id=2006329761 instance=ExtResource("38_nota_cientifico")]
 codigo_nivel = "NIVEL 01 — SECTOR DE ELECTROSTÁTICA Y CIRCUITOS"
@@ -977,14 +986,28 @@ texto_explicacion = "Soldado, cambio. Ya estás en el perímetro exterior de la 
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_1.mp3"
 abrir_al_iniciar = false
 
-[node name="CinematicaInsercion" type="Node2D" parent="."]
+[node name="CinematicaInsercion" type="Node2D" parent="." unique_id=1824141885]
 script = ExtResource("39_cinematica_insercion")
 
-[node name="MusicaFondo" type="AudioStreamPlayer" parent="."]
+[node name="MusicaFondo" type="AudioStreamPlayer" parent="." unique_id=1914059368]
 process_mode = 3
 stream = ExtResource("41_musica_n1")
 volume_db = -9.0
 autoplay = true
-bus = &"Musica"
 script = ExtResource("40_musica_script")
 ruta_pista_respaldo = "res://assets/Musica/nivel 1.mp3"
+
+[node name="Enemigo6" parent="." unique_id=954330756 instance=ExtResource("30_hwlub")]
+position = Vector2(763, 91)
+
+[node name="Enemigo7" parent="." unique_id=1191516788 instance=ExtResource("30_hwlub")]
+position = Vector2(1352, 90)
+
+[node name="Enemigo8" parent="." unique_id=538636864 instance=ExtResource("30_hwlub")]
+position = Vector2(120, -37)
+
+[node name="Enemigo9" parent="." unique_id=972481692 instance=ExtResource("30_hwlub")]
+position = Vector2(-151, -36)
+
+[node name="Enemigo10" parent="." unique_id=1761145947 instance=ExtResource("30_hwlub")]
+position = Vector2(-422, -40)

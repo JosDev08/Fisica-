@@ -361,7 +361,7 @@ zoom = Vector2(1.8, 1.8)
 position = Vector2(460, 220)
 
 [node name="Enemigo2" parent="Enemigos" unique_id=744310765 instance=ExtResource("4_enemigo2")]
-position = Vector2(1150, 100)
+position = Vector2(1150, 118)
 
 [node name="Enemigo3" parent="Enemigos" unique_id=1201282090 instance=ExtResource("5_enemigo3")]
 position = Vector2(1900, 30)
@@ -433,6 +433,18 @@ energy = 0.95
 texture = ExtResource("31_luz_svg")
 texture_scale = 2.8
 
+[node name="enemigo_03" parent="IluminacionEscena" unique_id=1132581528 instance=ExtResource("5_enemigo3")]
+position = Vector2(1786, 52)
+
+[node name="enemigo_04" parent="IluminacionEscena" unique_id=512224862 instance=ExtResource("5_enemigo3")]
+position = Vector2(2186, 53)
+
+[node name="enemigo_05" parent="IluminacionEscena" unique_id=1316702088 instance=ExtResource("5_enemigo3")]
+position = Vector2(2471, 51)
+
+[node name="enemigo_06" parent="IluminacionEscena" unique_id=1180850958 instance=ExtResource("5_enemigo3")]
+position = Vector2(2342, 50)
+
 [node name="NotaCientifico" parent="." unique_id=858897781 instance=ExtResource("32_nota_cientifico")]
 codigo_nivel = "NIVEL 04 — EXTRACCIÓN FINAL EN SUPERFICIE"
 titulo_tema = "EXTRACCIÓN FINAL COMPLETADA"
@@ -456,3 +468,27 @@ ruta_pista_respaldo = "res://assets/Musica/nivel_4.wav"
 
 [node name="ZonaMuerte" parent="." unique_id=1080428340 instance=ExtResource("37_pggwo")]
 position = Vector2(753, 396)
+
+[node name="ZonaMuerte2" parent="." unique_id=2020698407 instance=ExtResource("37_pggwo")]
+position = Vector2(1537, 394)
+
+[node name="ZonaMuerte3" parent="." unique_id=1319396932 instance=ExtResource("37_pggwo")]
+position = Vector2(2328, 397)
+
+[node name="ZonaMuerte4" parent="." unique_id=1973587460 instance=ExtResource("37_pggwo")]
+position = Vector2(2824, 397)
+
+[node name="Enemigo" parent="." unique_id=1720677761 instance=ExtResource("3_enemigo1")]
+position = Vector2(328, 232)
+
+[node name="Enemigo2" parent="." unique_id=564694445 instance=ExtResource("3_enemigo1")]
+position = Vector2(182, 232)
+
+[node name="Enemigo3" parent="." unique_id=1272152435 instance=ExtResource("3_enemigo1")]
+position = Vector2(916, 166)
+
+[node name="enemigo_03" parent="." unique_id=872050857 instance=ExtResource("5_enemigo3")]
+position = Vector2(861, 180)
+
+[node name="enemigo_04" parent="." unique_id=1814623897 instance=ExtResource("5_enemigo3")]
+position = Vector2(1470, 55)
