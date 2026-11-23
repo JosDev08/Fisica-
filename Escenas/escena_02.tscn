@@ -1016,7 +1016,7 @@ position = Vector2(861, -24)
 position = Vector2(1354, 104)
 
 [node name="enemigo_6" parent="." unique_id=1788783403 instance=ExtResource("7_gdrao")]
-position = Vector2(1916, 249)
+position = Vector2(1934, 247)
 
 [node name="enemigo_7" parent="." unique_id=1035302284 instance=ExtResource("7_gdrao")]
 position = Vector2(2776, 246)
