@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="96" viewBox="0 0 96 48" shape-rendering="crispEdges">
+  <!-- Sombra sutil bajo los patines -->
+  <rect x="28" y="46" width="44" height="2" fill="#090d14" fill-opacity="0.45"/>
+
+  <!-- Mástil del rotor principal -->
+  <rect x="47" y="6" width="6" height="8" fill="#182230"/>
+  <rect x="48" y="7" width="4" height="6" fill="#3a4c66"/>
+  <rect x="46" y="5" width="8" height="2" fill="#ffd600"/>
+
+  <!-- Cola del helicóptero (izquierda) -->
+  <rect x="6" y="19" width="28" height="7" fill="#111824"/>
+  <rect x="7" y="20" width="26" height="5" fill="#2c3e38"/>
+  <rect x="7" y="20" width="26" height="1" fill="#4c695e"/>
+  <rect x="7" y="24" width="26" height="1" fill="#1c2924"/>
+  <!-- Franja táctica dorada en cola -->
+  <rect x="14" y="20" width="3" height="5" fill="#ffd600"/>
+  <rect x="19" y="20" width="2" height="5" fill="#ffd600"/>
+
+  <!-- Aleta vertical de cola -->
+  <rect x="4" y="10" width="9" height="15" fill="#111824"/>
+  <rect x="5" y="11" width="7" height="13" fill="#2f453e"/>
+  <rect x="6" y="12" width="5" height="2" fill="#4f7065"/>
+  <!-- Cubo del rotor de cola -->
+  <rect x="6" y="15" width="4" height="4" fill="#182230"/>
+  <rect x="7" y="16" width="2" height="2" fill="#ffd600"/>
+
+  <!-- Fuselaje principal (cuerpo táctico mirando hacia la derecha) -->
+  <rect x="30" y="13" width="44" height="23" fill="#0e141f"/>
+  <rect x="33" y="12" width="36" height="25" fill="#0e141f"/>
+  <rect x="71" y="17" width="12" height="18" fill="#0e141f"/>
+  <rect x="81" y="22" width="7" height="12" fill="#0e141f"/>
+
+  <!-- Relleno blindaje verde-acero militar/científico -->
+  <rect x="32" y="14" width="40" height="21" fill="#2c403a"/>
+  <rect x="35" y="13" width="33" height="23" fill="#324a42"/>
+  <rect x="70" y="18" width="12" height="16" fill="#324a42"/>
+  <rect x="80" y="23" width="7" height="10" fill="#2c403a"/>
+
+  <!-- Luces/biseles superiores del fuselaje -->
+  <rect x="35" y="13" width="33" height="2" fill="#537569"/>
+  <rect x="32" y="14" width="3" height="18" fill="#3d5950"/>
+  <rect x="32" y="33" width="48" height="2" fill="#1b2924"/>
+
+  <!-- Toma de turbina superior -->
+  <rect x="39" y="11" width="20" height="4" fill="#1a2433"/>
+  <rect x="41" y="12" width="16" height="2" fill="#3b4e69"/>
+  <rect x="38" y="12" width="2" height="2" fill="#ff5e3a"/>
+
+  <!-- Cabina panorámica frontal (cian neón luminoso) -->
+  <rect x="64" y="16" width="12" height="12" fill="#0b1d2e"/>
+  <rect x="72" y="19" width="10" height="9" fill="#0b1d2e"/>
+  <rect x="65" y="17" width="10" height="10" fill="#1c7da6"/>
+  <rect x="73" y="20" width="8" height="7" fill="#1c7da6"/>
+  <rect x="66" y="18" width="8" height="7" fill="#3be4ff"/>
+  <rect x="74" y="21" width="6" height="5" fill="#3be4ff"/>
+  <!-- Reflejos del vidrio -->
+  <rect x="67" y="18" width="3" height="2" fill="#d9fbff"/>
+  <rect x="75" y="21" width="3" height="1" fill="#d9fbff"/>
+
+  <!-- Puerta lateral táctica de abordaje -->
+  <rect x="44" y="18" width="16" height="14" fill="#1a2622"/>
+  <rect x="45" y="19" width="14" height="12" fill="#243630"/>
+  <!-- Ventana de cabina trasera -->
+  <rect x="47" y="20" width="10" height="5" fill="#0e2236"/>
+  <rect x="48" y="21" width="8" height="3" fill="#2cc2e8"/>
+  <rect x="49" y="21" width="3" height="1" fill="#c7f7ff"/>
+  <!-- Manija y luz de abordaje verde -->
+  <rect x="57" y="27" width="2" height="2" fill="#2cf28a"/>
+
+  <!-- Franja dorada de rescate y emblema eléctrico -->
+  <rect x="32" y="29" width="48" height="2" fill="#ffd600"/>
+  <rect x="35" y="20" width="6" height="6" fill="#15211e"/>
+  <rect x="37" y="21" width="2" height="2" fill="#ffd600"/>
+  <rect x="36" y="23" width="3" height="1" fill="#00f0ff"/>
+  <rect x="37" y="24" width="2" height="1" fill="#ffd600"/>
+
+  <!-- Faro frontal de aterrizaje -->
+  <rect x="85" y="28" width="3" height="3" fill="#fff6b8"/>
+  <rect x="87" y="29" width="2" height="1" fill="#ffffff"/>
+
+  <!-- Patines metálicos de aterrizaje (base exactamente en y = 45..47) -->
+  <rect x="40" y="36" width="3" height="8" fill="#182230"/>
+  <rect x="41" y="36" width="1" height="8" fill="#637b9c"/>
+  <rect x="64" y="36" width="3" height="8" fill="#182230"/>
+  <rect x="65" y="36" width="1" height="8" fill="#637b9c"/>
+  <!-- Barra horizontal del patín -->
+  <rect x="31" y="43" width="44" height="3" fill="#141d29"/>
+  <rect x="32" y="44" width="42" height="1" fill="#7c96ba"/>
+  <!-- Punta curvada delantera del patín -->
+  <rect x="74" y="41" width="4" height="3" fill="#141d29"/>
+  <rect x="75" y="42" width="2" height="1" fill="#7c96ba"/>
+</svg>

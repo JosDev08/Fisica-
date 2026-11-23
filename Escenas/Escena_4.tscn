@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3]
+[gd_scene load_steps=40 format=3]
 
 [ext_resource type="PackedScene" uid="uid://chtdvltudr8ps" path="res://Escenas/Jugador.tscn" id="1_jugador"]
 [ext_resource type="PackedScene" uid="uid://bexmpajbn7j65" path="res://Escenas/puerta_ohm.tscn" id="2_puerta_ohm"]
@@ -29,9 +29,11 @@
 [ext_resource type="Texture2D" path="res://assets/escena_4/arbol_frondoso.svg" id="27_arbol_svg"]
 [ext_resource type="Texture2D" path="res://assets/escena_4/arbusto_frondoso.svg" id="28_arbusto_svg"]
 [ext_resource type="Texture2D" path="res://assets/escena_4/cesped_detalle.svg" id="29_cesped_svg"]
-[ext_resource type="Texture2D" path="res://assets/escena_4/portal_meta.svg" id="30_portal_svg"]
 [ext_resource type="Texture2D" path="res://assets/escena_4/luz_radial.svg" id="31_luz_svg"]
 [ext_resource type="PackedScene" path="res://Escenas/UI/NotaCientifico.tscn" id="32_nota_cientifico"]
+[ext_resource type="PackedScene" path="res://Escenas/UI/PantallaVictoria.tscn" id="33_pantalla_victoria"]
+[ext_resource type="Texture2D" path="res://assets/escena_4/helicoptero_extraccion.svg" id="34_helicoptero_svg"]
+[ext_resource type="Script" path="res://Codigo/extraccion_final.gd" id="35_script_extraccion"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_768"]
 size = Vector2(768, 64)
@@ -46,77 +48,7 @@ size = Vector2(384, 32)
 size = Vector2(32, 500)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_meta"]
-size = Vector2(96, 144)
-
-[sub_resource type="GDScript" id="GDScript_meta_final"]
-script/source = "extends Area2D
-
-var completado: bool = false
-var jugador_cerca: bool = false
-var _tecla_e_prev: bool = false
-
-func _ready() -> void:
-	monitoring = true
-	monitorable = true
-	collision_layer = 0
-	collision_mask = 1
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
-
-func _process(_delta: float) -> void:
-	if completado:
-		return
-	var detectado := false
-	if monitoring:
-		for b in get_overlapping_bodies():
-			if b.is_in_group(\"jugador\") or b is CharacterBody2D or b.name == \"Jugador\":
-				detectado = true
-				break
-	if detectado != jugador_cerca:
-		jugador_cerca = detectado
-		_actualizar_aviso()
-	var e_actual := Input.is_physical_key_pressed(KEY_E) or Input.is_key_pressed(KEY_E)
-	if e_actual and not _tecla_e_prev and jugador_cerca:
-		_completar_nivel()
-	_tecla_e_prev = e_actual
-
-func _unhandled_input(event: InputEvent) -> void:
-	if completado or not jugador_cerca:
-		return
-	if event is InputEventKey and event.pressed and not event.echo and (event.physical_keycode == KEY_E or event.keycode == KEY_E):
-		get_viewport().set_input_as_handled()
-		_completar_nivel()
-
-func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group(\"jugador\") or body is CharacterBody2D or body.name == \"Jugador\":
-		jugador_cerca = true
-		_actualizar_aviso()
-		_completar_nivel()
-
-func _on_body_exited(body: Node2D) -> void:
-	if body.is_in_group(\"jugador\") or body is CharacterBody2D or body.name == \"Jugador\":
-		jugador_cerca = false
-		_actualizar_aviso()
-
-func _actualizar_aviso() -> void:
-	if completado:
-		return
-	var etiqueta := get_node_or_null(\"AvisoMeta\") as Label
-	if etiqueta:
-		etiqueta.text = \"[E] Interactuar — PORTAL DE EXTRACCIÓN\" if jugador_cerca else \"PORTAL DE EXTRACCIÓN\"
-
-func _completar_nivel() -> void:
-	if completado:
-		return
-	completado = true
-	if Engine.has_singleton(\"GameManager\") or get_node_or_null(\"/root/GameManager\") != null:
-		GameManager.completar_meta_nivel(\"\", global_position)
-	print(\"¡Nivel Final Completado!\")
-	var etiqueta := get_node_or_null(\"AvisoMeta\") as Label
-	if etiqueta:
-		etiqueta.text = \"¡NIVEL FINAL COMPLETADO!\"
-		etiqueta.modulate = Color(0.4, 1.0, 0.55, 1.0)
-"
+size = Vector2(132, 144)
 
 [node name="Escena_4" type="Node2D"]
 
@@ -375,26 +307,46 @@ monitoring = true
 monitorable = true
 collision_layer = 0
 collision_mask = 1
-script = SubResource("GDScript_meta_final")
+script = ExtResource("35_script_extraccion")
 
-[node name="PortalSprite" type="Sprite2D" parent="MetaFinal"]
-texture = ExtResource("30_portal_svg")
+[node name="HelicopteroExtraccion" type="Node2D" parent="MetaFinal"]
+z_index = 2
+position = Vector2(18, 34)
+
+[node name="SpriteHelicoptero" type="Sprite2D" parent="MetaFinal/HelicopteroExtraccion"]
+texture_filter = 1
+texture = ExtResource("34_helicoptero_svg")
+
+[node name="HelicePrincipal" type="Polygon2D" parent="MetaFinal/HelicopteroExtraccion"]
+position = Vector2(4, -38)
+color = Color(0.75, 0.85, 0.95, 0.9)
+polygon = PackedVector2Array(-68, -2, 68, -2, 68, 2, -68, 2)
+
+[node name="HeliceCola" type="Polygon2D" parent="MetaFinal/HelicopteroExtraccion"]
+position = Vector2(-80, -14)
+color = Color(0.85, 0.92, 1, 0.88)
+polygon = PackedVector2Array(-2, -13, 2, -13, 2, 13, -2, 13)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MetaFinal"]
+position = Vector2(18, 10)
 shape = SubResource("RectangleShape2D_meta")
 
 [node name="LuzPortalMeta" type="PointLight2D" parent="MetaFinal"]
+position = Vector2(18, 20)
 color = Color(0.45, 0.92, 1, 1)
-energy = 1.6
+energy = 1.35
 texture = ExtResource("31_luz_svg")
 texture_scale = 2.2
 
 [node name="AvisoMeta" type="Label" parent="MetaFinal"]
 offset_left = -110.0
-offset_top = -112.0
-offset_right = 110.0
-offset_bottom = -84.0
-text = "PORTAL DE EXTRACCIÓN"
+offset_top = -90.0
+offset_right = 150.0
+offset_bottom = -62.0
+theme_override_colors/font_color = Color(1, 0.92, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "HELICÓPTERO DE EXTRACCIÓN"
 horizontal_alignment = 1
 
 [node name="Jugador" parent="." instance=ExtResource("1_jugador")]
@@ -492,3 +444,5 @@ alerta_mision = "✓ EXTRACCIÓN AUTORIZADA: Los archivos clasificados están a 
 alerta_es_victoria = true
 ruta_audio_voz = "res://assets/audio/voces/voz_nivel_4.mp3"
 texto_boton_iniciar = "ENTENDIDO / COMPLETAR EXTRACCIÓN"
+
+[node name="PantallaVictoria" parent="." instance=ExtResource("33_pantalla_victoria")]
