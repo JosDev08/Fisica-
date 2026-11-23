@@ -894,7 +894,7 @@ position = Vector2(887, 91)
 position = Vector2(1543, 92)
 
 [node name="Enemigo4" parent="." unique_id=1795654949 instance=ExtResource("30_hwlub")]
-position = Vector2(2130, 73)
+position = Vector2(2027, 89)
 
 [node name="Enemigo5" parent="." unique_id=1577215261 instance=ExtResource("30_hwlub")]
 position = Vector2(-285, -37)
@@ -906,7 +906,7 @@ position = Vector2(130, 0)
 position = Vector2(525, 0)
 
 [node name="PuertaSalidaOhm" parent="." unique_id=1351303454 instance=ExtResource("33_puerta_ohm")]
-position = Vector2(2155, 112)
+position = Vector2(2195, 111)
 
 [node name="ZonasMuerte" type="Node2D" parent="." unique_id=1954573759]
 
@@ -935,13 +935,13 @@ position = Vector2(-90, 0)
 position = Vector2(-28, -26)
 
 [node name="MonedaRayo3" parent="MonedasRayo" unique_id=1741845185 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(50, -23)
+position = Vector2(452, -53)
 
 [node name="MonedaRayo4" parent="MonedasRayo" unique_id=59541443 instance=ExtResource("36_moneda_rayo")]
 position = Vector2(325, -28)
 
 [node name="MonedaRayo5" parent="MonedasRayo" unique_id=1167611065 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(455, -28)
+position = Vector2(-436, -18)
 
 [node name="MonedaRayo6" parent="MonedasRayo" unique_id=1734819043 instance=ExtResource("36_moneda_rayo")]
 position = Vector2(800, 96)
@@ -950,7 +950,7 @@ position = Vector2(800, 96)
 position = Vector2(1300, -16)
 
 [node name="MonedaRayo8" parent="MonedasRayo" unique_id=1637638484 instance=ExtResource("36_moneda_rayo")]
-position = Vector2(1950, 96)
+position = Vector2(1236, 101)
 
 [node name="MonedasTiempo" type="Node2D" parent="." unique_id=2020822367]
 
@@ -964,9 +964,9 @@ position = Vector2(1027, 96)
 position = Vector2(1420, 84)
 
 [node name="MonedaTiempo4" parent="MonedasTiempo" unique_id=157382940 instance=ExtResource("37_moneda_tiempo")]
-position = Vector2(1760, 84)
+position = Vector2(1774, 114)
 
-[node name="NotaCientifico" parent="." instance=ExtResource("38_nota_cientifico")]
+[node name="NotaCientifico" parent="." unique_id=2006329761 instance=ExtResource("38_nota_cientifico")]
 codigo_nivel = "NIVEL 01 — SECTOR DE ELECTROSTÁTICA Y CIRCUITOS"
 titulo_tema = "ELECTROSTÁTICA Y ELECTRODINÁMICA"
 subtitulo_mision = "Domina la interacción de cargas y la Ley de Ohm para abrir paso por el laboratorio."

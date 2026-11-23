@@ -188,7 +188,6 @@ size = Vector2(25, 66)
 
 [node name="Jugador" type="CharacterBody2D" unique_id=1415837552 groups=["jugador"]]
 position = Vector2(3, -65)
-collision_layer = 1
 collision_mask = 16
 script = ExtResource("1_pqx3y")
 
@@ -202,5 +201,5 @@ autoplay = "Reposo"
 position = Vector2(10.5, 31)
 shape = SubResource("RectangleShape2D_83bx5")
 
-[node name="PuntoDisparo" type="Marker2D" parent="."]
+[node name="PuntoDisparo" type="Marker2D" parent="." unique_id=1540223846]
 position = Vector2(26, 24)
