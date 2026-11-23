@@ -53,6 +53,7 @@ func _on_body_entered(body: Node2D) -> void:
 	set_deferred("monitoring", false)
 
 	GameManager.agregar_tiempo(segundos_extra)
+	GameManager.reproducir_sfx_moneda("res://assets/audio/sfx_moneda_tiempo.wav")
 	_crear_efecto_destello()
 	_mostrar_texto_flotante("+%ds" % int(round(segundos_extra)), Color(0.28, 1.0, 0.82))
 

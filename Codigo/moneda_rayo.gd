@@ -51,6 +51,7 @@ func _on_body_entered(body: Node2D) -> void:
 	set_deferred("monitoring", false)
 
 	GameManager.sumar_monedas(valor)
+	GameManager.reproducir_sfx_moneda("res://assets/audio/sfx_moneda_rayo.wav")
 	_crear_efecto_destello()
 	_mostrar_texto_flotante("+%d ⚡" % valor, Color(1.0, 0.88, 0.28))
 

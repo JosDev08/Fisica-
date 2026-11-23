@@ -37,9 +37,9 @@ const COSTOS_VIDA: Array[int] = [3, 5, 7]
 const COSTOS_VELOCIDAD: Array[int] = [3, 5, 7]
 const COSTOS_DANIO: Array[int] = [4, 6, 8]
 
-const TIEMPO_NIVEL_DEFAULT: float = 65.0
+const TIEMPO_NIVEL_DEFAULT: float = 50.0
 
-var tiempo_inicial_nivel: float = 65.0
+var tiempo_inicial_nivel: float = 50.0
 
 # Estado persistente de la partida activa (conservado entre niveles y checkpoints)
 var monedas_rayo: int = 0
@@ -60,7 +60,7 @@ var mejoras: Dictionary = {
 
 # Estado temporal de la sesión en curso
 var vida_actual: int = VIDA_BASE
-var tiempo_restante: float = 65.0
+var tiempo_restante: float = 50.0
 var temporizador_activo: bool = false
 var jugador_muerto: bool = false
 var en_pausa: bool = false
@@ -76,6 +76,8 @@ var _muerte_escena_cache: PackedScene = null
 var _volumen_ducking_actual_db: float = 0.0
 var indice_muerte_actual: int = 0
 var _audio_muerte_jugador: AudioStreamPlayer = null
+var _audio_sfx_moneda: AudioStreamPlayer = null
+var _cache_sfx_monedas: Dictionary = {}
 
 const BUS_MUSICA := "Musica"
 const BUS_VOCES := "Voces"
@@ -96,6 +98,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	configurar_buses_audio()
 	_configurar_audio_muerte_jugador()
+	_configurar_audio_sfx_moneda()
 	cargar_partida()
 
 
@@ -650,6 +653,44 @@ func _reproducir_sonido_muerte_alternado() -> void:
 	_audio_muerte_jugador.stop()
 	_audio_muerte_jugador.stream = stream
 	_audio_muerte_jugador.play(0.0)
+
+
+func _configurar_audio_sfx_moneda() -> void:
+	if _audio_sfx_moneda != null and is_instance_valid(_audio_sfx_moneda):
+		return
+	_audio_sfx_moneda = AudioStreamPlayer.new()
+	_audio_sfx_moneda.name = "AudioSfxMoneda"
+	_audio_sfx_moneda.process_mode = Node.PROCESS_MODE_ALWAYS
+	_audio_sfx_moneda.max_polyphony = 4
+	_audio_sfx_moneda.bus = BUS_SFX if AudioServer.get_bus_index(BUS_SFX) != -1 else "Master"
+	add_child(_audio_sfx_moneda)
+
+
+func reproducir_sfx_moneda(ruta: String) -> void:
+	if ruta.is_empty():
+		return
+	_configurar_audio_sfx_moneda()
+	if _audio_sfx_moneda == null:
+		return
+
+	var stream: AudioStream = _cache_sfx_monedas.get(ruta, null) as AudioStream
+	if stream == null:
+		if not existe_audio_seguro(ruta):
+			return
+		stream = cargar_audio_seguro(ruta)
+		if stream == null:
+			return
+		if stream is AudioStreamMP3:
+			(stream as AudioStreamMP3).loop = false
+		elif stream is AudioStreamOggVorbis:
+			(stream as AudioStreamOggVorbis).loop = false
+		elif stream is AudioStreamWAV:
+			(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_DISABLED
+		_cache_sfx_monedas[ruta] = stream
+
+	_audio_sfx_moneda.bus = BUS_SFX if AudioServer.get_bus_index(BUS_SFX) != -1 else "Master"
+	_audio_sfx_moneda.stream = stream
+	_audio_sfx_moneda.play(0.0)
 
 
 func registrar_modal_abierto(abierto: bool) -> void:
