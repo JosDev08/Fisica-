@@ -65,6 +65,7 @@ var temporizador_activo: bool = false
 var jugador_muerto: bool = false
 var en_pausa: bool = false
 var archivos_recuperados: bool = false
+var cinematica_insercion_vista: bool = false
 
 var _usar_posicion_pendiente: bool = false
 var _posicion_pendiente_respawn: Vector2 = Vector2.ZERO
@@ -203,6 +204,7 @@ func nueva_partida(cambiar_escena: bool = true) -> String:
 	jugador_muerto = false
 	en_pausa = false
 	archivos_recuperados = false
+	cinematica_insercion_vista = false
 	_modales_abiertos = 0
 	_usar_posicion_pendiente = false
 	_posicion_pendiente_respawn = Vector2.ZERO
@@ -660,6 +662,13 @@ func _configurar_escena_juego(escena: Node) -> void:
 		if is_instance_valid(nota) and nota.has_method("esta_abierta") and nota.esta_abierta():
 			_modales_abiertos = maxi(_modales_abiertos, 1)
 			get_tree().paused = true
+			break
+
+	# 5. Respetar cualquier cinemática de inserción inicial activa (mantiene el HUD pausado sin congelar la animación)
+	for cine in get_tree().get_nodes_in_group("cinematica_insercion"):
+		if is_instance_valid(cine) and cine.has_method("esta_activa") and cine.esta_activa():
+			temporizador_activo = false
+			_modales_abiertos = maxi(_modales_abiertos, 1)
 			break
 
 

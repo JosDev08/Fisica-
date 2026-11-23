@@ -89,13 +89,17 @@ func _ready() -> void:
 	_cargar_audio_voz()
 
 	if abrir_al_iniciar:
-		abrir_transmision()
+		abrir_nota()
 	else:
 		visible = false
 
 
 func esta_abierta() -> bool:
 	return _abierta
+
+
+func abrir_nota() -> void:
+	abrir_transmision()
 
 
 func abrir_transmision() -> void:
